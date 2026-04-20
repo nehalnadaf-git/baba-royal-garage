@@ -1,0 +1,78 @@
+import type { GalleryImage } from "@/types";
+
+export const galleryImages: GalleryImage[] = [
+  {
+    id: "gallery-garage-01",
+    src: "/images/gallery/garage-01.webp",
+    alt: "Royal Enfield motorcycles parked inside Baba Royal Garage Hubli workshop",
+    category: "Workshop",
+    label: "Workshop View",
+    width: 1200,
+    height: 900,
+  },
+  {
+    id: "gallery-garage-02",
+    src: "/images/gallery/garage-02.webp",
+    alt: "Royal Enfield service bay activity at Baba Royal Garage Hubli",
+    category: "Bikes",
+    label: "Service Bay",
+    width: 1200,
+    height: 900,
+  },
+  {
+    id: "gallery-garage-03",
+    src: "/images/gallery/garage-03.webp",
+    alt: "Royal Enfield bike line up after specialist service in Hubli",
+    category: "Bikes",
+    label: "Ready for Delivery",
+    width: 1200,
+    height: 900,
+  },
+  {
+    id: "gallery-garage-04",
+    src: "/images/gallery/garage-04.webp",
+    alt: "Royal Enfield workshop tools and mechanic station at Baba Royal Garage",
+    category: "Engine Work",
+    label: "Mechanic Station",
+    width: 1200,
+    height: 900,
+  },
+  {
+    id: "gallery-garage-05",
+    src: "/images/gallery/garage-05.webp",
+    alt: "Royal Enfield motorcycle finish after detailing at Baba Royal Garage Hubli",
+    category: "Before & After",
+    label: "Detailing Finish",
+    width: 1200,
+    height: 900,
+  },
+  {
+    id: "gallery-garage-06",
+    src: "/images/gallery/garage-06.webp",
+    alt: "Baba Royal Garage storefront and workshop entrance in Hubli",
+    category: "Team",
+    label: "Garage Front",
+    width: 1200,
+    height: 900,
+  },
+  {
+    id: "gallery-garage-07",
+    src: "/images/gallery/garage-07.webp",
+    alt: "Royal Enfield workshop interior with ongoing service work in Hubli",
+    category: "Workshop",
+    label: "Workshop Floor",
+    width: 1200,
+    height: 900,
+  },
+  {
+    id: "gallery-garage-08",
+    src: "/images/gallery/garage-08.webp",
+    alt: "Royal Enfield specialist team and workshop setup at Baba Royal Garage",
+    category: "Team",
+    label: "Specialist Team",
+    width: 1200,
+    height: 900,
+  },
+];
+
+export const galleryFilters = ["All", "Workshop", "Bikes", "Engine Work", "Before & After", "Team"] as const;

@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Baba Royal Garage Website
 
-## Getting Started
+Production Next.js 16 App Router website for Baba Royal Garage, Hubli.
 
-First, run the development server:
+## Tech Stack
+
+- Next.js 16 + React 19 + TypeScript
+- Tailwind CSS + custom design tokens
+- App Router metadata + JSON-LD schema
+- Server-side reviews API fallback strategy
+
+## Local Development
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create environment file:
+
+```bash
+cp .env.example .env.local
+```
+
+3. Start development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The reviews endpoint reads Google Places data server-side:
 
-## Learn More
+- `GOOGLE_PLACES_API_KEY`
+- `GOOGLE_PLACE_ID`
 
-To learn more about Next.js, take a look at the following resources:
+If these are not configured, the site automatically falls back to local static reviews.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## SEO and Crawling
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `app/sitemap.ts` generates dynamic sitemap entries for static, service, model, location, and blog routes.
+- `public/robots.txt` allows normal crawling, disallows `/api/`, and points to `https://babaroyalgarage.com/sitemap.xml`.
 
-## Deploy on Vercel
+## Build and Validation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+npm run build
+```
