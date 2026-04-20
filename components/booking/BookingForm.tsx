@@ -71,17 +71,18 @@ const redCard: React.CSSProperties = {
   boxShadow: "0 0 0 3px rgba(232,25,42,0.07)",
 };
 
+/* Responsive input — slightly smaller on mobile */
 const inputBase: React.CSSProperties = {
   background: "rgba(255,255,255,0.70)",
   border: "1px solid rgba(0,0,0,0.12)",
   color: "#111116",
   outline: "none",
   width: "100%",
-  borderRadius: "12px",
-  padding: "13px 16px",
+  borderRadius: "10px",
+  padding: "11px 14px",
   fontFamily: "inherit",
-  fontSize: "14px",
-  minHeight: "48px",
+  fontSize: "13px",
+  minHeight: "44px",
   fontWeight: "600",
   boxShadow: "inset 0 1px 3px rgba(0,0,0,0.04)",
 };
@@ -148,16 +149,16 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
     return `https://wa.me/919742291701?text=${encodeURIComponent(lines.join("\n"))}`;
   }, [model, customModel, allProblems, name, phone, branch, date, timeSlot, notes]);
 
-  const stepLabels = ["Your Bike", "Problem", "Details", "Confirm"];
+  const stepLabels = ["Bike", "Problem", "Details", "Confirm"];
 
   /* ── render ── */
   return (
     <div className="flex flex-col">
 
-      {/* ── Step progress bar ───────────────────────────────────── */}
+      {/* ── Step progress bar ── */}
       <div
-        className="flex items-center px-5 sm:px-8 py-3.5 sm:py-4 shrink-0"
-        style={{ borderBottom: "1px solid rgba(0,0,0,0.08)", background: "rgba(255,255,255,0.35)" }}
+        className="flex items-center px-4 sm:px-7 py-2.5 sm:py-3.5 shrink-0"
+        style={{ borderBottom: "1px solid rgba(0,0,0,0.07)", background: "rgba(255,255,255,0.35)" }}
       >
         {stepLabels.map((label, i) => {
           const n      = i + 1;
@@ -165,23 +166,26 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
           const active = step === n;
           return (
             <div key={label} className="flex items-center" style={{ flex: i < 3 ? 1 : "none" }}>
-              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                {/* Step circle — min 28px for tap-friendly */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                {/* Step circle */}
                 <div
-                  className="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center font-label text-[9px] sm:text-[10px] font-bold transition-all duration-300 shrink-0"
+                  className="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center font-label text-[8px] sm:text-[9px] font-bold transition-all duration-300 shrink-0"
                   style={{
                     background: done ? "#E8192A" : active ? "rgba(232,25,42,0.10)" : "rgba(0,0,0,0.05)",
-                    border: done ? "none" : active ? "2px solid #E8192A" : "1.5px solid rgba(0,0,0,0.12)",
+                    border: done ? "none" : active ? "1.5px solid #E8192A" : "1.5px solid rgba(0,0,0,0.12)",
                     color: done ? "white" : active ? "#E8192A" : "rgba(0,0,0,0.35)",
-                    boxShadow: active ? "0 0 12px rgba(232,25,42,0.25)" : "none",
+                    boxShadow: active ? "0 0 10px rgba(232,25,42,0.22)" : "none",
                   }}
                 >
-                  {done ? <Check className="h-3 w-3 text-white" /> : n}
+                  {done ? <Check className="h-2.5 w-2.5 text-white" /> : n}
                 </div>
-                {/* Label — visible on sm+ */}
+                {/* Label — always visible, compact on mobile */}
                 <span
-                  className="font-label text-[8px] sm:text-[9px] tracking-[0.16em] uppercase font-black hidden xs:block sm:block"
-                  style={{ color: active ? "#E8192A" : done ? "rgba(0,0,0,0.70)" : "rgba(0,0,0,0.28)" }}
+                  className="font-label tracking-[0.12em] sm:tracking-[0.16em] uppercase font-black"
+                  style={{
+                    fontSize: "7.5px",
+                    color: active ? "#E8192A" : done ? "rgba(0,0,0,0.65)" : "rgba(0,0,0,0.28)",
+                  }}
                 >
                   {label}
                 </span>
@@ -189,7 +193,7 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
               {/* Connector line */}
               {i < 3 && (
                 <div
-                  className="h-[1.5px] flex-1 mx-2 sm:mx-3 rounded-full transition-all duration-500"
+                  className="h-[1.5px] flex-1 mx-1.5 sm:mx-2.5 rounded-full transition-all duration-500"
                   style={{ background: step > n ? "#E8192A" : "rgba(0,0,0,0.08)" }}
                 />
               )}
@@ -198,44 +202,46 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
         })}
       </div>
 
-      {/* ── Body ───────────────────────────────────────────────────── */}
-      <div className="flex-1 px-5 sm:px-8 py-5 sm:py-6 overflow-y-auto">
+      {/* ── Scrollable body ── */}
+      <div className="flex-1 px-4 sm:px-7 py-4 sm:py-5 overflow-y-auto">
 
-        {/* ╔══════════════════════════════╗ */}
-        {/* ║  STEP 1 — Bike Model         ║ */}
-        {/* ╚══════════════════════════════╝ */}
+        {/* ══ STEP 1 — Bike Model ══ */}
         {step === 1 && (
           <div>
             <p
-              className="font-display text-[#111116] uppercase leading-tight mb-1"
-              style={{ fontSize: "clamp(20px, 2.5vw, 28px)" }}
+              className="font-display text-[#111116] uppercase leading-tight mb-0.5"
+              style={{ fontSize: "clamp(17px, 2.5vw, 26px)" }}
             >
               What&apos;s your Royal Enfield?
             </p>
-            <p className="font-body text-[13px] sm:text-[14px] mb-5 font-medium" style={{ color: "rgba(0,0,0,0.55)" }}>
+            <p
+              className="font-body font-medium mb-4"
+              style={{ fontSize: "11.5px", color: "rgba(0,0,0,0.52)" }}
+            >
               Select your model so we know exactly how to help.
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-3.5">
               {MODEL_GROUPS.map(group => (
                 <div key={group.label}>
                   <p
-                    className="font-label text-[8px] sm:text-[9px] tracking-[0.24em] uppercase mb-2 font-black"
-                    style={{ color: "rgba(0,0,0,0.50)" }}
+                    className="font-label tracking-[0.22em] uppercase mb-1.5 font-black"
+                    style={{ fontSize: "7.5px", color: "rgba(0,0,0,0.48)" }}
                   >
                     {group.label}
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {group.models.map(m => {
                       const sel = model === m;
                       return (
                         <button
                           key={m}
                           onClick={() => setModel(m)}
-                          className="px-3.5 py-2 rounded-full font-label text-[9px] sm:text-[10px] tracking-[0.12em] uppercase cursor-pointer transition-all duration-200 font-bold"
+                          className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full font-label tracking-[0.10em] uppercase cursor-pointer transition-all duration-200 font-bold"
                           style={{
                             ...(sel ? redPill : silverPill),
-                            minHeight: "40px",
+                            fontSize: "9px",
+                            minHeight: "34px",
                           }}
                         >
                           {m}
@@ -249,7 +255,7 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
 
             {model === "Other Royal Enfield Model" && (
               <input
-                className="mt-4"
+                className="mt-3"
                 style={inputBase}
                 placeholder="Enter your model name..."
                 value={customModel}
@@ -259,41 +265,43 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
           </div>
         )}
 
-        {/* ╔══════════════╗ */}
-        {/* ║  STEP 2      ║ */}
-        {/* ╚══════════════╝ */}
+        {/* ══ STEP 2 — Problem ══ */}
         {step === 2 && (
           <div>
             <p
-              className="font-display text-[#111116] uppercase leading-tight mb-1"
-              style={{ fontSize: "clamp(20px, 2.5vw, 28px)" }}
+              className="font-display text-[#111116] uppercase leading-tight mb-0.5"
+              style={{ fontSize: "clamp(17px, 2.5vw, 26px)" }}
             >
               What&apos;s the issue?
             </p>
-            <p className="font-body text-[13px] sm:text-[14px] mb-4 font-medium" style={{ color: "rgba(0,0,0,0.55)" }}>
+            <p
+              className="font-body font-medium mb-3"
+              style={{ fontSize: "11.5px", color: "rgba(0,0,0,0.52)" }}
+            >
               Select one or more problems you&apos;re facing.
             </p>
 
-            <div className="space-y-4 max-h-[50vh] sm:max-h-[300px] overflow-y-auto pr-0.5 scrollbar-hide">
+            {/* Problem list — bounded height so footer stays visible */}
+            <div className="space-y-3 max-h-[36vh] sm:max-h-[280px] overflow-y-auto pr-0.5 scrollbar-hide">
               {PROBLEM_CATEGORIES.map(cat => (
                 <div key={cat.category}>
                   <p
-                    className="font-label text-[8px] sm:text-[9px] tracking-[0.24em] uppercase mb-2 font-black"
-                    style={{ color: "rgba(0,0,0,0.50)" }}
+                    className="font-label tracking-[0.22em] uppercase mb-1.5 font-black"
+                    style={{ fontSize: "7.5px", color: "rgba(0,0,0,0.48)" }}
                   >
                     {cat.category}
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {cat.items.map(item => {
                       const sel = problems.includes(item);
                       return (
                         <button
                           key={item}
                           onClick={() => toggleProblem(item)}
-                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full font-body text-[11.5px] sm:text-[12px] cursor-pointer transition-all duration-200 font-semibold"
-                          style={{ ...(sel ? redPill : silverPill), minHeight: "40px" }}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body cursor-pointer transition-all duration-200 font-semibold"
+                          style={{ ...(sel ? redPill : silverPill), fontSize: "10.5px", minHeight: "34px" }}
                         >
-                          {sel && <Check className="h-3 w-3 shrink-0 text-primary" />}
+                          {sel && <Check className="h-2.5 w-2.5 shrink-0 text-primary" />}
                           {item}
                         </button>
                       );
@@ -303,19 +311,19 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
               ))}
             </div>
 
-            <div className="mt-4 pt-4 border-t border-black/[0.06]">
+            <div className="mt-3 pt-3 border-t border-black/[0.06]">
               <button
                 onClick={() => setShowCustom(!showCustom)}
-                className="inline-flex items-center gap-1.5 font-label text-[9px] sm:text-[10px] tracking-[0.16em] uppercase cursor-pointer transition-colors font-bold"
-                style={{ color: showCustom ? "#E8192A" : "rgba(0,0,0,0.45)" }}
+                className="inline-flex items-center gap-1.5 font-label tracking-[0.14em] uppercase cursor-pointer transition-colors font-bold"
+                style={{ fontSize: "8.5px", color: showCustom ? "#E8192A" : "rgba(0,0,0,0.45)" }}
               >
-                <span className="text-[14px] leading-none">{showCustom ? "−" : "+"}</span>
+                <span className="text-[13px] leading-none">{showCustom ? "−" : "+"}</span>
                 Describe your own problem
               </button>
               {showCustom && (
                 <textarea
                   rows={2}
-                  className="mt-3"
+                  className="mt-2.5"
                   style={{ ...inputBase, resize: "none" } as React.CSSProperties}
                   placeholder="Tell us what's happening with your bike..."
                   maxLength={250}
@@ -327,29 +335,30 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
           </div>
         )}
 
-        {/* ╔══════════════════════════╗ */}
-        {/* ║  STEP 3 — Contact info   ║ */}
-        {/* ╚══════════════════════════╝ */}
+        {/* ══ STEP 3 — Contact info ══ */}
         {step === 3 && (
-          <div className="space-y-5">
+          <div className="space-y-4">
             <div>
               <p
-                className="font-display text-[#111116] uppercase leading-tight mb-1"
-                style={{ fontSize: "clamp(20px, 2.5vw, 28px)" }}
+                className="font-display text-[#111116] uppercase leading-tight mb-0.5"
+                style={{ fontSize: "clamp(17px, 2.5vw, 26px)" }}
               >
                 Almost done!
               </p>
-              <p className="font-body text-[13px] sm:text-[14px] font-medium" style={{ color: "rgba(0,0,0,0.55)" }}>
+              <p
+                className="font-body font-medium"
+                style={{ fontSize: "11.5px", color: "rgba(0,0,0,0.52)" }}
+              >
                 Let us know who you are so we can confirm your slot.
               </p>
             </div>
 
-            {/* Name + Phone */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            {/* Name + Phone — side by side on desktop, stacked on mobile */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label
-                  className="font-label text-[8px] sm:text-[9px] tracking-[0.24em] uppercase block mb-2 font-black"
-                  style={{ color: "rgba(0,0,0,0.60)" }}
+                  className="font-label tracking-[0.20em] uppercase block mb-1.5 font-black"
+                  style={{ fontSize: "7.5px", color: "rgba(0,0,0,0.58)" }}
                 >
                   Full Name <span className="text-primary">*</span>
                 </label>
@@ -362,22 +371,22 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
               </div>
               <div>
                 <label
-                  className="font-label text-[8px] sm:text-[9px] tracking-[0.24em] uppercase block mb-2 font-black"
-                  style={{ color: "rgba(0,0,0,0.60)" }}
+                  className="font-label tracking-[0.20em] uppercase block mb-1.5 font-black"
+                  style={{ fontSize: "7.5px", color: "rgba(0,0,0,0.58)" }}
                 >
                   Phone <span className="text-primary">*</span>
                 </label>
                 <div className="relative">
                   <span
-                    className="absolute left-4 top-1/2 -translate-y-1/2 font-body text-[14px] pointer-events-none font-bold select-none"
-                    style={{ color: "rgba(0,0,0,0.45)" }}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 font-body pointer-events-none font-bold select-none"
+                    style={{ fontSize: "13px", color: "rgba(0,0,0,0.42)" }}
                   >
                     +91
                   </span>
                   <input
                     type="tel"
                     maxLength={10}
-                    style={{ ...inputBase, paddingLeft: "48px" }}
+                    style={{ ...inputBase, paddingLeft: "44px" }}
                     placeholder="10-digit number"
                     value={phone}
                     onChange={e => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
@@ -385,52 +394,55 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
                   />
                 </div>
                 {touchedPhone && phone && !phoneValid && (
-                  <p className="font-label text-[8px] tracking-wide mt-1.5 text-primary font-bold">
+                  <p className="font-label tracking-wide mt-1 text-primary font-bold" style={{ fontSize: "7.5px" }}>
                     Enter a valid 10-digit mobile number
                   </p>
                 )}
               </div>
             </div>
 
-            {/* Branch — silver glass cards */}
+            {/* Branch */}
             <div>
               <label
-                className="font-label text-[8px] sm:text-[9px] tracking-[0.24em] uppercase block mb-2 font-black"
-                style={{ color: "rgba(0,0,0,0.60)" }}
+                className="font-label tracking-[0.20em] uppercase block mb-1.5 font-black"
+                style={{ fontSize: "7.5px", color: "rgba(0,0,0,0.58)" }}
               >
                 Branch / Service Type <span className="text-primary">*</span>
               </label>
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {BRANCHES.map(({ id, name: bname, location, Icon }) => {
                   const sel = branch === id;
                   return (
                     <button
                       key={id}
                       onClick={() => setBranch(id)}
-                      className="w-full flex items-center gap-3.5 text-left px-4 py-3 rounded-xl cursor-pointer transition-all duration-200"
-                      style={{ ...(sel ? redCard : silverCard), minHeight: "56px" }}
+                      className="w-full flex items-center gap-3 text-left px-3.5 py-2.5 rounded-xl cursor-pointer transition-all duration-200"
+                      style={{ ...(sel ? redCard : silverCard), minHeight: "50px" }}
                     >
                       <div
-                        className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                        className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
                         style={{
-                          background: sel ? "rgba(232,25,42,0.13)" : "rgba(255,255,255,1)",
+                          background: sel ? "rgba(232,25,42,0.12)" : "rgba(255,255,255,1)",
                           border: sel ? "1px solid rgba(232,25,42,0.22)" : "1px solid rgba(0,0,0,0.08)",
                         }}
                       >
-                        <Icon className="h-4 w-4" style={{ color: sel ? "#E8192A" : "rgba(0,0,0,0.50)" }} />
+                        <Icon className="h-3.5 w-3.5" style={{ color: sel ? "#E8192A" : "rgba(0,0,0,0.48)" }} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p
-                          className="font-heading font-bold text-[12px] sm:text-[13px] uppercase tracking-wide leading-tight"
-                          style={{ color: sel ? "#E8192A" : "#111116" }}
+                          className="font-heading font-bold uppercase tracking-wide leading-tight"
+                          style={{ fontSize: "11px", color: sel ? "#E8192A" : "#111116" }}
                         >
                           {bname}
                         </p>
-                        <p className="font-body text-[11px] sm:text-[12px] mt-0.5 font-medium" style={{ color: "rgba(0,0,0,0.50)" }}>
+                        <p
+                          className="font-body font-medium mt-0.5"
+                          style={{ fontSize: "10px", color: "rgba(0,0,0,0.48)" }}
+                        >
                           {location}
                         </p>
                       </div>
-                      {sel && <Check className="h-4 w-4 text-primary shrink-0" />}
+                      {sel && <Check className="h-3.5 w-3.5 text-primary shrink-0" />}
                     </button>
                   );
                 })}
@@ -438,14 +450,14 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
             </div>
 
             {/* Date + Time */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label
-                  className="font-label text-[8px] sm:text-[9px] tracking-[0.24em] uppercase block mb-2 font-black"
-                  style={{ color: "rgba(0,0,0,0.60)" }}
+                  className="font-label tracking-[0.20em] uppercase block mb-1.5 font-black"
+                  style={{ fontSize: "7.5px", color: "rgba(0,0,0,0.58)" }}
                 >
                   Preferred Date{" "}
-                  <span style={{ color: "rgba(0,0,0,0.35)", fontSize: "7px", textTransform: "none", letterSpacing: 0 }}>
+                  <span style={{ color: "rgba(0,0,0,0.32)", fontSize: "7px", textTransform: "none", letterSpacing: 0 }}>
                     (optional)
                   </span>
                 </label>
@@ -459,11 +471,11 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
               </div>
               <div>
                 <label
-                  className="font-label text-[8px] sm:text-[9px] tracking-[0.24em] uppercase block mb-2 font-black"
-                  style={{ color: "rgba(0,0,0,0.60)" }}
+                  className="font-label tracking-[0.20em] uppercase block mb-1.5 font-black"
+                  style={{ fontSize: "7.5px", color: "rgba(0,0,0,0.58)" }}
                 >
                   Preferred Time{" "}
-                  <span style={{ color: "rgba(0,0,0,0.35)", fontSize: "7px", textTransform: "none", letterSpacing: 0 }}>
+                  <span style={{ color: "rgba(0,0,0,0.32)", fontSize: "7px", textTransform: "none", letterSpacing: 0 }}>
                     (optional)
                   </span>
                 </label>
@@ -481,11 +493,11 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
             {/* Notes */}
             <div>
               <label
-                className="font-label text-[8px] sm:text-[9px] tracking-[0.24em] uppercase block mb-2 font-black"
-                style={{ color: "rgba(0,0,0,0.60)" }}
+                className="font-label tracking-[0.20em] uppercase block mb-1.5 font-black"
+                style={{ fontSize: "7.5px", color: "rgba(0,0,0,0.58)" }}
               >
                 Additional Notes{" "}
-                <span style={{ color: "rgba(0,0,0,0.35)", fontSize: "7px", textTransform: "none", letterSpacing: 0 }}>
+                <span style={{ color: "rgba(0,0,0,0.32)", fontSize: "7px", textTransform: "none", letterSpacing: 0 }}>
                   (optional)
                 </span>
               </label>
@@ -501,25 +513,26 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
           </div>
         )}
 
-        {/* ╔═══════════════════╗ */}
-        {/* ║  STEP 4 — Review  ║ */}
-        {/* ╚═══════════════════╝ */}
+        {/* ══ STEP 4 — Review ══ */}
         {step === 4 && (
           <div>
             <p
-              className="font-display text-[#111116] uppercase leading-tight mb-1"
-              style={{ fontSize: "clamp(20px, 2.5vw, 28px)" }}
+              className="font-display text-[#111116] uppercase leading-tight mb-0.5"
+              style={{ fontSize: "clamp(17px, 2.5vw, 26px)" }}
             >
               Ready to Book!
             </p>
-            <p className="font-body text-[13px] sm:text-[14px] mb-5 font-medium" style={{ color: "rgba(0,0,0,0.55)" }}>
+            <p
+              className="font-body font-medium mb-4"
+              style={{ fontSize: "11.5px", color: "rgba(0,0,0,0.52)" }}
+            >
               Review your details before sending via WhatsApp.
             </p>
 
             {/* Summary card */}
             <div
-              className="rounded-2xl p-4 sm:p-5 space-y-1 mb-5"
-              style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.08)", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)" }}
+              className="rounded-xl p-3.5 sm:p-4 space-y-0.5 mb-4"
+              style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.07)", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)" }}
             >
               {([
                 { label: "Bike",     value: model === "Other Royal Enfield Model" ? (customModel || "—") : model },
@@ -531,14 +544,21 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
                 ...(timeSlot ? [{ label: "Time", value: timeSlot }] : []),
                 ...(notes.trim() ? [{ label: "Notes", value: notes }] : []),
               ] as { label: string; value: string }[]).map(({ label, value }) => (
-                <div key={label} className="flex items-start gap-3 py-2.5" style={{ borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
+                <div
+                  key={label}
+                  className="flex items-start gap-2.5 sm:gap-3 py-2"
+                  style={{ borderBottom: "1px solid rgba(0,0,0,0.05)" }}
+                >
                   <span
-                    className="font-label text-[8px] sm:text-[9px] tracking-[0.16em] uppercase shrink-0 mt-0.5 font-bold"
-                    style={{ color: "rgba(0,0,0,0.40)", width: "52px" }}
+                    className="font-label tracking-[0.14em] uppercase shrink-0 mt-0.5 font-bold"
+                    style={{ fontSize: "7.5px", color: "rgba(0,0,0,0.38)", width: "46px" }}
                   >
                     {label}
                   </span>
-                  <span className="font-body text-[13px] sm:text-[14px] leading-snug font-semibold" style={{ color: "rgba(0,0,0,0.80)" }}>
+                  <span
+                    className="font-body leading-snug font-semibold"
+                    style={{ fontSize: "12px", color: "rgba(0,0,0,0.80)" }}
+                  >
                     {value}
                   </span>
                 </div>
@@ -547,33 +567,36 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
 
             {/* WhatsApp note */}
             <div
-              className="flex items-start gap-3 rounded-xl px-4 py-3.5"
-              style={{ background: "rgba(37,211,102,0.06)", border: "1px solid rgba(37,211,102,0.28)" }}
+              className="flex items-start gap-2.5 rounded-xl px-3.5 py-3"
+              style={{ background: "rgba(37,211,102,0.06)", border: "1px solid rgba(37,211,102,0.26)" }}
             >
-              <MessageCircle className="h-4 w-4 shrink-0 mt-0.5" style={{ color: "#25D366" }} />
-              <p className="font-body text-[12px] sm:text-[13px] leading-relaxed font-semibold" style={{ color: "rgba(0,0,0,0.60)" }}>
-                Tap <strong style={{ color: "#25D366" }}>Send on WhatsApp</strong> — your details are pre-filled. Just tap Send and we&apos;ll confirm within minutes.
+              <MessageCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" style={{ color: "#25D366" }} />
+              <p
+                className="font-body leading-relaxed font-semibold"
+                style={{ fontSize: "11px", color: "rgba(0,0,0,0.58)" }}
+              >
+                Tap <strong style={{ color: "#25D366" }}>Send on WhatsApp</strong> — your details are pre-filled. Just hit Send and we&apos;ll confirm within minutes.
               </p>
             </div>
           </div>
         )}
       </div>
 
-      {/* ── Footer — navigation ──────────────────────────────────── */}
+      {/* ── Footer — navigation ── */}
       <div
-        className="flex items-center justify-between gap-3 px-5 sm:px-8 py-4 shrink-0"
-        style={{ borderTop: "1px solid rgba(0,0,0,0.08)", background: "rgba(255,255,255,0.35)" }}
+        className="flex items-center justify-between gap-2 px-4 sm:px-7 py-3 sm:py-3.5 shrink-0"
+        style={{ borderTop: "1px solid rgba(0,0,0,0.07)", background: "rgba(255,255,255,0.35)" }}
       >
         {/* Back */}
         <button
           onClick={goBack}
-          className="flex items-center gap-1.5 cursor-pointer transition-colors font-bold min-h-[44px] px-1"
-          style={{ color: "rgba(0,0,0,0.40)" }}
+          className="flex items-center gap-1 cursor-pointer transition-colors font-bold"
+          style={{ color: "rgba(0,0,0,0.40)", minHeight: "40px", padding: "0 4px" }}
           onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "rgba(0,0,0,0.80)"}
           onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "rgba(0,0,0,0.40)"}
         >
-          {step === 1 ? <ArrowLeft className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-          <span className="font-label text-[9px] sm:text-[10px] tracking-[0.18em] uppercase">
+          {step === 1 ? <ArrowLeft className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
+          <span className="font-label tracking-[0.16em] uppercase" style={{ fontSize: "8.5px" }}>
             {step === 1 ? "Options" : "Back"}
           </span>
         </button>
@@ -581,8 +604,8 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
         {/* Problem count badge */}
         {step === 2 && allProblems.length > 0 && (
           <span
-            className="font-label text-[8px] sm:text-[9px] tracking-[0.14em] uppercase px-3 py-1.5 rounded-full font-bold"
-            style={{ background: "rgba(232,25,42,0.10)", color: "#E8192A", border: "1px solid rgba(232,25,42,0.25)" }}
+            className="font-label tracking-[0.12em] uppercase px-2.5 py-1 rounded-full font-bold"
+            style={{ fontSize: "8px", background: "rgba(232,25,42,0.10)", color: "#E8192A", border: "1px solid rgba(232,25,42,0.22)" }}
           >
             {allProblems.length} selected
           </span>
@@ -593,38 +616,38 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
           <button
             onClick={goNext}
             disabled={!canProceed(step)}
-            className="group relative flex items-center gap-2 rounded-xl font-heading font-bold uppercase tracking-[0.10em] cursor-pointer transition-all duration-280 overflow-hidden disabled:opacity-35 disabled:cursor-not-allowed hover:-translate-y-0.5"
+            className="group relative flex items-center gap-1.5 rounded-xl font-heading font-bold uppercase tracking-[0.10em] cursor-pointer transition-all duration-280 overflow-hidden disabled:opacity-35 disabled:cursor-not-allowed hover:-translate-y-0.5"
             style={{
               background: "#E8192A",
               color: "white",
-              padding: "12px 22px",
-              minHeight: "46px",
-              fontSize: "11px",
-              boxShadow: "0 4px 16px rgba(232,25,42,0.22)",
+              padding: "10px 18px",
+              minHeight: "40px",
+              fontSize: "10.5px",
+              boxShadow: "0 4px 14px rgba(232,25,42,0.22)",
             }}
           >
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-            {step === 3 ? "Review Booking" : "Continue"}
-            <ChevronRight className="h-4 w-4" />
+            {step === 3 ? "Review" : "Continue"}
+            <ChevronRight className="h-3.5 w-3.5" />
           </button>
         ) : (
           <a
             href={waLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative flex items-center gap-2 rounded-xl font-heading font-bold uppercase tracking-[0.10em] cursor-pointer transition-all duration-280 hover:-translate-y-0.5 overflow-hidden"
+            className="group relative flex items-center gap-1.5 rounded-xl font-heading font-bold uppercase tracking-[0.10em] cursor-pointer transition-all duration-280 hover:-translate-y-0.5 overflow-hidden"
             style={{
               background: "#25D366",
               color: "white",
-              padding: "12px 22px",
-              minHeight: "46px",
-              fontSize: "11px",
-              boxShadow: "0 4px 20px rgba(37,211,102,0.24)",
+              padding: "10px 18px",
+              minHeight: "40px",
+              fontSize: "10.5px",
+              boxShadow: "0 4px 16px rgba(37,211,102,0.24)",
               textDecoration: "none",
             }}
           >
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-            <MessageCircle className="h-4 w-4 shrink-0" />
+            <MessageCircle className="h-3.5 w-3.5 shrink-0" />
             Send on WhatsApp
           </a>
         )}
