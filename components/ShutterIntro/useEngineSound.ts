@@ -136,57 +136,84 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
       return;
     }
 
-    // Active Monitoring
-    const monitor = setInterval(() => {
-      const now = Date.now();
-      if (isPlayingRef.current && now - lastActivityRef.current > IDLE_LIMIT) {
-        isPlayingRef.current = false;
-        
-        // Professional fade out
-        const { sfx1, sfx2 } = howlsRef.current;
-        const curV1 = sfx1?.volume() || 0;
-        const curV2 = sfx2?.volume() || 0;
-        
-        sfx1?.fade(curV1, 0, STOP_FADE_MS);
-        sfx2?.fade(curV2, 0, STOP_FADE_MS);
+    // ── Wait for the shutter intro to finish before attaching scroll listeners ──
+    // If the shutter overlay is still active, defer setup until it completes.
+    const isShutterActive = () =>
+      document.body.classList.contains("shutter-intro-active");
 
-        setTimeout(() => {
-          if (!isPlayingRef.current) {
-            sfx1?.pause();
-            sfx2?.pause();
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-            rafRef.current = null;
-          }
-        }, STOP_FADE_MS + 20);
+    let cleanupFns: (() => void)[] = [];
+
+    function attachListeners() {
+      if (isShutterActive()) return; // shutter still open — bail
+
+      // Active Monitoring
+      const monitor = setInterval(() => {
+        const now = Date.now();
+        if (isPlayingRef.current && now - lastActivityRef.current > IDLE_LIMIT) {
+          isPlayingRef.current = false;
+
+          const { sfx1, sfx2 } = howlsRef.current;
+          const curV1 = sfx1?.volume() || 0;
+          const curV2 = sfx2?.volume() || 0;
+
+          sfx1?.fade(curV1, 0, STOP_FADE_MS);
+          sfx2?.fade(curV2, 0, STOP_FADE_MS);
+
+          setTimeout(() => {
+            if (!isPlayingRef.current) {
+              sfx1?.pause();
+              sfx2?.pause();
+              if (rafRef.current) cancelAnimationFrame(rafRef.current);
+              rafRef.current = null;
+            }
+          }, STOP_FADE_MS + 20);
+        }
+      }, 100);
+
+      const onScroll = () => wakeUp();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("wheel", wakeUp, { passive: true });
+      window.addEventListener("touchmove", wakeUp, { passive: true });
+
+      const KEYS = ["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Space", "Home", "End"];
+      const onKey = (e: KeyboardEvent) => {
+        if (KEYS.includes(e.key) || KEYS.includes(e.code)) wakeUp();
+      };
+      window.addEventListener("keydown", onKey, { passive: true });
+
+      cleanupFns.push(() => {
+        clearInterval(monitor);
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("wheel", wakeUp);
+        window.removeEventListener("touchmove", wakeUp);
+        window.removeEventListener("keydown", onKey);
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        howlsRef.current.sfx1?.unload();
+        howlsRef.current.sfx2?.unload();
+        howlsRef.current.sfx1 = null;
+        howlsRef.current.sfx2 = null;
+      });
+    }
+
+    // Watch for the shutter-intro-active class being removed via MutationObserver
+    const observer = new MutationObserver(() => {
+      if (!isShutterActive()) {
+        observer.disconnect();
+        attachListeners();
       }
-    }, 100);
+    });
 
-    const onScroll = () => {
-      wakeUp();
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("wheel", wakeUp, { passive: true });
-    window.addEventListener("touchmove", wakeUp, { passive: true });
-
-    const keys = ["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Space", "Home", "End"];
-    const onKey = (e: KeyboardEvent) => {
-      if (keys.includes(e.key) || keys.includes(e.code)) wakeUp();
-    };
-    window.addEventListener("keydown", onKey, { passive: true });
+    if (isShutterActive()) {
+      // Shutter is currently active — observe until it's removed
+      observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    } else {
+      // Shutter already gone — attach immediately
+      attachListeners();
+    }
 
     return () => {
-      clearInterval(monitor);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("wheel", wakeUp);
-      window.removeEventListener("touchmove", wakeUp);
-      window.removeEventListener("keydown", onKey);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      
-      howlsRef.current.sfx1?.unload();
-      howlsRef.current.sfx2?.unload();
-      howlsRef.current.sfx1 = null;
-      howlsRef.current.sfx2 = null;
+      observer.disconnect();
+      cleanupFns.forEach((fn) => fn());
     };
   }, [enabled, pathname, wakeUp, STOP_FADE_MS, IDLE_LIMIT]);
 

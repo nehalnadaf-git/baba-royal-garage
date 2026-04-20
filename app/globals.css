@@ -605,27 +605,51 @@
 }
 .shutter-intro-pulse { animation: shutter-intro-pulse 2s ease-in-out infinite; }
 
-/* Homepage reveal timing while shutter rolls up */
-/* Homepage reveal timing while shutter rolls up */
+/* ─── Shutter Intro: Full lock & content visibility ─────────────── */
+
+/* Lock scroll on BOTH html and body — belt-and-suspenders for mobile */
+html.shutter-intro-active,
+body.shutter-intro-active {
+  overflow: hidden !important;
+  touch-action: none !important;
+  overscroll-behavior: none !important;
+  height: 100% !important;
+}
+
+/* Hide the main website content COMPLETELY during intro
+   visibility:hidden prevents layout shifts and interaction */
+body.shutter-intro-active main,
+body.shutter-intro-active #home-reveal-root {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Reveal content smoothly when shutter has lifted enough */
+body.shutter-intro-reveal main,
+body.shutter-intro-reveal #home-reveal-root {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.45s ease 0.1s;
+}
+
+/* After intro is fully done — restore everything */
+body:not(.shutter-intro-active):not(.shutter-intro-reveal) main,
+body:not(.shutter-intro-active):not(.shutter-intro-reveal) #home-reveal-root {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Homepage reveal root base */
 #home-reveal-root {
   transform-origin: center top;
-  will-change: opacity, transform;
-}
-
-body.shutter-intro-active #home-reveal-root {
-  opacity: 0;
-}
-
-body.shutter-intro-active.shutter-intro-reveal #home-reveal-root {
-  opacity: 1;
+  will-change: opacity;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .shutter-intro-pulse {
-    animation: none;
-  }
-
-  #home-reveal-root {
-    transition: none;
-  }
+  .shutter-intro-pulse { animation: none; }
+  body.shutter-intro-reveal main,
+  body.shutter-intro-reveal #home-reveal-root { transition: none; }
 }
