@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { buildServiceWhatsAppUrl } from "@/lib/whatsapp";
 
 interface PremiumServiceCard {
   slug: string;
@@ -267,10 +268,23 @@ export default function ServicesSection({ limit = 6, showViewAll = false, varian
                 </p>
 
                 <div className="space-y-4">
-                  <div className="group relative w-full overflow-hidden flex items-center justify-center gap-2.5 bg-primary text-white py-4 rounded-xl font-heading font-bold text-[13px] lg:text-[15px] uppercase tracking-[0.12em] transition-all duration-300 hover:bg-primary-dark hover:shadow-[0_10px_32px_rgba(254,36,20,0.3)] hover:-translate-y-0.5 cursor-pointer">
-                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
-                    Book Now <ArrowRight className="h-4.5 w-4.5 transition-transform group-hover:translate-x-1" />
-                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      window.open(
+                        buildServiceWhatsAppUrl(service.title),
+                        "_blank",
+                        "noopener,noreferrer"
+                      );
+                    }}
+                    className="group/btn relative w-full overflow-hidden flex items-center justify-center gap-2.5 bg-primary text-white py-4 rounded-xl font-heading font-bold text-[13px] lg:text-[15px] uppercase tracking-[0.12em] transition-all duration-300 hover:bg-primary-dark hover:shadow-[0_10px_32px_rgba(254,36,20,0.3)] hover:-translate-y-0.5 cursor-pointer"
+                    aria-label={`Book ${service.title} on WhatsApp`}
+                  >
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 ease-in-out" />
+                    Book Now <ArrowRight className="h-4.5 w-4.5 transition-transform group-hover/btn:translate-x-1" />
+                  </button>
                   <div className="flex justify-center">
                     <div className="inline-flex items-center gap-1.5 font-subheading font-bold text-[11px] lg:text-[13px] uppercase tracking-[0.14em] text-muted-foreground/60 group-hover:text-primary transition-colors">
                       Learn More <ArrowRight className="h-3.5 w-3.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />

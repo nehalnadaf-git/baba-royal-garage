@@ -6,6 +6,7 @@ import { services, getServiceBySlug } from "@/lib/services";
 import { business } from "@/lib/business";
 import { getServiceImageBySlug } from "@/lib/service-images";
 import { buildBreadcrumbSchema, buildFaqSchema, buildPageMetadata } from "@/lib/seo";
+import { buildServiceWhatsAppUrl } from "@/lib/whatsapp";
 import SchemaMarkup from "@/components/shared/SchemaMarkup";
 import ServiceCTABanner from "@/components/sections/ServiceCTABanner";
 import ServiceBookButton from "@/components/shared/ServiceBookButton";
@@ -456,14 +457,19 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
                         {/* CTA row */}
                         <div className="flex items-center gap-3 lg:gap-4">
-                          <span
+                          <a
+                            href={buildServiceWhatsAppUrl(s.name)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
                             className="group/cta relative flex-1 flex items-center justify-center gap-2 bg-primary text-white font-heading font-bold uppercase tracking-[0.12em] rounded-xl overflow-hidden transition-all duration-300 hover:bg-primary-dark hover:shadow-[0_6px_20px_rgba(232,25,42,0.30)]"
                             style={{ fontSize: "clamp(11px, 0.85vw, 13px)", padding: "clamp(10px, 1vw, 14px) 0" }}
+                            aria-label={`Book ${s.name} on WhatsApp`}
                           >
                             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-600 ease-in-out" />
                             Book Now
                             <ArrowRight className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
-                          </span>
+                          </a>
                           <span
                             className="inline-flex items-center gap-1 text-muted-foreground font-heading font-bold uppercase tracking-[0.10em] group-hover:text-primary transition-colors shrink-0"
                             style={{ fontSize: "clamp(11px, 0.85vw, 13px)" }}
