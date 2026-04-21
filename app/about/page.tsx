@@ -139,7 +139,7 @@ export default function AboutPage() {
                   src="/images/BABA royal garage about.png"
                   alt="Baba Royal Garage — Royal Enfield Specialist Hubli Story"
                   fill
-                  className="object-cover"
+                  className="object-cover scale-[1.05]"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               </div>
@@ -149,91 +149,92 @@ export default function AboutPage() {
       </section>
 
       {/* ── Founder ──────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 lg:py-24 bg-white">
+      <section className="py-16 sm:py-24 lg:py-32 bg-white border-t border-[#f0f0f0]">
         <div className="container mx-auto px-5 sm:px-8">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="h-[1px] w-7 bg-primary/60" />
-            <span className="font-label text-primary text-[10px] lg:text-[13px] tracking-[0.3em] uppercase">The Founder</span>
-          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px] gap-12 lg:gap-24 items-center">
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_420px] gap-10 lg:gap-16 items-start">
+            {/* Text Content */}
+            <div className="reveal-left">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px w-6 bg-primary" />
+                <span className="font-label text-primary text-[10px] lg:text-[11px] tracking-[0.25em] uppercase font-bold">The Founder</span>
+              </div>
 
-            {/* Founder info */}
-            <div>
               <h2
-                className="font-display text-foreground uppercase mb-2"
-                style={{ fontSize: "clamp(32px, 5vw, 72px)", lineHeight: 0.9, letterSpacing: "0.015em" }}
+                className="font-display text-[#121212] uppercase mb-4"
+                style={{ fontSize: "clamp(42px, 6vw, 84px)", lineHeight: 0.85, letterSpacing: "-0.01em" }}
               >
-                {business.owner.name}
+                Babajan Nadaf
               </h2>
-              <p className="font-label text-primary text-[10px] sm:text-[12px] lg:text-[13px] tracking-[0.25em] uppercase mb-2">
-                Founder &amp; Head Mechanic
-              </p>
-              <p className="font-label text-muted-foreground text-[10px] sm:text-[11px] lg:text-[12px] tracking-[0.18em] uppercase mb-7 lg:mb-9">
-                {business.owner.title}
+
+              <div className="space-y-1 mb-6">
+                <p className="font-label text-primary text-[11px] sm:text-[13px] tracking-[0.2em] uppercase font-black">
+                  Founder & Head Mechanic
+                </p>
+                <p className="font-label text-[#888] text-[10px] sm:text-[11px] tracking-[0.15em] uppercase">
+                  Founder & Chief Royal Enfield Technician
+                </p>
+              </div>
+
+              <div className="w-12 h-[3.5px] bg-primary rounded-full mb-8" />
+
+              <p className="font-body text-[#555] text-[15px] sm:text-[16px] lg:text-[18px] leading-[1.8] lg:leading-[1.9] mb-10 max-w-2xl">
+                Babajan Nadaf is Hubli&apos;s most experienced Royal Enfield specialist with 6+ years dedicated exclusively to Royal Enfield motorcycles.
               </p>
 
-              <div className="w-10 h-[3px] bg-gradient-to-r from-primary to-primary-light rounded-full mb-7 lg:mb-9" />
-
-              <p className="font-body text-muted-foreground text-[15px] sm:text-[16px] lg:text-[18px] leading-[1.8] lg:leading-[1.9] mb-8 lg:mb-10 max-w-2xl">
-                {business.owner.description}
-              </p>
-
-              {/* Credential pills — Optimized for 2x2 on mobile, single line on desktop */}
-              <div className="grid grid-cols-2 lg:flex lg:flex-wrap gap-2.5 sm:gap-3 mb-8 lg:mb-10">
+              {/* Stat pills — Screenshot Style */}
+              <div className="flex flex-wrap gap-2.5 sm:gap-3 mb-10">
                 {["Royal Enfield Certified", "6+ Years Experience", "1000+ Bikes Served", "Hubli, Karnataka"].map((cred) => (
                   <span
                     key={cred}
-                    className="flex justify-center items-center text-center font-label text-[9px] sm:text-[10px] lg:text-[11px] tracking-[0.14em] uppercase px-3 py-1.5 rounded-full"
-                    style={{
-                      background: "rgba(232,25,42,0.07)",
-                      border: "1px solid rgba(232,25,42,0.18)",
-                      color: "#E8192A",
-                    }}
+                    className="font-label text-[9px] sm:text-[10px] tracking-[0.14em] uppercase px-4 py-2 rounded-full border border-primary/20 text-primary bg-primary/5 font-bold"
                   >
                     {cred}
                   </span>
                 ))}
               </div>
 
-              {/* CTA */}
-              <div className="flex flex-wrap gap-3">
+              {/* CTAs */}
+              <div className="flex flex-wrap gap-4">
                 <a
                   href={`tel:${business.phone1}`}
-                  className="group relative flex items-center gap-2.5 bg-primary hover:bg-primary-dark text-white px-7 py-3.5 rounded-xl font-heading font-bold text-[13px] uppercase tracking-[0.10em] transition-all duration-300 hover:shadow-[0_0_24px_rgba(254,36,20,0.30)] hover:-translate-y-0.5 overflow-hidden"
+                  className="flex items-center gap-3 bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-xl font-heading font-bold text-[14px] uppercase tracking-[0.12em] transition-all duration-300 hover:shadow-[0_10px_30px_rgba(232,25,42,0.25)] hover:-translate-y-0.5"
                 >
-                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                   <Phone className="h-4 w-4" /> Call Babajan
                 </a>
                 <a
                   href={business.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2.5 bg-white text-foreground border border-[#e5e5e5] hover:border-primary/30 hover:text-primary px-7 py-3.5 rounded-xl font-heading font-bold text-[13px] uppercase tracking-[0.10em] transition-all duration-300 hover:-translate-y-0.5"
+                  className="flex items-center gap-3 bg-white text-foreground border border-[#e0e0e0] hover:border-primary/30 hover:text-primary px-8 py-4 rounded-xl font-heading font-bold text-[14px] uppercase tracking-[0.12em] transition-all duration-300 hover:-translate-y-0.5"
                 >
-                  <MessageCircle className="h-4 w-4" /> WhatsApp
+                  <MessageCircle className="h-4 w-4" /> Whatsapp
                 </a>
               </div>
             </div>
 
-            {/* Founder image — portrait */}
-            <div className="relative rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.10)] aspect-[3/4] lg:aspect-[4/5] order-first lg:order-last">
-              <Image
-                src="/images/owner-new.png"
-                alt="Babajan Nadaf — Founder of Baba Royal Garage Hubli"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 420px"
-              />
-              {/* Name overlay at bottom */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-5 left-5 right-5">
-                <p className="font-label text-white/60 text-[9px] tracking-[0.22em] uppercase mb-1">Founder</p>
-                <p className="font-display text-white text-[20px] sm:text-[24px] leading-tight" style={{ letterSpacing: "0.02em" }}>
-                  {business.owner.name}
-                </p>
+            {/* Image Card */}
+            <div className="reveal-right order-first lg:order-last">
+              <div className="relative rounded-[2.5rem] overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.12)] aspect-[3/4] lg:aspect-[4/5] bg-[#0A0A0A]">
+                <Image
+                  src="/images/BABA royal garage about.png"
+                  alt="Babajan Nadaf — Founder of Baba Royal Garage Hubli"
+                  fill
+                  className="object-cover scale-[1.05]"
+                  sizes="(max-width: 1024px) 100vw, 480px"
+                />
+                {/* Gradient and name at bottom like screenshot */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                <div className="absolute bottom-8 left-8 right-8">
+                  <p className="font-label text-white/50 text-[10px] tracking-[0.25em] uppercase mb-1.5">Founder</p>
+                  <p className="font-display text-white text-[28px] sm:text-[36px] leading-[0.9] uppercase" style={{ letterSpacing: "0.02em" }}>
+                    Babajan Nadaf
+                  </p>
+                </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>

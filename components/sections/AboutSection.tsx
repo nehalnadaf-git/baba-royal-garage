@@ -57,7 +57,7 @@ export default function AboutSection() {
                   src="/images/BABA royal garage about.png"
                   alt="Baba Royal Garage — Royal Enfield Specialist at Work"
                   fill
-                  className="object-cover"
+                  className="object-cover scale-[1.05]"
                   loading="lazy"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
