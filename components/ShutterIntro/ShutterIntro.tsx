@@ -2,23 +2,27 @@
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LazyMotion, domAnimation, m } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ShutterSlats from "@/components/ShutterIntro/ShutterSlats";
 import { useShutterSound } from "@/components/ShutterIntro/useShutterSound";
 
-const SHUTTER_OPEN_DURATION_S = 3.6;
-const SHUTTER_OPEN_COMPLETE_BUFFER_MS = 250;
-const SHUTTER_OPEN_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const REVEAL_PROGRESS_THRESHOLD = 0.60;
+// ── Timing constants ────────────────────────────────────────────────────────
+// Total shutter lift duration: 5.2 seconds — very slow, realistic feel
+const SHUTTER_OPEN_DURATION_S = 5.2;
+const SHUTTER_OPEN_COMPLETE_BUFFER_MS = 300;
+
+// Framer-Motion easing: starts VERY slow (near zero velocity), then picks up
+// This custom cubic bezier creates the cinematic slow-creep opening feel
+const SHUTTER_OPEN_EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
+
+// The point (0–1) at which Page content starts being revealed
+const REVEAL_PROGRESS_THRESHOLD = 0.55;
 
 interface ShutterIntroProps {
   onComplete?: () => void;
 }
 
-/** Adds/removes a class on BOTH html and body so scroll is fully locked on all browsers.
- *  Also pins the scroll position to 0 to prevent the page from drifting beneath the shutter
- *  and causing a visible smooth-scroll sweep when the lock is released. */
+/** Adds/removes a class on BOTH html and body so scroll is fully locked on all browsers. */
 function setScrollLock(active: boolean) {
   if (typeof document === "undefined") return;
   const method = active ? "add" : "remove";
@@ -26,19 +30,16 @@ function setScrollLock(active: boolean) {
   document.body.classList[method]("shutter-intro-active");
 
   if (active) {
-    // Disable smooth scroll and pin to top so nothing drifts under the shutter
     document.documentElement.style.scrollBehavior = "auto";
     window.scrollTo(0, 0);
   }
 }
 
-/** Call this BEFORE releasing the scroll lock to ensure we land exactly at top,
- *  bypassing any smooth-scroll animation that would sweep through sections. */
+/** Call BEFORE releasing scroll lock to land exactly at top, bypassing smooth-scroll. */
 function snapScrollToTop() {
   if (typeof document === "undefined") return;
   document.documentElement.style.scrollBehavior = "auto";
   window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
-  // Restore smooth scroll after the browser has committed the position
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       document.documentElement.style.scrollBehavior = "";
@@ -60,7 +61,14 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
+
+  // Backdrop (the black overlay with the button) fades out as shutter lifts
   const [backdropOpacity, setBackdropOpacity] = useState(1);
+
+  // Progress tracker for syncing backdrop fade with shutter lift (via rAF)
+  const progressRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
+  const openStartTimeRef = useRef<number | null>(null);
 
   const [desktopImageSrc, setDesktopImageSrc] = useState("/Shutter/baba_royal_garage_web_banner2.jpg");
   const [mobileImageSrc, setMobileImageSrc] = useState("/Shutter/baba_royal_garage_mobile_banner.png");
@@ -101,14 +109,10 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
   useEffect(() => {
     if (dismissed || pathname !== "/") return;
 
-    /** Prevent wheel scroll */
     const preventWheel = (e: WheelEvent) => { e.preventDefault(); e.stopPropagation(); };
-    /** Prevent touch scroll */
     const preventTouch = (e: TouchEvent) => { e.preventDefault(); e.stopPropagation(); };
-    /** Prevent keyboard scroll keys */
     const SCROLL_KEYS = new Set(["ArrowUp","ArrowDown","PageUp","PageDown","Home","End"," "]);
     const preventKey = (e: KeyboardEvent) => {
-      // Only block scroll keys when the shutter is active (not when typing in inputs)
       if (SCROLL_KEYS.has(e.key) && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
         e.preventDefault();
       }
@@ -125,10 +129,55 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
     };
   }, [dismissed, pathname]);
 
+  /* ─ Backdrop fade driven by rAF, synced with shutter timing ─ */
+  useEffect(() => {
+    if (!isOpening || prefersReducedMotion) return;
+
+    const DURATION = SHUTTER_OPEN_DURATION_S * 1000;
+
+    const tick = (timestamp: number) => {
+      if (openStartTimeRef.current === null) {
+        openStartTimeRef.current = timestamp;
+      }
+
+      const elapsed = timestamp - openStartTimeRef.current;
+      // Same slow-start cubic ease as ShutterSlats
+      const t = Math.min(elapsed / DURATION, 1);
+      const eased = t < 0.5 ? 2 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+      progressRef.current = eased;
+
+      // Fade backdrop out progressively, but only after shutter is ~20% open
+      const fadeStart = 0.20;
+      if (eased > fadeStart) {
+        const fadeProgress = Math.min(1, (eased - fadeStart) / (REVEAL_PROGRESS_THRESHOLD - fadeStart));
+        setBackdropOpacity(1 - fadeProgress);
+      }
+
+      // Trigger reveal class at threshold
+      if (eased >= REVEAL_PROGRESS_THRESHOLD && !revealTriggeredRef.current) {
+        revealTriggeredRef.current = true;
+        setRevealClass(true);
+      }
+
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    openStartTimeRef.current = null;
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [isOpening, prefersReducedMotion]);
+
   /* ─ Cleanup on unmount ─ */
   useEffect(() => {
     return () => {
       if (introTimerRef.current) clearTimeout(introTimerRef.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       stop();
     };
   }, [stop]);
@@ -137,6 +186,8 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
   useEffect(() => {
     if (!isOpening) {
       revealTriggeredRef.current = false;
+      openStartTimeRef.current = null;
+      progressRef.current = 0;
       setBackdropOpacity(1);
     }
   }, [isOpening]);
@@ -151,15 +202,17 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
         clearTimeout(introTimerRef.current);
         introTimerRef.current = null;
       }
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
 
-      // Snap to top BEFORE releasing the scroll lock so the browser never
-      // sees a non-zero scroll position and triggers a smooth-scroll sweep.
       snapScrollToTop();
       setScrollLock(false);
       setRevealClass(false);
 
       if (withAudioFade && !prefersReducedMotion) {
-        fadeOutAndStop(400);
+        fadeOutAndStop(600);
       } else {
         stop();
       }
@@ -198,18 +251,76 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
     <div
       id="shutter-overlay"
       className="fixed inset-0 z-[9999] overflow-hidden"
-      /* Absorb any stray pointer events at the overlay level */
       onWheel={(e) => e.stopPropagation()}
       onTouchMove={(e) => e.stopPropagation()}
     >
-      {/* ── Backdrop: buttons + text layer ── */}
+      {/* ── The Shutter panel (slat canvas lives here) ── */}
       <div
-        className="fixed inset-0 z-[10002]"
-        style={{ opacity: backdropOpacity, transition: "opacity 0.3s ease" }}
+        className="pointer-events-none fixed inset-0 z-[10000] h-screen w-screen"
+        style={{
+          // CSS-driven vertical translate for the whole panel
+          transform: isOpening && !prefersReducedMotion ? undefined : "translateY(0)",
+          // We handle the actual movement in ShutterSlats canvas internally
+        }}
       >
-        <div className="absolute inset-0 bg-black/92" />
+        {/* Desktop banner behind the slats */}
+        <div className="absolute inset-0 hidden md:block">
+          <Image
+            src={desktopImageSrc}
+            alt="Garage shutter with Baba Royal Garage branding"
+            width={1920}
+            height={1080}
+            priority
+            className="h-screen w-screen object-cover object-center"
+            onError={() => setDesktopImageSrc("/Banners/web-banner.png")}
+          />
+        </div>
 
-        {/* Skip button */}
+        {/* Mobile banner behind the slats */}
+        <div className="absolute inset-0 block md:hidden bg-[#07070D]">
+          <Image
+            src={mobileImageSrc}
+            alt="Garage shutter with Baba Royal Garage branding"
+            width={1080}
+            height={1920}
+            priority
+            className="h-screen w-screen object-contain object-center"
+            onError={() => setMobileImageSrc("/Banners/mobile-banner.png")}
+          />
+        </div>
+
+        {/* Canvas-drawn realistic slats */}
+        <ShutterSlats isOpening={isOpening} prefersReducedMotion={prefersReducedMotion} />
+
+        {/* Bottom drop-shadow at the shutter's lower edge */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: "-8px",
+            left: 0,
+            right: 0,
+            height: "32px",
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.90), transparent)",
+            boxShadow: "0 8px 32px 10px rgba(0,0,0,0.75)",
+            zIndex: 10001,
+            pointerEvents: "none",
+          }}
+        />
+      </div>
+
+      {/* ── Backdrop: button + branding layer (fades out as shutter lifts) ── */}
+      <div
+        className="fixed inset-0 z-[10002] pointer-events-none"
+        style={{
+          opacity: backdropOpacity,
+          transition: isOpening ? "none" : "opacity 0.3s ease",
+          // Re-enable pointer events only while backdrop is visible enough
+          pointerEvents: backdropOpacity > 0.05 ? "auto" : "none",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/90" />
+
+        {/* Skip button — top right */}
         <div className="absolute right-4 top-4 z-30 md:right-6 md:top-6">
           <button
             type="button"
@@ -220,99 +331,35 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
           </button>
         </div>
 
-        {/* ── Open button — the ONLY trigger ── */}
-        <div className="absolute inset-x-0 bottom-[20%] z-30 flex justify-center px-5 md:translate-y-24">
+        {/* ── Logo / Branding area ── */}
+        <div className="absolute inset-x-0 top-[20%] flex flex-col items-center gap-3 px-5 text-center">
+          <div className="h-[1px] w-12 bg-primary/80 mx-auto" />
+          <p className="font-label text-primary text-[10px] tracking-[0.4em] uppercase">
+            Royal Enfield Specialist · Hubli
+          </p>
+          <h1
+            className="font-display text-white uppercase"
+            style={{ fontSize: "clamp(28px, 6vw, 72px)", lineHeight: 0.92, letterSpacing: "0.04em" }}
+          >
+            Baba Royal<br />Garage
+          </h1>
+          <div className="h-[1px] w-12 bg-primary/80 mx-auto mt-1" />
+        </div>
+
+        {/* ── Open button ── */}
+        <div className="absolute inset-x-0 bottom-[20%] z-30 flex justify-center px-5 md:bottom-[15%]">
           <button
             type="button"
             onClick={() => { void handleOpen(); }}
             disabled={buttonDisabled}
             aria-label="Open the Garage door to enter website"
-            className="shutter-intro-pulse min-h-12 rounded-2xl border border-[#FE2414] bg-[rgba(13,15,26,0.75)] px-7 py-3.5 text-[13px] font-black uppercase tracking-[0.18em] text-white backdrop-blur-xl transition-all duration-300 hover:shadow-[0_0_24px_rgba(254,36,20,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE2414] disabled:cursor-not-allowed disabled:opacity-70 md:px-10 md:py-4 md:text-[15px]"
+            className="shutter-intro-pulse group relative min-h-12 overflow-hidden rounded-2xl border border-[#FE2414] bg-[rgba(13,15,26,0.80)] px-7 py-3.5 text-[13px] font-black uppercase tracking-[0.18em] text-white backdrop-blur-xl transition-all duration-300 hover:shadow-[0_0_32px_rgba(254,36,20,0.55)] disabled:cursor-not-allowed disabled:opacity-70 md:px-10 md:py-4 md:text-[15px]"
           >
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/8 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
             ⚙ Open the Garage
           </button>
         </div>
       </div>
-
-      {/* ── Shutter panel that rolls up ── */}
-      <LazyMotion features={domAnimation}>
-        <m.div
-          className="pointer-events-none fixed inset-0 z-[10000] h-screen w-screen"
-          style={{ transformOrigin: "top center" }}
-          initial={false}
-          animate={
-            isOpening
-              ? prefersReducedMotion
-                ? { opacity: 0 }
-                : { y: "-100vh" }
-              : { opacity: 1, y: "0vh" }
-          }
-          transition={
-            prefersReducedMotion
-              ? { duration: 0.3, ease: "easeOut" }
-              : { duration: SHUTTER_OPEN_DURATION_S, ease: SHUTTER_OPEN_EASE }
-          }
-          onUpdate={(latest) => {
-            if (!isOpening || prefersReducedMotion) return;
-
-            const yRaw = typeof latest.y === "number" ? latest.y : parseFloat(String(latest.y));
-            if (!Number.isFinite(yRaw)) return;
-
-            const progressBase = typeof latest.y === "number" ? Math.max(window.innerHeight, 1) : 100;
-            const progress = Math.min(1, Math.max(0, Math.abs(yRaw) / progressBase));
-
-            if (progress >= REVEAL_PROGRESS_THRESHOLD && !revealTriggeredRef.current) {
-              revealTriggeredRef.current = true;
-              setRevealClass(true);
-            }
-
-            const revealProgress = Math.min(1, progress / REVEAL_PROGRESS_THRESHOLD);
-            setBackdropOpacity(1 - revealProgress);
-          }}
-        >
-          {/* Desktop banner */}
-          <div className="absolute inset-0 hidden md:block">
-            <Image
-              src={desktopImageSrc}
-              alt="Garage shutter with Baba Royal Garage branding"
-              width={1920}
-              height={1080}
-              priority
-              className="h-screen w-screen object-cover object-center"
-              onError={() => setDesktopImageSrc("/Banners/web-banner.png")}
-            />
-          </div>
-
-          {/* Mobile banner */}
-          <div className="absolute inset-0 block md:hidden bg-[#07070D]">
-            <Image
-              src={mobileImageSrc}
-              alt="Garage shutter with Baba Royal Garage branding"
-              width={1080}
-              height={1920}
-              priority
-              className="h-screen w-screen object-contain object-center"
-              onError={() => setMobileImageSrc("/Banners/mobile-banner.png")}
-            />
-          </div>
-
-          <ShutterSlats isOpening={isOpening} prefersReducedMotion={prefersReducedMotion} />
-
-          {/* Bottom shadow edge */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: "-8px",
-              left: 0,
-              right: 0,
-              height: "32px",
-              background: "linear-gradient(to bottom, rgba(0,0,0,0.85), transparent)",
-              boxShadow: "0 8px 32px 8px rgba(0,0,0,0.7)",
-              zIndex: 10001,
-            }}
-          />
-        </m.div>
-      </LazyMotion>
     </div>
   );
 }
