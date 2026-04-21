@@ -101,47 +101,48 @@ export default function AboutPage() {
       </div>
 
       {/* ── Our Story ────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-24 lg:py-32 bg-[hsl(210,5%,96%)]">
+      <section className="py-16 sm:py-24 lg:py-32 bg-white">
         <div className="container mx-auto px-5 sm:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
             {/* Text */}
-            <div>
-              <div className="flex items-center gap-3 mb-5">
-                <div className="h-[1px] w-7 bg-primary/60" />
-                <span className="font-label text-primary text-[10px] lg:text-[13px] tracking-[0.3em] uppercase">Our Journey</span>
+            <div className="reveal-left">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px w-6 bg-primary" />
+                <span className="font-label text-primary text-[10px] lg:text-[11px] tracking-[0.25em] uppercase font-bold">Our Journey</span>
               </div>
               <h2
-                className="font-display text-foreground uppercase mb-5"
-                style={{ fontSize: "clamp(36px, 5vw, 68px)", lineHeight: 0.9, letterSpacing: "0.015em" }}
+                className="font-display text-[#121212] uppercase mb-6"
+                style={{ fontSize: "clamp(42px, 6vw, 84px)", lineHeight: 0.85, letterSpacing: "-0.01em" }}
               >
                 Our Story
               </h2>
-              <div className="w-10 h-[3px] bg-gradient-to-r from-primary to-primary-light rounded-full mb-8 lg:mb-10" />
-              <div className="space-y-5 lg:space-y-6">
-                <p className="font-body text-muted-foreground text-[15px] sm:text-[16px] lg:text-[18px] leading-[1.8] lg:leading-[1.9]">
+              <div className="w-12 h-[3.5px] bg-primary rounded-full mb-8" />
+              
+              <div className="space-y-6">
+                <p className="font-body text-[#555] text-[15px] sm:text-[16px] lg:text-[18px] leading-[1.8] lg:leading-[1.9]">
                   Baba Royal Garage was founded by Babajan Nadaf in Hubballi, Karnataka, driven by a deep passion for Royal Enfield motorcycles and a belief that RE riders in Hubli deserved a dedicated specialist — not a general-purpose mechanic.
                 </p>
-                <p className="font-body text-muted-foreground text-[15px] sm:text-[16px] lg:text-[18px] leading-[1.8] lg:leading-[1.9]">
+                <p className="font-body text-[#555] text-[15px] sm:text-[16px] lg:text-[18px] leading-[1.8] lg:leading-[1.9]">
                   Starting with a single workshop in Keshwapur, Babajan built the garage on three principles: specialist expertise, genuine parts, and complete customer honesty. Word spread quickly among Hubli&apos;s Royal Enfield community, and within years we expanded to our second branch at Nehru Stadium.
                 </p>
-                <p className="font-body text-muted-foreground text-[15px] sm:text-[16px] lg:text-[18px] leading-[1.8] lg:leading-[1.9]">
+                <p className="font-body text-[#555] text-[15px] sm:text-[16px] lg:text-[18px] leading-[1.8] lg:leading-[1.9]">
                   Today, Baba Royal Garage has completed over 1000 Royal Enfield repairs across Hubli-Dharwad. From routine oil changes to complete engine overhauls, every bike receives the same meticulous attention that has earned us 5-star reviews from riders across Karnataka.
                 </p>
               </div>
             </div>
 
             {/* Image */}
-            <div className="relative rounded-3xl overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.12)] aspect-[4/3] lg:aspect-[3/2]">
-              <Image
-                src="/images/Main.png"
-                alt="Baba Royal Garage — Royal Enfield Specialist Hubli Workshop"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-              {/* Subtle dark overlay bottom */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+            <div className="reveal-right">
+              <div className="relative rounded-[2rem] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.1)] aspect-[4/3] lg:aspect-[3/2] bg-[#0A0A0A]">
+                <Image
+                  src="/images/BABA royal garage about.png"
+                  alt="Baba Royal Garage — Royal Enfield Specialist Hubli Story"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
             </div>
           </div>
         </div>
