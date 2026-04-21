@@ -7,8 +7,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ShutterSlats from "@/components/ShutterIntro/ShutterSlats";
 import { useShutterSound } from "@/components/ShutterIntro/useShutterSound";
 
-const SHUTTER_OPEN_DURATION_S = 3.0;
-const SHUTTER_OPEN_COMPLETE_BUFFER_MS = 220;
+const SHUTTER_OPEN_DURATION_S = 3.6;
+const SHUTTER_OPEN_COMPLETE_BUFFER_MS = 250;
 const SHUTTER_OPEN_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const REVEAL_PROGRESS_THRESHOLD = 0.60;
 

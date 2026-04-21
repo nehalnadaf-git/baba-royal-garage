@@ -36,7 +36,7 @@ export default function ShutterSlats({ isOpening, prefersReducedMotion }: Shutte
         transition={
           prefersReducedMotion
             ? { duration: 0.3, ease: "easeOut" }
-            : { duration: 2.8, ease: SHUTTER_EASE }
+            : { duration: 3.4, ease: SHUTTER_EASE }
         }
       />
     </div>
