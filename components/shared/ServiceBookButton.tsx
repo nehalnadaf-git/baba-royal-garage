@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 
 interface ServiceBookButtonProps {
   serviceName: string;
-  timeEstimate?: string;
   variant?: "filled" | "outline" | "ghost";
   label?: string;
   className?: string;
@@ -15,13 +14,12 @@ interface ServiceBookButtonProps {
 
 export default function ServiceBookButton({
   serviceName,
-  timeEstimate,
   variant = "filled",
   label = "Book Now",
   className,
   showArrow = false,
 }: ServiceBookButtonProps) {
-  const waUrl = buildServiceWhatsAppUrl(serviceName, timeEstimate);
+  const waUrl = buildServiceWhatsAppUrl(serviceName);
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();

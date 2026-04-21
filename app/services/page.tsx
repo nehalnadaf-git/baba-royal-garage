@@ -114,7 +114,6 @@ export default function ServicesListPage() {
                       {/* Book Now — opens branch picker, stops card navigation */}
                       <ServiceBookButton
                         serviceName={service.name}
-                        timeEstimate={service.timeEstimate}
                         variant="filled"
                         label="Book Now"
                         showArrow

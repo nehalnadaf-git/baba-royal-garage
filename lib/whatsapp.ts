@@ -4,7 +4,7 @@ import { business } from "@/lib/business";
  * Builds a direct WhatsApp booking URL for a specific service.
  * Goes to the main number. No emojis. Professional format.
  */
-export function buildServiceWhatsAppUrl(serviceName: string, timeEstimate?: string): string {
+export function buildServiceWhatsAppUrl(serviceName: string): string {
   const lines: string[] = [
     "Hello Baba Royal Garage,",
     "",
@@ -12,10 +12,6 @@ export function buildServiceWhatsAppUrl(serviceName: string, timeEstimate?: stri
     "",
     `Service: ${serviceName}`,
   ];
-
-  if (timeEstimate) {
-    lines.push(`Estimated Duration: ${timeEstimate}`);
-  }
 
   lines.push(
     "",

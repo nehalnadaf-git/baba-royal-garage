@@ -116,7 +116,6 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
             <div className="flex flex-col sm:flex-row justify-center gap-3">
               <ServiceBookButton
                 serviceName={service.name}
-                timeEstimate={service.timeEstimate}
                 variant="filled"
                 label="Book This Service"
                 className="px-8 sm:px-10 py-4 text-[13px] sm:text-[14px]"
@@ -195,7 +194,6 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                 <div className="space-y-2.5">
                   <ServiceBookButton
                     serviceName={service.name}
-                    timeEstimate={service.timeEstimate}
                     variant="filled"
                     label="Book on WhatsApp"
                     className="w-full py-3.5 lg:py-4 text-[12px] lg:text-[13px] hover:shadow-hover"
