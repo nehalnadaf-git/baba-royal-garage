@@ -331,21 +331,6 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
           </button>
         </div>
 
-        {/* ── Logo / Branding area ── */}
-        <div className="absolute inset-x-0 top-[20%] flex flex-col items-center gap-3 px-5 text-center">
-          <div className="h-[1px] w-12 bg-primary/80 mx-auto" />
-          <p className="font-label text-primary text-[10px] tracking-[0.4em] uppercase">
-            Royal Enfield Specialist · Hubli
-          </p>
-          <h1
-            className="font-display text-white uppercase"
-            style={{ fontSize: "clamp(28px, 6vw, 72px)", lineHeight: 0.92, letterSpacing: "0.04em" }}
-          >
-            Baba Royal<br />Garage
-          </h1>
-          <div className="h-[1px] w-12 bg-primary/80 mx-auto mt-1" />
-        </div>
-
         {/* ── Open button ── */}
         <div className="absolute inset-x-0 bottom-[20%] z-30 flex justify-center px-5 md:bottom-[15%]">
           <button
@@ -360,6 +345,7 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
           </button>
         </div>
       </div>
+
     </div>
   );
 }

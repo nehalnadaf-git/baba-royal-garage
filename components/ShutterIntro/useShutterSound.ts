@@ -67,10 +67,27 @@ export function useShutterSound(options: UseShutterSoundOptions = {}): UseShutte
         // Start silent — we ramp up manually
         volume: 0,
         html5: true,
+        // onload fires as soon as audio is decoded and ready
+        onload: () => {
+          // AudioContext may be suspended on iOS; attempt an early resume
+          // so it's already running when play() is called
+          if (Howler.ctx?.state === "suspended") {
+            void Howler.ctx.resume().catch(() => {
+              // Will be retried on first user gesture (play())
+            });
+          }
+        },
       });
     }
     return soundRef.current;
   }, []);
+
+  // ── Eagerly preload on mount so audio is buffered before button tap ──
+  // On mobile this eliminates the delay between tap and sound playing.
+  useEffect(() => {
+    if (disabled) return;
+    ensureSound(); // triggers Howl creation + preload immediately
+  }, [disabled, ensureSound]);
 
   const play = useCallback(async () => {
     if (disabled) return;
