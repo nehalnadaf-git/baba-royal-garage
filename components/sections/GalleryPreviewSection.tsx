@@ -26,20 +26,26 @@ export default function GalleryPreviewSection() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const centreCardRef = useRef<HTMLDivElement>(null);
 
-  // Initial scroll to centre on mobile
+  // Initial scroll to centre on mobile — uses direct scrollLeft calculation
+  // so ONLY the carousel container scrolls horizontally.
+  // We intentionally avoid scrollIntoView({ block: "nearest" }) because that
+  // also scrolls the page VERTICALLY to the section, which causes the shutter
+  // intro to reveal the wrong scroll position (jumping to this section).
   useEffect(() => {
     const timer = setTimeout(() => {
       if (centreCardRef.current && scrollRef.current) {
-        const isMobile = window.innerWidth < 1024; // matches lg-breakpoint check
+        const isMobile = window.innerWidth < 1024;
         if (isMobile) {
-          centreCardRef.current.scrollIntoView({
-            behavior: "auto",
-            inline: "center",
-            block: "nearest"
-          });
+          const container = scrollRef.current;
+          const card      = centreCardRef.current;
+          // Center the card inside the scroll container (horizontal only)
+          const cardLeft   = card.offsetLeft;
+          const cardWidth  = card.offsetWidth;
+          const containerW = container.clientWidth;
+          container.scrollLeft = cardLeft - (containerW - cardWidth) / 2;
         }
       }
-    }, 100); // Slight delay for layout settlement
+    }, 150);
     return () => clearTimeout(timer);
   }, []);
 

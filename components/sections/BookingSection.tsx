@@ -171,22 +171,23 @@ export default function BookingSection({ variant = "dark" }: BookingSectionProps
       ? new Date(form.date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
       : "";
     const lines: string[] = [
-      "🏍️ *BOOKING REQUEST — BABA ROYAL GARAGE*",
+      "*SERVICE BOOKING REQUEST*",
+      "*Baba Royal Garage —",
+      "Royal Enfield Specialist, Hubli*",
+      "--------------------------------------------",
       "",
-      "📋 *Service Details*",
-      `  Category: ${form.category}`,
-      `  Service: ${form.service}`,
-      `  Royal Enfield Model: ${model}`,
+      "*SERVICE DETAILS*",
+      `Category        : ${form.category}`,
+      `Service         : ${form.service}`,
+      `RE Model        : ${model}`,
       "",
-      "👤 *Customer Details*",
-      `  Name: ${form.name}`,
-      `  Phone: +91 ${form.phone}`,
-      `  Branch / Service Type: ${branchLabel}`,
-      ...(dateStr ? [`  Preferred Date: ${dateStr}`] : []),
-      ...(form.timeSlot ? [`  Preferred Time: ${form.timeSlot}`] : []),
-      ...(form.notes.trim() ? ["", `📝 Notes: ${form.notes.trim()}`] : []),
-      "",
-      "_Sent via babaroyalgarage.com_",
+      "*CUSTOMER DETAILS*",
+      `Name            : ${form.name}`,
+      `Phone           : +91 ${form.phone}`,
+      `Branch          : ${branchLabel}`,
+      ...(dateStr        ? [`Preferred Date  : ${dateStr}`]        : []),
+      ...(form.timeSlot  ? [`Preferred Time  : ${form.timeSlot}`]  : []),
+      ...(form.notes.trim() ? ["", "*ADDITIONAL NOTES*", form.notes.trim()] : []),
     ];
     return `https://wa.me/${business.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`;
   }, [form]);

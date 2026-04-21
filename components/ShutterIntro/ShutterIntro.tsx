@@ -16,12 +16,34 @@ interface ShutterIntroProps {
   onComplete?: () => void;
 }
 
-/** Adds/removes a class on BOTH html and body so scroll is fully locked on all browsers */
+/** Adds/removes a class on BOTH html and body so scroll is fully locked on all browsers.
+ *  Also pins the scroll position to 0 to prevent the page from drifting beneath the shutter
+ *  and causing a visible smooth-scroll sweep when the lock is released. */
 function setScrollLock(active: boolean) {
   if (typeof document === "undefined") return;
   const method = active ? "add" : "remove";
   document.documentElement.classList[method]("shutter-intro-active");
   document.body.classList[method]("shutter-intro-active");
+
+  if (active) {
+    // Disable smooth scroll and pin to top so nothing drifts under the shutter
+    document.documentElement.style.scrollBehavior = "auto";
+    window.scrollTo(0, 0);
+  }
+}
+
+/** Call this BEFORE releasing the scroll lock to ensure we land exactly at top,
+ *  bypassing any smooth-scroll animation that would sweep through sections. */
+function snapScrollToTop() {
+  if (typeof document === "undefined") return;
+  document.documentElement.style.scrollBehavior = "auto";
+  window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+  // Restore smooth scroll after the browser has committed the position
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.documentElement.style.scrollBehavior = "";
+    });
+  });
 }
 
 function setRevealClass(active: boolean) {
@@ -130,6 +152,9 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
         introTimerRef.current = null;
       }
 
+      // Snap to top BEFORE releasing the scroll lock so the browser never
+      // sees a non-zero scroll position and triggers a smooth-scroll sweep.
+      snapScrollToTop();
       setScrollLock(false);
       setRevealClass(false);
 

@@ -614,6 +614,8 @@ body.shutter-intro-active {
   touch-action: none !important;
   overscroll-behavior: none !important;
   height: 100% !important;
+  /* Prevent any smooth-scroll animation firing while shutter covers the page */
+  scroll-behavior: auto !important;
 }
 
 /* Hide the main website content COMPLETELY during intro

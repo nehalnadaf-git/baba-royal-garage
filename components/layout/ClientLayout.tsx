@@ -25,7 +25,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   useScrollAnimation();
   useEngineSound({
-    enabled: pathname === "/" && !prefersReducedMotion,
+    enabled: pathname === "/" && !prefersReducedMotion && !bookingOpen,
   });
 
   useEffect(() => {

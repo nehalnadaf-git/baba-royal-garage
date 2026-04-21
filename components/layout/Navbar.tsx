@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Menu, X } from "lucide-react";
 import { business } from "@/lib/business";
 import { cn } from "@/lib/utils";
@@ -27,6 +27,7 @@ interface NavbarProps {
 export default function Navbar({ onBookingClick }: NavbarProps) {
   const [scrolled,    setScrolled]    = useState(false);
   const [mobileOpen,  setMobileOpen]  = useState(false);
+  const scrollYRef = useRef(0);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -34,6 +35,29 @@ export default function Navbar({ onBookingClick }: NavbarProps) {
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  /* Lock body scroll while mobile menu is open to prevent page jumps */
+  useEffect(() => {
+    if (mobileOpen) {
+      scrollYRef.current = window.scrollY;
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollYRef.current}px`;
+      document.body.style.width = "100%";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      window.scrollTo(0, scrollYRef.current);
+    }
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+    };
+  }, [mobileOpen]);
 
   /* close mobile menu on resize to desktop */
   useEffect(() => {
@@ -172,17 +196,21 @@ export default function Navbar({ onBookingClick }: NavbarProps) {
         </nav>
       </div>
 
-      {/* ── Mobile dropdown ─────────────────────────────────────── */}
+      {/* ── Mobile dropdown — fixed overlay so it never shifts page layout ── */}
       <div
         className={cn(
-          "lg:hidden overflow-hidden transition-all duration-350 ease-in-out",
-          mobileOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0 pointer-events-none",
+          "lg:hidden fixed left-0 right-0 z-40 transition-all duration-300 ease-in-out overflow-y-auto",
+          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
         )}
         style={{
+          top: "62px",  /* below the navbar bar (60px bar + 2px hairline) */
+          maxHeight: "calc(100dvh - 62px)",
           background:           "hsla(222, 16%, 5%, 0.98)",
           backdropFilter:       "blur(28px)",
           WebkitBackdropFilter: "blur(28px)",
           borderBottom:         "1px solid rgba(255,255,255,0.08)",
+          transform: mobileOpen ? "translateY(0)" : "translateY(-8px)",
+          transition: "opacity 0.25s ease, transform 0.25s ease",
         }}
       >
         <nav className="flex flex-col px-5 pb-5 pt-2">

@@ -133,18 +133,24 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
       ? new Date(date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
       : "Flexible";
     const lines = [
-      "🏍️ *SERVICE BOOKING — BABA ROYAL GARAGE*", "",
-      `🔧 *Bike Model:* ${displayModel}`, "",
-      "⚠️ *Problem(s) Reported:*",
-      ...allProblems.map(p => `  • ${p}`), "",
-      "👤 *Customer Details*",
-      `  Name: ${name}`,
-      `  Phone: +91 ${phone}`,
-      `  Branch: ${branchLabel}`,
-      `  Date: ${dateStr}`,
-      ...(timeSlot ? [`  Time: ${timeSlot}`] : []),
-      ...(notes.trim() ? ["", `📝 Notes: ${notes.trim()}`] : []),
-      "", "_Sent from babaroyalgarage.com_",
+      "*SERVICE BOOKING REQUEST*",
+      "*Baba Royal Garage —",
+      "Royal Enfield Specialist, Hubli*",
+      "--------------------------------------------",
+      "",
+      "*BIKE & ISSUE*",
+      `Model           : ${displayModel}`,
+      "",
+      "*REPORTED PROBLEM(S)*",
+      ...allProblems.map(p => `- ${p}`),
+      "",
+      "*CUSTOMER DETAILS*",
+      `Name            : ${name}`,
+      `Phone           : +91 ${phone}`,
+      `Branch          : ${branchLabel}`,
+      `Preferred Date  : ${dateStr}`,
+      ...(timeSlot ? [`Preferred Time  : ${timeSlot}`] : []),
+      ...(notes.trim() ? ["", "*ADDITIONAL NOTES*", notes.trim()] : []),
     ];
     return `https://wa.me/919742291701?text=${encodeURIComponent(lines.join("\n"))}`;
   }, [model, customModel, allProblems, name, phone, branch, date, timeSlot, notes]);

@@ -44,7 +44,7 @@ export default function HeroSection({ onBookingClick }: HeroSectionProps) {
       <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-black/75 via-black/30 to-transparent pointer-events-none z-10" />
 
       {/* ── Bottom-centered CTAs — pushed up to sit above the wave */}
-      <div className="absolute inset-x-0 bottom-0 z-20 pb-40 sm:pb-32 flex justify-center px-4">
+      <div className="absolute inset-x-0 bottom-0 z-20 pb-32 flex justify-center px-4">
         <div className="flex flex-row gap-2 items-center justify-center">
           {/* Primary — Book */}
           <button
