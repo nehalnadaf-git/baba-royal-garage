@@ -488,7 +488,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
 
-      <ServiceCTABanner />
+      <ServiceCTABanner serviceName={service.name} />
     </>
   );
 }

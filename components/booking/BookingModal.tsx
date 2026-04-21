@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { X, MessageCircle, ClipboardList } from "lucide-react";
 import BookingForm from "@/components/booking/BookingForm";
 import { business } from "@/lib/business";
+import { buildServiceWhatsAppUrl } from "@/lib/whatsapp";
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -128,7 +129,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
                 {/* Chat Directly */}
                 <a
-                  href={business.whatsappUrl}
+                  href={`https://wa.me/${business.phone1.replace(/\D/g, "")}?text=${encodeURIComponent("Hello Baba Royal Garage, I would like to book a service for my Royal Enfield. Please let me know the available time slots.")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex flex-row sm:flex-col items-center gap-3 sm:gap-3.5 p-3.5 sm:p-5 rounded-2xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5"

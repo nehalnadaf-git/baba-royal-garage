@@ -1,17 +1,24 @@
 import { business } from "@/lib/business";
 import { MessageCircle, Phone, MapPin, Clock } from "lucide-react";
+import { buildServiceWhatsAppUrl } from "@/lib/whatsapp";
 
 interface ServiceCTABannerProps {
   /** Override the main heading — default: "Book Your Service Today" */
   heading?: string;
   /** Override the sub-text */
   subtitle?: string;
+  /** Optional service name for WhatsApp pre-fill */
+  serviceName?: string;
 }
 
 export default function ServiceCTABanner({
   heading = "Book Your Royal Enfield Service Today",
   subtitle = "Doorstep pickup anywhere in Hubli — or walk into either of our two workshops.",
+  serviceName,
 }: ServiceCTABannerProps) {
+  const waUrl = serviceName 
+    ? buildServiceWhatsAppUrl(serviceName)
+    : `https://wa.me/${business.phone1.replace(/\D/g, "")}?text=${encodeURIComponent("Hello Baba Royal Garage, I would like to book a service for my Royal Enfield. Please let me know the available time slots.")}`;
   return (
     <section
       className="relative overflow-hidden py-14 sm:py-20"
@@ -63,7 +70,7 @@ export default function ServiceCTABanner({
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center gap-3 mb-8">
           <a
-            href={business.whatsappUrl}
+            href={waUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-primary px-8 py-4 font-heading font-bold text-[13px] uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-1 hover:bg-primary-dark hover:shadow-[0_0_32px_rgba(232,25,42,0.40)]"
