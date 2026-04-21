@@ -233,26 +233,26 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
         style={shutterStyle}
       >
         {/* Web shutter image */}
-        <div className="absolute inset-0 hidden md:block">
+        <div className="absolute inset-0 hidden md:block bg-[#0a0a0a]">
           <Image
             src="/Shutter/baba_royal_garage_web_banner2.jpg"
             alt="Baba Royal Garage shutter"
             fill
             priority
-            className="object-cover object-center"
+            className="object-contain object-center"
             sizes="100vw"
             quality={95}
           />
         </div>
 
         {/* Mobile shutter image */}
-        <div className="absolute inset-0 block md:hidden">
+        <div className="absolute inset-0 block md:hidden bg-[#0a0a0a]">
           <Image
             src="/Shutter/baba_royal_garage_mobile_banner.png"
             alt="Baba Royal Garage shutter"
             fill
             priority
-            className="object-cover object-center"
+            className="object-contain object-center"
             sizes="100vw"
             quality={95}
           />
