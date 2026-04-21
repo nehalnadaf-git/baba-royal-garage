@@ -63,6 +63,7 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
   const completedRef = useRef(false);
   const revealTriggeredRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fadeSfxTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const rafRef = useRef<number | null>(null);
   const openStartRef = useRef<number | null>(null);
 
@@ -162,6 +163,7 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
   useEffect(() => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
+      if (fadeSfxTimerRef.current) clearTimeout(fadeSfxTimerRef.current);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       stop();
     };
@@ -169,24 +171,25 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
 
   /* ── Finalize ───────────────────────────────────────────────────────────── */
   const finalizeIntro = useCallback(
-    (withAudioFade: boolean) => {
+    () => {
       if (completedRef.current) return;
       completedRef.current = true;
 
-      if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
-      if (rafRef.current)   { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+      if (timerRef.current)    { clearTimeout(timerRef.current); timerRef.current = null; }
+      if (fadeSfxTimerRef.current) { clearTimeout(fadeSfxTimerRef.current); fadeSfxTimerRef.current = null; }
+      if (rafRef.current)      { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
 
       snapScrollToTop();
       setScrollLock(false);
       setRevealClass(false);
 
-      if (withAudioFade && !prefersReducedMotion) fadeOutAndStop(600);
-      else stop();
+      // Audio fade was already started before this fires — just hard-stop any residual
+      stop();
 
       setDismissed(true);
       onComplete?.();
     },
-    [fadeOutAndStop, onComplete, prefersReducedMotion, stop]
+    [onComplete, stop]
   );
 
   /* ── Open handler ───────────────────────────────────────────────────────── */
@@ -198,15 +201,24 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
     if (prefersReducedMotion) {
       setCtaOpacity(0);
       setRevealClass(true);
-      timerRef.current = setTimeout(() => finalizeIntro(false), 300);
+      timerRef.current = setTimeout(() => finalizeIntro(), 300);
       return;
     }
 
     void play();
-    timerRef.current = setTimeout(() => finalizeIntro(true), DURATION_MS + 400);
+
+    // ── Fade audio out BEFORE animation ends so sound stops with the shutter ──
+    // Fade starts 1200ms before the end → audio reaches 0 exactly at DURATION_MS
+    const FADE_DURATION = 1200;
+    fadeSfxTimerRef.current = setTimeout(() => {
+      fadeOutAndStop(FADE_DURATION);
+    }, DURATION_MS - FADE_DURATION);
+
+    // Finalize fires right as animation finishes (80ms buffer for CSS commit)
+    timerRef.current = setTimeout(() => finalizeIntro(), DURATION_MS + 80);
   };
 
-  const handleSkip = () => finalizeIntro(false);
+  const handleSkip = () => finalizeIntro();
 
   if (pathname !== "/" || dismissed) return null;
 
