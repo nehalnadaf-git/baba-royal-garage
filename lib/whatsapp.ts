@@ -1,21 +1,14 @@
+import { business } from "@/lib/business";
+
 /**
- * Builds a WhatsApp pre-filled booking URL for a specific service + branch.
- * No emojis — professional, clean format.
+ * Builds a direct WhatsApp booking URL for a specific service.
+ * Goes to the main number. No emojis. Professional format.
  */
-export interface WhatsAppBookingOptions {
-  serviceName: string;
-  timeEstimate?: string;
-  branchDisplayName: string;
-  branchPhone: string;
-}
-
-export function buildServiceWhatsAppUrl(options: WhatsAppBookingOptions): string {
-  const { serviceName, timeEstimate, branchDisplayName, branchPhone } = options;
-
+export function buildServiceWhatsAppUrl(serviceName: string, timeEstimate?: string): string {
   const lines: string[] = [
     "Hello Baba Royal Garage,",
     "",
-    `I would like to book the following service at your ${branchDisplayName}:`,
+    "I would like to book the following service:",
     "",
     `Service: ${serviceName}`,
   ];
@@ -32,6 +25,6 @@ export function buildServiceWhatsAppUrl(options: WhatsAppBookingOptions): string
   );
 
   const message = lines.join("\n");
-  const phone = branchPhone.replace(/\D/g, ""); // strip +, spaces, dashes
+  const phone = business.phone1.replace(/\D/g, "");
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }

@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import { ArrowRight } from "lucide-react";
-import BranchBookingSheet from "@/components/shared/BranchBookingSheet";
+import { buildServiceWhatsAppUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
 interface ServiceBookButtonProps {
   serviceName: string;
   timeEstimate?: string;
-  /** visual style of the trigger button */
   variant?: "filled" | "outline" | "ghost";
   label?: string;
   className?: string;
@@ -23,8 +21,13 @@ export default function ServiceBookButton({
   className,
   showArrow = false,
 }: ServiceBookButtonProps) {
-  const [open, setOpen] = useState(false);
-  const close = useCallback(() => setOpen(false), []);
+  const waUrl = buildServiceWhatsAppUrl(serviceName, timeEstimate);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(waUrl, "_blank", "noopener,noreferrer");
+  };
 
   const baseClass =
     "relative inline-flex items-center justify-center gap-2 font-heading font-bold uppercase tracking-[0.13em] transition-all duration-200 cursor-pointer select-none";
@@ -39,28 +42,14 @@ export default function ServiceBookButton({
   }[variant];
 
   return (
-    <>
-      <button
-        type="button"
-        onClick={(e) => {
-          /* Stop card-level Link from also navigating */
-          e.preventDefault();
-          e.stopPropagation();
-          setOpen(true);
-        }}
-        className={cn(baseClass, variantClass, className)}
-        aria-label={`Book ${serviceName}`}
-      >
-        {label}
-        {showArrow && <ArrowRight className="h-4 w-4" />}
-      </button>
-
-      <BranchBookingSheet
-        isOpen={open}
-        onClose={close}
-        serviceName={serviceName}
-        timeEstimate={timeEstimate}
-      />
-    </>
+    <button
+      type="button"
+      onClick={handleClick}
+      className={cn(baseClass, variantClass, className)}
+      aria-label={`Book ${serviceName} on WhatsApp`}
+    >
+      {label}
+      {showArrow && <ArrowRight className="h-4 w-4" />}
+    </button>
   );
 }
