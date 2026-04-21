@@ -6,9 +6,10 @@ import { reModels } from "@/lib/models";
 import { locations } from "@/lib/locations";
 import { getServiceImageBySlug } from "@/lib/service-images";
 import { buildBreadcrumbSchema, buildPageMetadata } from "@/lib/seo";
-import { ChevronRight, MapPin, ArrowUpRight, ArrowRight } from "lucide-react";
+import { MapPin, ArrowRight } from "lucide-react";
 import PageHero from "@/components/shared/PageHero";
 import SchemaMarkup from "@/components/shared/SchemaMarkup";
+import ServiceBookButton from "@/components/shared/ServiceBookButton";
 import type { Service } from "@/types";
 
 const categoryBadgeMap: Record<Service["category"], string> = {
@@ -110,10 +111,16 @@ export default function ServicesListPage() {
                     </p>
 
                     <div className="space-y-4">
-                      <div className="group relative w-full overflow-hidden flex items-center justify-center gap-2.5 bg-primary text-white py-4 rounded-xl font-heading font-bold text-[13px] lg:text-[15px] uppercase tracking-[0.12em] transition-all duration-300 hover:bg-primary-dark hover:shadow-[0_10px_32px_rgba(254,36,20,0.3)] hover:-translate-y-0.5 cursor-pointer">
-                        <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
-                        Book Now <ArrowRight className="h-4.5 w-4.5 transition-transform group-hover:translate-x-1" />
-                      </div>
+                      {/* Book Now — opens branch picker, stops card navigation */}
+                      <ServiceBookButton
+                        serviceName={service.name}
+                        timeEstimate={service.timeEstimate}
+                        variant="filled"
+                        label="Book Now"
+                        showArrow
+                        className="w-full py-4 text-[13px] lg:text-[15px] rounded-xl hover:shadow-[0_10px_32px_rgba(254,36,20,0.3)] hover:-translate-y-0.5"
+                      />
+                      {/* Learn More — uses the parent <Link> navigation */}
                       <div className="flex justify-center">
                         <div className="inline-flex items-center gap-1.5 font-subheading font-bold text-[11px] lg:text-[13px] uppercase tracking-[0.14em] text-muted-foreground/60 group-hover:text-primary transition-colors">
                           Learn More <ArrowRight className="h-3.5 w-3.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />

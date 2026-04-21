@@ -8,6 +8,7 @@ import { getServiceImageBySlug } from "@/lib/service-images";
 import { buildBreadcrumbSchema, buildFaqSchema, buildPageMetadata } from "@/lib/seo";
 import SchemaMarkup from "@/components/shared/SchemaMarkup";
 import ServiceCTABanner from "@/components/sections/ServiceCTABanner";
+import ServiceBookButton from "@/components/shared/ServiceBookButton";
 import { CheckCircle, Clock, ChevronRight, Wrench, Phone, ArrowRight } from "lucide-react";
 import type { Service } from "@/types";
 
@@ -110,40 +111,16 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               {service.shortDescription}
             </p>
 
-            {/* Info pills */}
-            <div className="flex flex-wrap justify-center gap-2.5 sm:gap-3 mb-9">
-              {[
-                { icon: Clock, label: service.timeEstimate },
-                { icon: CheckCircle, label: "Genuine RE Parts" },
-                { icon: Phone, label: "Doorstep Pickup" },
-              ].map(({ icon: Icon, label }) => (
-                <div
-                  key={label}
-                  className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-label text-[11px] sm:text-[12px] tracking-[0.14em] text-white uppercase"
-                  style={{
-                    background: "rgba(192,196,205,0.12)",
-                    backdropFilter: "blur(20px) saturate(1.8)",
-                    WebkitBackdropFilter: "blur(20px) saturate(1.8)",
-                    border: "1px solid rgba(255,255,255,0.18)",
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.20), 0 4px 16px rgba(0,0,0,0.25)",
-                  }}
-                >
-                  <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary shrink-0" />
-                  {label}
-                </div>
-              ))}
-            </div>
 
             {/* CTA buttons */}
             <div className="flex flex-col sm:flex-row justify-center gap-3">
-              <a
-                href={business.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-primary-foreground px-8 sm:px-10 py-4 rounded-xl font-heading font-bold text-[13px] sm:text-[14px] uppercase tracking-[0.12em] transition-all hover:shadow-hover hover:-translate-y-0.5"
-              >
-                Book This Service
-              </a>
+              <ServiceBookButton
+                serviceName={service.name}
+                timeEstimate={service.timeEstimate}
+                variant="filled"
+                label="Book This Service"
+                className="px-8 sm:px-10 py-4 text-[13px] sm:text-[14px]"
+              />
               <a
                 href={`tel:${business.phone1}`}
                 className="flex items-center justify-center gap-2 glass-dark text-primary-foreground border border-white/20 hover:border-primary/50 px-8 sm:px-10 py-4 rounded-xl font-heading font-bold text-[13px] sm:text-[14px] uppercase tracking-[0.12em] transition-all"
@@ -216,14 +193,13 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                   ))}
                 </div>
                 <div className="space-y-2.5">
-                  <a
-                    href={business.whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full text-center bg-primary hover:bg-primary-dark text-primary-foreground py-3.5 lg:py-4 rounded-xl font-heading font-bold text-[12px] lg:text-[13px] uppercase tracking-[0.12em] transition-all hover:shadow-hover"
-                  >
-                    Book on WhatsApp
-                  </a>
+                  <ServiceBookButton
+                    serviceName={service.name}
+                    timeEstimate={service.timeEstimate}
+                    variant="filled"
+                    label="Book on WhatsApp"
+                    className="w-full py-3.5 lg:py-4 text-[12px] lg:text-[13px] hover:shadow-hover"
+                  />
                   <a
                     href={`tel:${business.phone1}`}
                     className="block w-full text-center glass border border-primary/30 text-foreground hover:text-primary py-3.5 lg:py-4 rounded-xl font-heading font-bold text-[12px] lg:text-[13px] uppercase tracking-[0.12em] transition-all"
