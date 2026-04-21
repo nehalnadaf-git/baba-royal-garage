@@ -91,7 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${bebasNeue.variable} ${barlow.variable} ${barlowCondensed.variable} ${inter.variable} ${spaceMono.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.png" type="image/png" />
         <meta name="theme-color" content="#FE2414" />
       </head>
       <body className="font-body antialiased bg-background text-foreground overflow-x-hidden">
