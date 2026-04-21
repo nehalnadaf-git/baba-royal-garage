@@ -7,7 +7,7 @@ interface ShutterSlatsProps {
   prefersReducedMotion: boolean;
 }
 
-const SHUTTER_EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
+const SHUTTER_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export default function ShutterSlats({ isOpening, prefersReducedMotion }: ShutterSlatsProps) {
   return (
@@ -36,7 +36,7 @@ export default function ShutterSlats({ isOpening, prefersReducedMotion }: Shutte
         transition={
           prefersReducedMotion
             ? { duration: 0.3, ease: "easeOut" }
-            : { duration: 2.2, ease: SHUTTER_EASE }
+            : { duration: 2.8, ease: SHUTTER_EASE }
         }
       />
     </div>
