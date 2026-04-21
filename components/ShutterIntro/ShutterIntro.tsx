@@ -232,20 +232,20 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
         className="fixed inset-0 z-[10000] h-screen w-screen"
         style={shutterStyle}
       >
-        {/* Web shutter image */}
+        {/* Web shutter image — object-cover fills the screen cleanly */}
         <div className="absolute inset-0 hidden md:block bg-[#0a0a0a]">
           <Image
             src="/Shutter/baba_royal_garage_web_banner2.jpg"
             alt="Baba Royal Garage shutter"
             fill
             priority
-            className="object-contain object-center"
+            className="object-cover object-center"
             sizes="100vw"
             quality={95}
           />
         </div>
 
-        {/* Mobile shutter image */}
+        {/* Mobile shutter image — object-contain shows full image without crop */}
         <div className="absolute inset-0 block md:hidden bg-[#0a0a0a]">
           <Image
             src="/Shutter/baba_royal_garage_mobile_banner.png"
@@ -302,14 +302,14 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
           style={{ background: "linear-gradient(to top, rgba(0,0,0,0.70) 0%, transparent 100%)" }}
         />
 
-        {/* Open button — centred in the lower third */}
-        <div className="absolute inset-x-0 bottom-[22%] flex justify-center px-5 md:bottom-[18%]">
+        {/* Open button — smaller, lower on desktop */}
+        <div className="absolute inset-x-0 bottom-[18%] flex justify-center px-5 md:bottom-[6%]">
           <button
             type="button"
             onClick={() => { void handleOpen(); }}
             disabled={buttonDisabled}
             aria-label="Open the Garage door to enter website"
-            className="shutter-intro-pulse group relative min-h-12 overflow-hidden rounded-2xl border border-[#FE2414] bg-black/50 px-7 py-3.5 text-[13px] font-black uppercase tracking-[0.18em] text-white backdrop-blur-xl transition-all duration-300 hover:bg-black/70 hover:shadow-[0_0_32px_rgba(254,36,20,0.55)] disabled:cursor-not-allowed disabled:opacity-70 md:px-10 md:py-4 md:text-[15px]"
+            className="shutter-intro-pulse group relative overflow-hidden rounded-xl border border-[#FE2414] bg-black/50 px-5 py-2.5 text-[11px] font-black uppercase tracking-[0.18em] text-white backdrop-blur-xl transition-all duration-300 hover:bg-black/70 hover:shadow-[0_0_24px_rgba(254,36,20,0.50)] disabled:cursor-not-allowed disabled:opacity-70 md:px-7 md:py-3 md:text-[12px]"
           >
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/8 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
             ⚙ Open the Garage
