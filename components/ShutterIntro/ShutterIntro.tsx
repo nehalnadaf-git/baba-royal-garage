@@ -284,14 +284,14 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
           </div>
 
           {/* Mobile banner */}
-          <div className="absolute inset-0 block md:hidden">
+          <div className="absolute inset-0 block md:hidden bg-[#07070D]">
             <Image
               src={mobileImageSrc}
               alt="Garage shutter with Baba Royal Garage branding"
               width={1080}
               height={1920}
               priority
-              className="h-screen w-screen object-cover object-center"
+              className="h-screen w-screen object-contain object-center"
               onError={() => setMobileImageSrc("/Banners/mobile-banner.png")}
             />
           </div>
