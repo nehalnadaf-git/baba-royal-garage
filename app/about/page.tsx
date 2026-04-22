@@ -5,8 +5,9 @@ import ServiceCTABanner from "@/components/sections/ServiceCTABanner";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import SchemaMarkup from "@/components/shared/SchemaMarkup";
 import PageHero from "@/components/shared/PageHero";
+import FindUsSection from "@/components/sections/FindUsSection";
 import { buildBreadcrumbSchema, buildPageMetadata } from "@/lib/seo";
-import { CheckCircle, MapPin, ArrowUpRight, Clock } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "About Baba Royal Garage | Royal Enfield Specialist Hubli",
@@ -172,92 +173,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Our Branches ─────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 lg:py-24 bg-foreground relative overflow-hidden">
-        <div className="absolute inset-0 bg-mesh-dark opacity-60 pointer-events-none" />
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-        <div className="absolute -top-40 right-1/4 w-[600px] h-[400px] bg-primary/6 rounded-full blur-[140px] pointer-events-none" />
-
-        <div className="relative container mx-auto px-5 sm:px-8">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="h-[1px] w-7 bg-primary/60" />
-            <span className="font-label text-primary text-[10px] lg:text-[13px] tracking-[0.3em] uppercase">Locations</span>
-          </div>
-          <h2
-            className="font-display text-white uppercase mb-12 lg:mb-14"
-            style={{ fontSize: "clamp(32px, 5vw, 68px)", lineHeight: 0.9, letterSpacing: "0.015em" }}
-          >
-            Our Branches
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6">
-            {business.branches.map((branch, idx) => (
-              <div
-                key={branch.id}
-                className="group relative rounded-2xl p-7 sm:p-8 lg:p-10 overflow-hidden transition-all duration-350 hover:-translate-y-1"
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.09)",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                {/* Top shimmer on hover */}
-                <div className="absolute top-0 left-6 right-6 h-[1.5px] bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                {/* Branch label */}
-                <div className="flex items-center justify-between mb-5 lg:mb-6">
-                  <span className="font-label text-primary text-[10px] lg:text-[12px] tracking-[0.28em] uppercase font-black">
-                    {branch.name}
-                  </span>
-                  {idx === 0 && (
-                    <span
-                      className="font-label text-[9px] tracking-[0.18em] uppercase px-3 py-1 rounded-full"
-                      style={{
-                        background: "rgba(232,25,42,0.85)",
-                        border: "1px solid rgba(255,255,255,0.2)",
-                        color: "white",
-                      }}
-                    >
-                      Main Branch
-                    </span>
-                  )}
-                </div>
-
-                {/* Details */}
-                <div className="space-y-4 lg:space-y-5 mb-7 lg:mb-8">
-                  <div className="flex gap-3 items-start">
-                    <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                      <MapPin className="h-4 w-4 text-primary" />
-                    </div>
-                    <p className="font-body text-white/65 text-[14px] sm:text-[15px] lg:text-[16px] leading-relaxed pt-0.5">
-                      {branch.address}, {branch.city} {branch.pincode}
-                    </p>
-                  </div>
-                  <div className="flex gap-3 items-center">
-                    <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                      <Clock className="h-4 w-4 text-primary" />
-                    </div>
-                    <p className="font-body text-white/65 text-[14px] sm:text-[15px] lg:text-[16px]">
-                      {business.hours.weekdays}
-                    </p>
-                  </div>
-                </div>
-
-                {/* CTA */}
-                <a
-                  href={branch.mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group/btn inline-flex items-center gap-2 text-primary font-heading font-bold text-[12px] sm:text-[13px] lg:text-[14px] uppercase tracking-[0.14em] hover:text-white transition-colors"
-                >
-                  Get Directions
-                  <ArrowUpRight className="h-4 w-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-                </a>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ── Find Us ───────────────────────────────────────────────────── */}
+      <FindUsSection />
 
       <TestimonialsSection />
       <ServiceCTABanner />

@@ -300,25 +300,25 @@ export default function WhySpecialistSection() {
             />
 
             {/* ── Content ── */}
-            <div className="relative z-10 px-6 py-10 sm:px-10 sm:py-12 lg:px-16 lg:py-16">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10 lg:gap-12">
+            <div className="relative z-10 px-5 py-9 sm:px-10 sm:py-12 lg:px-16 lg:py-16">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12">
 
                 {/* LEFT: Text */}
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
 
                   {/* Overline */}
-                  <div className="inline-flex items-center gap-3 mb-5">
-                    <span className="h-[1px] w-8 bg-primary" />
-                    <span className="font-label text-primary text-[10px] sm:text-[11px] tracking-[0.35em] uppercase font-black">
+                  <div className="inline-flex items-center gap-3 mb-4 sm:mb-5">
+                    <span className="h-[1px] w-6 sm:w-8 bg-primary" />
+                    <span className="font-label text-primary text-[10px] sm:text-[11px] tracking-[0.32em] uppercase font-black">
                       Experience the Thump
                     </span>
-                    <span className="h-[1px] w-8 bg-primary" />
+                    <span className="h-[1px] w-6 sm:w-8 bg-primary" />
                   </div>
 
                   {/* Heading */}
                   <h2
-                    className="font-display text-white uppercase leading-[0.92] mb-6"
-                    style={{ fontSize: "clamp(32px, 5.5vw, 72px)", letterSpacing: "0.01em" }}
+                    className="font-display text-white uppercase leading-[0.92] mb-4 sm:mb-6"
+                    style={{ fontSize: "clamp(30px, 5.5vw, 72px)", letterSpacing: "0.01em" }}
                   >
                     Ready for{" "}
                     <span
@@ -332,21 +332,21 @@ export default function WhySpecialistSection() {
                   </h2>
 
                   {/* Body */}
-                  <p className="font-body text-white/50 text-[14px] sm:text-[16px] leading-relaxed max-w-md">
+                  <p className="font-body text-white/50 text-[13px] sm:text-[15px] leading-relaxed max-w-[320px] sm:max-w-sm lg:max-w-md mx-auto lg:mx-0">
                     Your Royal Enfield deserves more than just a general checkup.
                     Visit Hubli&apos;s premier specialist garage and feel the difference.
                   </p>
                 </div>
 
-                {/* RIGHT: CTAs */}
-                <div className="flex flex-col items-center lg:items-end gap-4 shrink-0 w-full lg:w-auto">
+                {/* RIGHT: CTAs — full-width on mobile, auto-width on desktop */}
+                <div className="flex flex-col items-stretch gap-3 w-full lg:w-auto lg:shrink-0 lg:min-w-[280px]">
 
                   {/* Primary — WhatsApp */}
                   <a
                     href="https://wa.me/919742291701"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group/wa relative w-full sm:w-auto inline-flex items-center justify-center gap-3 overflow-hidden rounded-2xl px-8 py-5 sm:px-10 font-heading font-black text-[13px] sm:text-[14px] uppercase tracking-[0.18em] text-white transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(232,25,42,0.50)]"
+                    className="group/wa relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-2xl px-6 py-4 sm:py-5 font-heading font-black text-[13px] sm:text-[14px] uppercase tracking-[0.15em] text-white transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(232,25,42,0.50)]"
                     style={{
                       background: "linear-gradient(135deg, #E8192A 0%, #C41020 60%, #A00D1A 100%)",
                       boxShadow: "0 0 0 1px rgba(232,25,42,0.3), inset 0 1px 0 rgba(255,255,255,0.15)",
@@ -362,7 +362,7 @@ export default function WhySpecialistSection() {
                   {/* Secondary — Call */}
                   <a
                     href="tel:+919742291701"
-                    className="group/call w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-2xl border border-white/15 bg-white/[0.05] px-8 py-4 sm:px-10 font-heading font-bold text-[12px] sm:text-[13px] uppercase tracking-[0.18em] text-white/70 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-white/30 hover:text-white hover:bg-white/10"
+                    className="group/call inline-flex items-center justify-center gap-3 rounded-2xl border border-white/15 bg-white/[0.05] px-6 py-4 font-heading font-bold text-[12px] sm:text-[13px] uppercase tracking-[0.15em] text-white/70 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-white/30 hover:text-white hover:bg-white/10"
                   >
                     <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.86 9.84a19.72 19.72 0 01-3.07-8.67A2 2 0 012.77 3h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 10.9a16 16 0 006.29 6.29l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
@@ -370,11 +370,10 @@ export default function WhySpecialistSection() {
                     Call +91 97422 91701
                   </a>
 
-                  {/* Micro info */}
-                  <p className="text-white/30 text-[10px] sm:text-[11px] font-label tracking-[0.16em] uppercase text-center lg:text-right leading-relaxed">
-                    Mon–Sat &nbsp;·&nbsp; 10 AM – 8 PM
+                  {/* Micro info strip — single line, centered */}
+                  <p className="text-white/30 text-[10px] font-label tracking-[0.14em] uppercase text-center leading-relaxed pt-1">
+                    Mon–Sat &nbsp;·&nbsp; 10 AM – 8 PM<br className="sm:hidden" />
                     <span className="hidden sm:inline"> &nbsp;·&nbsp; </span>
-                    <br className="sm:hidden" />
                     Keshwapur &amp; Nehru Stadium, Hubli
                   </p>
                 </div>

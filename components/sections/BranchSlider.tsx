@@ -179,17 +179,6 @@ function MobileBranchCard({ branch }: { branch: BranchData }) {
           sizes="100vw"
         />
 
-        {/* Branch number watermark */}
-        {branch.number && (
-          <div className="absolute top-3 left-4 z-20">
-            <span
-              className="font-display text-primary/10 select-none leading-none"
-              style={{ fontSize: "56px" }}
-            >
-              {branch.number}
-            </span>
-          </div>
-        )}
 
         {/* Badge */}
         <div className="absolute top-4 right-4 z-20">
@@ -324,13 +313,6 @@ function DesktopBranchCard({ branch }: { branch: BranchData }) {
           sizes="(max-width: 1200px) 50vw, 600px"
         />
 
-        {branch.number && (
-          <div className="absolute top-4 left-5 z-20">
-            <span className="font-display text-primary/10 select-none leading-none" style={{ fontSize: "clamp(48px, 7vw, 80px)" }}>
-              {branch.number}
-            </span>
-          </div>
-        )}
 
         <div className="absolute top-5 right-5 z-20">
           <div
