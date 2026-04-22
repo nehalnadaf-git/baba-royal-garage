@@ -33,8 +33,8 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
   const CROSS_CENTER = 0.42;   // Scroll % where crossfade is centred
   const CROSS_WIDTH  = 0.20;   // Blend zone width (narrower = sharper transition)
 
-  const SFX_1 = "/sfx/Royal Enfield Sound Effect 1.mp3";
-  const SFX_2 = "/sfx/Royal Enfield Sound Effect 2.mp3";
+  const SFX_1 = "/sfx/engine-sound-1.mp3";
+  const SFX_2 = "/sfx/engine-sound-2.mp3";
 
   // ── Refs ───────────────────────────────────────────────────────────────────
   const howlsRef = useRef<{ sfx1: Howl | null; sfx2: Howl | null }>({ sfx1: null, sfx2: null });

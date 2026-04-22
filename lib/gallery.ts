@@ -30,12 +30,12 @@ export const galleryImages: GalleryImage[] = [
   },
   {
     id: "gallery-garage-04",
-    src: "/images/gallery/garage-04.webp",
-    alt: "Royal Enfield workshop tools and mechanic station at Baba Royal Garage",
-    category: "Engine Work",
-    label: "Mechanic Station",
+    src: "/images/gallery/main-branch.webp",
+    alt: "Baba Royal Garage — Hubli's Trusted Royal Enfield Specialist",
+    category: "Workshop",
+    label: "Main Branch",
     width: 1200,
-    height: 900,
+    height: 1600,
   },
   {
     id: "gallery-garage-05",

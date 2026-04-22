@@ -6,7 +6,7 @@ export const blogPosts: BlogPost[] = [
     slug: "common-royal-enfield-problems-hubli",
     title: "10 Common Royal Enfield Problems Every Hubli Rider Can Fix at Home",
     excerpt: "Discover how to fix common Royal Enfield problems at home in Hubli with tips from Baba Royal Garage. Babajan Nadaf shares 10 DIY fixes you can do with basic tools and zero technical knowledge.",
-    image: "/Blog images/blog-1-royal-enfield-problems.jpg",
+    image: "/images/blog/blog-1-royal-enfield-problems.webp",
     content: `# 10 Common Royal Enfield Problems Every Hubli Rider Can Fix at Home
 
 Ever had your Royal Enfield stall on Hubli's potholed streets leaving you stranded? After servicing 500+ Royal Enfield bikes across Hubli, Babajan Nadaf and the team at Baba Royal Garage have seen it all. Here are the 10 most common Royal Enfield problems Hubli riders can handle themselves at home — with basic tools and zero technical knowledge. Read on to learn simple, step-by-step DIY fixes using just a wrench, screwdriver, cloth, and a little know-how.
@@ -286,7 +286,7 @@ A: You can often get a weak battery running again. Clean the terminals with sand
     slug: "royal-enfield-monsoon-care-hubli",
     title: "Royal Enfield Monsoon Care Hubli Checklist",
     excerpt: "Royal Enfield monsoon care tips for Hubli riders. Pre-rain checklist from Baba Royal Garage, your Royal Enfield specialist. Keep your bike rust-free and road-ready this rainy season.",
-    image: "/Blog images/blog-2-royal-enfield-monsoon-care.jpg",
+    image: "/images/blog/blog-2-royal-enfield-monsoon-care.webp",
     content: `# Royal Enfield Monsoon Care Hubli Checklist
 
 After servicing 500+ Royal Enfield bikes across Hubli, Babajan Nadaf and the team at Baba Royal Garage have seen it all. Hubli's rainy season is no joke — heavy showers from June through September (Hubli gets around 894 mm of rain annually) make the roads slippery and dusty. To help you ride safely in the coming monsoon, here are 10 key Royal Enfield maintenance checks you can do at home with simple tools.
@@ -575,7 +575,7 @@ A: Flickering brake light often means moisture in the circuit or a loose bulb. F
     slug: "royal-enfield-long-ride-preparation-hubli",
     title: "Royal Enfield Long Ride Preparation Hubli: Complete Pre-Ride Checklist",
     excerpt: "Royal Enfield long ride prep Hubli? Follow our pre-ride checklist by RE specialist Babajan Nadaf. 10 easy at-home checks before your next big journey from Hubli.",
-    image: "/Blog images/blog-3-royal-enfield-long-ride.jpg",
+    image: "/images/blog/blog-3-royal-enfield-long-ride.webp",
     content: `# Royal Enfield Long Ride Preparation Hubli: Complete Pre-Ride Checklist
 
 After servicing 500+ Royal Enfield bikes across Hubli, Babajan Nadaf and the team at Baba Royal Garage have seen it all. Here are the 10 essential pre-ride checks Royal Enfield owners should do before a long journey from Hubli — with basic tools and zero technical knowledge. These simple steps will help your bike handle Hubli's highways and back roads smoothly. Complete them before you leave town, and you'll enjoy peace of mind on your ride.

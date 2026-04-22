@@ -76,13 +76,13 @@ export const metadata: Metadata = {
     siteName: "Baba Royal Garage",
     title: "Baba Royal Garage | Royal Enfield Specialist Hubli",
     description: "Royal Enfield specialist in Hubli for expert servicing, genuine parts, engine repair, and doorstep pickup by Baba Royal Garage's trusted expert team.",
-    images: [{ url: "/ogimage/ogimage.png", width: 1200, height: 630, alt: "Baba Royal Garage Royal Enfield specialist workshop in Hubli" }],
+    images: [{ url: "/images/og-image.png", width: 1200, height: 630, alt: "Baba Royal Garage Royal Enfield specialist workshop in Hubli" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Baba Royal Garage | Royal Enfield Specialist Hubli",
     description: "Royal Enfield specialist in Hubli for expert servicing, genuine parts, engine repair, and doorstep pickup by Baba Royal Garage's trusted expert team.",
-    images: ["/ogimage/ogimage.png"],
+    images: ["/images/og-image.png"],
   },
   alternates: { canonical: business.url },
 };
@@ -91,7 +91,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${bebasNeue.variable} ${barlow.variable} ${barlowCondensed.variable} ${inter.variable} ${spaceMono.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.png" type="image/png" />
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Baba" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#FE2414" />
       </head>
       <body className="font-body antialiased bg-background text-foreground overflow-x-hidden">

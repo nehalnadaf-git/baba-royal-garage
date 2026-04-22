@@ -6,7 +6,7 @@ import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import SchemaMarkup from "@/components/shared/SchemaMarkup";
 import PageHero from "@/components/shared/PageHero";
 import { buildBreadcrumbSchema, buildPageMetadata } from "@/lib/seo";
-import { CheckCircle, Phone, MessageCircle, MapPin, ArrowUpRight, Clock } from "lucide-react";
+import { CheckCircle, MapPin, ArrowUpRight, Clock } from "lucide-react";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "About Baba Royal Garage | Royal Enfield Specialist Hubli",
@@ -35,12 +35,7 @@ const values = [
   },
 ];
 
-const stats = [
-  { value: "1000+", label: "Bikes Serviced" },
-  { value: "6+",    label: "Years Expertise" },
-  { value: "2",     label: "Hubli Branches" },
-  { value: "5★",    label: "Google Rating" },
-];
+
 
 export default function AboutPage() {
   const breadcrumbSchema = buildBreadcrumbSchema([
@@ -79,26 +74,6 @@ export default function AboutPage() {
         subtitle={business.fullDescription}
       />
 
-      {/* ── Stats Strip ──────────────────────────────────────────────── */}
-      <div className="bg-white border-y border-[#ECEEF2]">
-        <div className="container mx-auto px-5 sm:px-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[#ECEEF2]">
-            {stats.map(({ value, label }) => (
-              <div key={label} className="flex flex-col items-center justify-center py-7 sm:py-9 px-4 text-center">
-                <p
-                  className="font-display text-foreground leading-none mb-1"
-                  style={{ fontSize: "clamp(28px, 4vw, 52px)", letterSpacing: "0.02em" }}
-                >
-                  {value}
-                </p>
-                <p className="font-label text-primary text-[10px] sm:text-[11px] lg:text-[13px] tracking-[0.22em] uppercase font-black">
-                  {label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* ── Our Story ────────────────────────────────────────────────── */}
       <section className="py-16 sm:py-24 lg:py-32 bg-white">
@@ -136,7 +111,7 @@ export default function AboutPage() {
             <div className="reveal-right">
               <div className="relative rounded-[2rem] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.1)] aspect-[4/3] lg:aspect-[3/2] bg-[#0A0A0A]">
                 <Image
-                  src="/images/BABA royal garage about.png"
+                  src="/images/logo/logo-wide.webp"
                   alt="Baba Royal Garage — Royal Enfield Specialist Hubli Story"
                   fill
                   className="object-cover scale-[1.05]"
@@ -148,96 +123,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Founder ──────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-24 lg:py-32 bg-white border-t border-[#f0f0f0]">
-        <div className="container mx-auto px-5 sm:px-8">
-          
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px] gap-12 lg:gap-24 items-center">
-
-            {/* Text Content */}
-            <div className="reveal-left">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="h-px w-6 bg-primary" />
-                <span className="font-label text-primary text-[10px] lg:text-[11px] tracking-[0.25em] uppercase font-bold">The Founder</span>
-              </div>
-
-              <h2
-                className="font-display text-[#121212] uppercase mb-4"
-                style={{ fontSize: "clamp(42px, 6vw, 84px)", lineHeight: 0.85, letterSpacing: "-0.01em" }}
-              >
-                Babajan Nadaf
-              </h2>
-
-              <div className="space-y-1 mb-6">
-                <p className="font-label text-primary text-[11px] sm:text-[13px] tracking-[0.2em] uppercase font-black">
-                  Founder & Head Mechanic
-                </p>
-                <p className="font-label text-[#888] text-[10px] sm:text-[11px] tracking-[0.15em] uppercase">
-                  Founder & Chief Royal Enfield Technician
-                </p>
-              </div>
-
-              <div className="w-12 h-[3.5px] bg-primary rounded-full mb-8" />
-
-              <p className="font-body text-[#555] text-[15px] sm:text-[16px] lg:text-[18px] leading-[1.8] lg:leading-[1.9] mb-10 max-w-2xl">
-                Babajan Nadaf is Hubli&apos;s most experienced Royal Enfield specialist with 6+ years dedicated exclusively to Royal Enfield motorcycles.
-              </p>
-
-              {/* Stat pills — Screenshot Style */}
-              <div className="flex flex-wrap gap-2.5 sm:gap-3 mb-10">
-                {["Royal Enfield Certified", "6+ Years Experience", "1000+ Bikes Served", "Hubli, Karnataka"].map((cred) => (
-                  <span
-                    key={cred}
-                    className="font-label text-[9px] sm:text-[10px] tracking-[0.14em] uppercase px-4 py-2 rounded-full border border-primary/20 text-primary bg-primary/5 font-bold"
-                  >
-                    {cred}
-                  </span>
-                ))}
-              </div>
-
-              {/* CTAs */}
-              <div className="flex flex-wrap gap-4">
-                <a
-                  href={`tel:${business.phone1}`}
-                  className="flex items-center gap-3 bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-xl font-heading font-bold text-[14px] uppercase tracking-[0.12em] transition-all duration-300 hover:shadow-[0_10px_30px_rgba(232,25,42,0.25)] hover:-translate-y-0.5"
-                >
-                  <Phone className="h-4 w-4" /> Call Babajan
-                </a>
-                <a
-                  href={business.whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 bg-white text-foreground border border-[#e0e0e0] hover:border-primary/30 hover:text-primary px-8 py-4 rounded-xl font-heading font-bold text-[14px] uppercase tracking-[0.12em] transition-all duration-300 hover:-translate-y-0.5"
-                >
-                  <MessageCircle className="h-4 w-4" /> Whatsapp
-                </a>
-              </div>
-            </div>
-
-            {/* Image Card */}
-            <div className="reveal-right order-first lg:order-last">
-              <div className="relative rounded-[2.5rem] overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.12)] aspect-[3/4] lg:aspect-[4/5] bg-[#0A0A0A]">
-                <Image
-                  src="/images/BABA royal garage about.png"
-                  alt="Babajan Nadaf — Founder of Baba Royal Garage Hubli"
-                  fill
-                  className="object-cover scale-[1.05]"
-                  sizes="(max-width: 1024px) 100vw, 480px"
-                />
-                {/* Gradient and name at bottom like screenshot */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                <div className="absolute bottom-8 left-8 right-8">
-                  <p className="font-label text-white/50 text-[10px] tracking-[0.25em] uppercase mb-1.5">Founder</p>
-                  <p className="font-display text-white text-[28px] sm:text-[36px] leading-[0.9] uppercase" style={{ letterSpacing: "0.02em" }}>
-                    Babajan Nadaf
-                  </p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
 
       {/* ── Why Riders Trust Us ──────────────────────────────────────── */}
       <section className="py-16 sm:py-20 lg:py-28 bg-[hsl(210,5%,96%)]">
