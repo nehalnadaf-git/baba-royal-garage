@@ -147,7 +147,11 @@ export function useShutterSound(options: UseShutterSoundOptions = {}): UseShutte
         const retryTick = (now: number) => {
           const t = Math.min((now - retryStart) / RAMP_DURATION, 1);
           const vol = (t * t) * TARGET_VOLUME;
-          soundRef.current?.volume(vol, soundIdRef.current ?? undefined);
+          const s = soundRef.current;
+          if (s) {
+            if (soundIdRef.current !== null) s.volume(vol, soundIdRef.current);
+            else s.volume(vol);
+          }
           if (t < 1) rampRafRef.current = requestAnimationFrame(retryTick);
           else rampRafRef.current = null;
         };
