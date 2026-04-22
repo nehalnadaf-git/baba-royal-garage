@@ -6,14 +6,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useShutterSound } from "@/components/ShutterIntro/useShutterSound";
 
 // ── Timing ─────────────────────────────────────────────────────────────────
-// 4.8s total — slow cinematic start, exits at full velocity (no deceleration tail)
-const DURATION_S = 4.8;
+// 3.8s total — slow cinematic start, fast exit
+const DURATION_S = 3.8;
 const DURATION_MS = DURATION_S * 1000;
 
-// CSS cubic-bezier: starts VERY slowly (motor resistance), accelerates steadily,
-// and exits at full speed — the shutter does NOT slow down at the top.
-// P1=(0.76,0) → very slow start · P2=(0.36,1) → exits with momentum
-const EASE = `cubic-bezier(0.76, 0, 0.36, 1)`;
+// CSS cubic-bezier: starts slowly (motor resistance), accelerates hard,
+// and exits at full speed — shutter lifts away decisively at the end.
+// P1=(0.72,0) → slow start · P2=(0.55,1) → strong momentum exit
+const EASE = `cubic-bezier(0.72, 0, 0.55, 1)`;
 
 // ── Scroll lock helpers ────────────────────────────────────────────────────
 function setScrollLock(active: boolean) {

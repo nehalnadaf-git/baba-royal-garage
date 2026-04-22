@@ -1,24 +1,20 @@
 import { business } from "@/lib/business";
-import { MessageCircle, Phone, MapPin, Clock } from "lucide-react";
-import { buildServiceWhatsAppUrl } from "@/lib/whatsapp";
+import { Phone, MapPin, Clock } from "lucide-react";
+import BookServiceButton from "@/components/shared/BookServiceButton";
 
 interface ServiceCTABannerProps {
   /** Override the main heading — default: "Book Your Service Today" */
   heading?: string;
   /** Override the sub-text */
   subtitle?: string;
-  /** Optional service name for WhatsApp pre-fill */
+  /** Optional service name (kept for API compatibility) */
   serviceName?: string;
 }
 
 export default function ServiceCTABanner({
   heading = "Book Your Royal Enfield Service Today",
   subtitle = "Doorstep pickup anywhere in Hubli — or walk into either of our two workshops.",
-  serviceName,
 }: ServiceCTABannerProps) {
-  const waUrl = serviceName 
-    ? buildServiceWhatsAppUrl(serviceName)
-    : `https://wa.me/${business.phone1.replace(/\D/g, "")}?text=${encodeURIComponent("Hello Baba Royal Garage, I would like to book a service for my Royal Enfield. Please let me know the available time slots.")}`;
   return (
     <section
       className="relative overflow-hidden py-14 sm:py-20"
@@ -69,16 +65,11 @@ export default function ServiceCTABanner({
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center gap-3 mb-8">
-          <a
-            href={waUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-primary px-8 py-4 font-heading font-bold text-[13px] uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-1 hover:bg-primary-dark hover:shadow-[0_0_32px_rgba(232,25,42,0.40)]"
-          >
-            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-            <MessageCircle className="h-4 w-4 shrink-0" />
-            Book Service
-          </a>
+          {/* Book Service — opens the global booking modal (same as Navbar) */}
+          <BookServiceButton
+            label="Book Service"
+            className="inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-primary px-8 py-4 font-heading font-bold text-[13px] uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-1 hover:bg-primary-dark hover:shadow-[0_0_32px_rgba(232,25,42,0.40)]"
+          />
 
           <a
             href={`tel:${business.phone1}`}

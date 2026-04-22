@@ -8,7 +8,7 @@ import { getServiceImageBySlug } from "@/lib/service-images";
 import { buildBreadcrumbSchema, buildFaqSchema, buildPageMetadata } from "@/lib/seo";
 import SchemaMarkup from "@/components/shared/SchemaMarkup";
 import ServiceCTABanner from "@/components/sections/ServiceCTABanner";
-
+import BookServiceButton from "@/components/shared/BookServiceButton";
 import RelatedServicesCards from "@/components/sections/RelatedServicesCards";
 import { CheckCircle, ChevronRight, Wrench } from "lucide-react";
 import type { Service } from "@/types";
@@ -115,15 +115,10 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
             {/* CTA buttons */}
             <div className="flex flex-col sm:flex-row justify-center gap-3">
-              <a
-                href={business.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-8 sm:px-10 py-4 font-heading font-bold text-[13px] sm:text-[14px] uppercase tracking-[0.12em] text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-hover"
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                Book This Service
-              </a>
+              <BookServiceButton
+                label="Book This Service"
+                className="inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-8 sm:px-10 py-4 font-heading font-bold text-[13px] sm:text-[14px] uppercase tracking-[0.12em] text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-hover"
+              />
               <a
                 href={`tel:${business.phone1}`}
                 className="flex items-center justify-center gap-2 glass-dark text-primary-foreground border border-white/20 hover:border-primary/50 px-8 sm:px-10 py-4 rounded-xl font-heading font-bold text-[13px] sm:text-[14px] uppercase tracking-[0.12em] transition-all"
