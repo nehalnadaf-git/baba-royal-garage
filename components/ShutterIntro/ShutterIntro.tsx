@@ -194,7 +194,7 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
   );
 
   /* ── Open handler ───────────────────────────────────────────────────────── */
-  const handleOpen = async () => {
+  const handleOpen = () => {
     if (buttonDisabled || isOpening) return;
     setButtonDisabled(true);
     setIsOpening(true);
@@ -206,7 +206,7 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
       return;
     }
 
-    void play();
+    play();
 
     // ── Fade audio out BEFORE animation ends so sound stops with the shutter ──
     // Fade starts 1200ms before the end → audio reaches 0 exactly at DURATION_MS

@@ -8,7 +8,7 @@ interface UseShutterSoundOptions {
 }
 
 interface UseShutterSoundReturn {
-  play: () => Promise<void>;
+  play: () => void;
   fadeOutAndStop: (durationMs?: number) => void;
   stop: () => void;
 }
@@ -16,40 +16,64 @@ interface UseShutterSoundReturn {
 /**
  * useShutterSound
  *
- * Plays the shutter-open SFX with a cinematic profile:
- *  - Starts at near-zero volume and ramps up slowly over the first 1.5s
- *    (matches the very slow start of the shutter lift)
- *  - Maintains presence through the full 5.2s lift
- *  - Fades out naturally when finalizeIntro is called
+ * Plays the shutter-open SFX using the same proven pattern as useEngineSound:
+ *  - html5: true  (most reliable across iOS/Android/Desktop)
+ *  - Synchronous play() call — never awaited, preserves gesture chain on mobile
+ *  - Cinematic volume ramp-up over 2s matching the shutter lift
  */
 export function useShutterSound(options: UseShutterSoundOptions = {}): UseShutterSoundReturn {
   const { disabled = false } = options;
-  const soundRef = useRef<Howl | null>(null);
-  const soundIdRef = useRef<number | null>(null);
-  const stopTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const rampRafRef = useRef<number | null>(null);
 
-  const clearStopTimer = useCallback(() => {
-    if (stopTimerRef.current) {
-      clearTimeout(stopTimerRef.current);
-      stopTimerRef.current = null;
-    }
-  }, []);
+  const soundRef      = useRef<Howl | null>(null);
+  const soundIdRef    = useRef<number | null>(null);
+  const stopTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const rampRafRef    = useRef<number | null>(null);
 
+  // ── Constants ────────────────────────────────────────────────────────────
+  const TARGET_VOLUME = 0.80;
+  const RAMP_DURATION = 2000; // ms to reach full volume
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
   const cancelRamp = useCallback(() => {
-    if (rampRafRef.current) {
+    if (rampRafRef.current !== null) {
       cancelAnimationFrame(rampRafRef.current);
       rampRafRef.current = null;
     }
   }, []);
 
+  const clearStopTimer = useCallback(() => {
+    if (stopTimerRef.current !== null) {
+      clearTimeout(stopTimerRef.current);
+      stopTimerRef.current = null;
+    }
+  }, []);
+
+  // ── Ensure Howl instance (same as engine: html5:true) ─────────────────────
+  const ensureSound = useCallback((): Howl => {
+    if (!soundRef.current) {
+      soundRef.current = new Howl({
+        src: ["/sfx/shutter-open.mp3"],
+        preload: true,
+        loop: false,
+        volume: 0,
+        html5: true,   // ← Matches useEngineSound — proven to work on all devices
+      });
+    }
+    return soundRef.current;
+  }, []);
+
+  // ── Eagerly preload on mount ───────────────────────────────────────────────
+  useEffect(() => {
+    if (disabled) return;
+    ensureSound();
+  }, [disabled, ensureSound]);
+
+  // ── stop ──────────────────────────────────────────────────────────────────
   const stop = useCallback(() => {
     clearStopTimer();
     cancelRamp();
-
     const sound = soundRef.current;
     if (!sound) return;
-
     if (soundIdRef.current !== null) {
       sound.stop(soundIdRef.current);
     } else {
@@ -58,36 +82,11 @@ export function useShutterSound(options: UseShutterSoundOptions = {}): UseShutte
     soundIdRef.current = null;
   }, [clearStopTimer, cancelRamp]);
 
-  const ensureSound = useCallback((): Howl => {
-    if (!soundRef.current) {
-      soundRef.current = new Howl({
-        src: ["/sfx/shutter-open.mp3"],
-        preload: true,
-        loop: false,
-        // Start silent — we ramp up manually
-        volume: 0,
-        // Do NOT force html5:true — Web Audio API is more reliable on iOS/Android
-        // Howler handles the AudioContext unlock on first gesture automatically
-        onload: () => {
-          // AudioContext may be suspended on iOS; attempt an early resume
-          if (Howler.ctx?.state === "suspended") {
-            void Howler.ctx.resume().catch(() => {});
-          }
-        },
-      });
-    }
-    return soundRef.current;
-  }, []);
-
-  // ── Eagerly preload on mount so audio is buffered before button tap ──
-  // On mobile this eliminates the delay between tap and sound playing.
-  useEffect(() => {
+  // ── play ──────────────────────────────────────────────────────────────────
+  // Synchronous — never awaits anything before sound.play().
+  // This preserves the iOS/Android user-gesture chain exactly like useEngineSound.
+  const play = useCallback(() => {
     if (disabled) return;
-    ensureSound(); // triggers Howl creation + preload immediately
-  }, [disabled, ensureSound]);
-
-  const play = useCallback((): Promise<void> => {
-    if (disabled) return Promise.resolve();
 
     const sound = ensureSound();
     clearStopTimer();
@@ -95,36 +94,29 @@ export function useShutterSound(options: UseShutterSoundOptions = {}): UseShutte
     sound.stop();
     soundIdRef.current = null;
 
-    const TARGET_VOLUME = 0.80;
-    const RAMP_DURATION = 2000;
+    // Resume AudioContext if suspended — non-blocking, fire-and-forget
+    if (Howler.ctx?.state === "suspended") {
+      void Howler.ctx.resume();
+    }
 
-    // ── CRITICAL for iOS/Android ─────────────────────────────────────────
-    // sound.play() MUST be called synchronously inside the tap-handler.
-    // Any await before this line breaks the iOS gesture chain and silences audio.
-    // We call it immediately at volume 0, then resume the AudioContext in parallel.
+    // ── Play immediately at volume 0 (synchronous) ───────────────────────
+    sound.volume(0);
     const id = sound.play();
     soundIdRef.current = typeof id === "number" ? id : null;
 
-    // Resume suspended AudioContext in the background (non-blocking)
-    // On iOS this is a no-op when already running; on Android it unblocks output.
-    if (Howler.ctx?.state === "suspended") {
-      void Howler.ctx.resume().catch(() => {});
-    }
-
-    // ── Cinematic volume ramp-up ────────────────────────────────────────
+    // ── Cinematic volume ramp-up over RAMP_DURATION ──────────────────────
     const rampStart = performance.now();
     const rampTick = (now: number) => {
-      const elapsed = now - rampStart;
-      const t = Math.min(elapsed / RAMP_DURATION, 1);
-      const vol = (t * t) * TARGET_VOLUME; // ease-in: starts very slowly
+      const t   = Math.min((now - rampStart) / RAMP_DURATION, 1);
+      const vol = t * t * TARGET_VOLUME; // ease-in: slow start
 
       const s = soundRef.current;
-      if (!s || !s.playing()) { rampRafRef.current = null; return; }
-
-      if (soundIdRef.current !== null) {
-        s.volume(vol, soundIdRef.current);
-      } else {
-        s.volume(vol);
+      if (s) {
+        if (soundIdRef.current !== null) {
+          s.volume(vol, soundIdRef.current);
+        } else {
+          s.volume(vol);
+        }
       }
 
       if (t < 1) {
@@ -134,65 +126,42 @@ export function useShutterSound(options: UseShutterSoundOptions = {}): UseShutte
       }
     };
     rampRafRef.current = requestAnimationFrame(rampTick);
+  }, [disabled, ensureSound, clearStopTimer, cancelRamp, TARGET_VOLUME, RAMP_DURATION]);
 
-    // ── playerror fallback (locked AudioContext on first visit) ─────────
-    sound.once("playerror", (_id, error) => {
-      console.warn("Howler playerror, retrying on unlock:", error);
-      sound.once("unlock", () => {
-        sound.volume(0);
-        const retryId = sound.play();
-        soundIdRef.current = typeof retryId === "number" ? retryId : null;
-        cancelRamp();
-        const retryStart = performance.now();
-        const retryTick = (now: number) => {
-          const t = Math.min((now - retryStart) / RAMP_DURATION, 1);
-          const vol = (t * t) * TARGET_VOLUME;
-          const s = soundRef.current;
-          if (s) {
-            if (soundIdRef.current !== null) s.volume(vol, soundIdRef.current);
-            else s.volume(vol);
-          }
-          if (t < 1) rampRafRef.current = requestAnimationFrame(retryTick);
-          else rampRafRef.current = null;
-        };
-        rampRafRef.current = requestAnimationFrame(retryTick);
-      });
-    });
+  // ── fadeOutAndStop ────────────────────────────────────────────────────────
+  const fadeOutAndStop = useCallback((durationMs = 600) => {
+    const sound = soundRef.current;
+    if (!sound) return;
 
-    return Promise.resolve();
-  }, [cancelRamp, clearStopTimer, disabled, ensureSound]);
+    clearStopTimer();
+    cancelRamp();
 
-  const fadeOutAndStop = useCallback(
-    (durationMs = 600) => {
-      const sound = soundRef.current;
-      if (!sound) return;
+    if (!sound.playing()) {
+      stop();
+      return;
+    }
 
-      clearStopTimer();
-      cancelRamp();
+    const currentVol = soundIdRef.current !== null
+      ? (sound.volume(soundIdRef.current) as number)
+      : (sound.volume() as number);
 
-      if (!sound.playing()) {
-        stop();
-        return;
-      }
+    const targetId = soundIdRef.current ?? undefined;
+    sound.fade(
+      typeof currentVol === "number" ? currentVol : TARGET_VOLUME,
+      0,
+      durationMs,
+      targetId
+    );
 
-      const currentVol = soundIdRef.current !== null
-        ? sound.volume(soundIdRef.current) as number
-        : sound.volume() as number;
+    stopTimerRef.current = setTimeout(() => stop(), durationMs + 50);
+  }, [clearStopTimer, cancelRamp, stop, TARGET_VOLUME]);
 
-      const targetId = soundIdRef.current ?? undefined;
-      sound.fade(typeof currentVol === "number" ? currentVol : 0.8, 0, durationMs, targetId);
-
-      stopTimerRef.current = setTimeout(() => {
-        stop();
-      }, durationMs + 50);
-    },
-    [cancelRamp, clearStopTimer, stop]
-  );
-
+  // ── Stop when disabled ────────────────────────────────────────────────────
   useEffect(() => {
     if (disabled) stop();
   }, [disabled, stop]);
 
+  // ── Cleanup on unmount ────────────────────────────────────────────────────
   useEffect(() => {
     return () => {
       clearStopTimer();
