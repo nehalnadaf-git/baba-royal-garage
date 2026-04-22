@@ -66,15 +66,12 @@ export function useShutterSound(options: UseShutterSoundOptions = {}): UseShutte
         loop: false,
         // Start silent — we ramp up manually
         volume: 0,
-        html5: true,
-        // onload fires as soon as audio is decoded and ready
+        // Do NOT force html5:true — Web Audio API is more reliable on iOS/Android
+        // Howler handles the AudioContext unlock on first gesture automatically
         onload: () => {
           // AudioContext may be suspended on iOS; attempt an early resume
-          // so it's already running when play() is called
           if (Howler.ctx?.state === "suspended") {
-            void Howler.ctx.resume().catch(() => {
-              // Will be retried on first user gesture (play())
-            });
+            void Howler.ctx.resume().catch(() => {});
           }
         },
       });
@@ -89,8 +86,8 @@ export function useShutterSound(options: UseShutterSoundOptions = {}): UseShutte
     ensureSound(); // triggers Howl creation + preload immediately
   }, [disabled, ensureSound]);
 
-  const play = useCallback(async () => {
-    if (disabled) return;
+  const play = useCallback((): Promise<void> => {
+    if (disabled) return Promise.resolve();
 
     const sound = ensureSound();
     clearStopTimer();
@@ -98,39 +95,31 @@ export function useShutterSound(options: UseShutterSoundOptions = {}): UseShutte
     sound.stop();
     soundIdRef.current = null;
 
-    // Resume suspended AudioContext (mobile requirement)
-    if (Howler.ctx?.state === "suspended") {
-      try {
-        await Howler.ctx.resume();
-      } catch (error) {
-        console.warn("AudioContext resume failed:", error);
-      }
-    }
+    const TARGET_VOLUME = 0.80;
+    const RAMP_DURATION = 2000;
 
-    // Play starting at volume 0
+    // ── CRITICAL for iOS/Android ─────────────────────────────────────────
+    // sound.play() MUST be called synchronously inside the tap-handler.
+    // Any await before this line breaks the iOS gesture chain and silences audio.
+    // We call it immediately at volume 0, then resume the AudioContext in parallel.
     const id = sound.play();
     soundIdRef.current = typeof id === "number" ? id : null;
 
-    // ── Cinematic volume ramp-up ──
-    // Volume starts near 0 and rises slowly over ~2 seconds,
-    // matching the very slow initial shutter movement.
-    const TARGET_VOLUME = 0.80;
-    const RAMP_DURATION = 2000; // ms to reach full volume
-    const rampStart = performance.now();
+    // Resume suspended AudioContext in the background (non-blocking)
+    // On iOS this is a no-op when already running; on Android it unblocks output.
+    if (Howler.ctx?.state === "suspended") {
+      void Howler.ctx.resume().catch(() => {});
+    }
 
+    // ── Cinematic volume ramp-up ────────────────────────────────────────
+    const rampStart = performance.now();
     const rampTick = (now: number) => {
       const elapsed = now - rampStart;
       const t = Math.min(elapsed / RAMP_DURATION, 1);
-
-      // Ease-in curve: starts very slowly
-      const eased = t * t;
-      const vol = eased * TARGET_VOLUME;
+      const vol = (t * t) * TARGET_VOLUME; // ease-in: starts very slowly
 
       const s = soundRef.current;
-      if (!s || !s.playing()) {
-        rampRafRef.current = null;
-        return;
-      }
+      if (!s || !s.playing()) { rampRafRef.current = null; return; }
 
       if (soundIdRef.current !== null) {
         s.volume(vol, soundIdRef.current);
@@ -144,16 +133,29 @@ export function useShutterSound(options: UseShutterSoundOptions = {}): UseShutte
         rampRafRef.current = null;
       }
     };
-
     rampRafRef.current = requestAnimationFrame(rampTick);
 
+    // ── playerror fallback (locked AudioContext on first visit) ─────────
     sound.once("playerror", (_id, error) => {
       console.warn("Howler playerror, retrying on unlock:", error);
       sound.once("unlock", () => {
+        sound.volume(0);
         const retryId = sound.play();
         soundIdRef.current = typeof retryId === "number" ? retryId : null;
+        cancelRamp();
+        const retryStart = performance.now();
+        const retryTick = (now: number) => {
+          const t = Math.min((now - retryStart) / RAMP_DURATION, 1);
+          const vol = (t * t) * TARGET_VOLUME;
+          soundRef.current?.volume(vol, soundIdRef.current ?? undefined);
+          if (t < 1) rampRafRef.current = requestAnimationFrame(retryTick);
+          else rampRafRef.current = null;
+        };
+        rampRafRef.current = requestAnimationFrame(retryTick);
       });
     });
+
+    return Promise.resolve();
   }, [cancelRamp, clearStopTimer, disabled, ensureSound]);
 
   const fadeOutAndStop = useCallback(

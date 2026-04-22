@@ -8,9 +8,9 @@ import { getServiceImageBySlug } from "@/lib/service-images";
 import { buildBreadcrumbSchema, buildFaqSchema, buildPageMetadata } from "@/lib/seo";
 import SchemaMarkup from "@/components/shared/SchemaMarkup";
 import ServiceCTABanner from "@/components/sections/ServiceCTABanner";
-import ServiceBookButton from "@/components/shared/ServiceBookButton";
+
 import RelatedServicesCards from "@/components/sections/RelatedServicesCards";
-import { CheckCircle, Clock, ChevronRight, Wrench, Phone } from "lucide-react";
+import { CheckCircle, ChevronRight, Wrench } from "lucide-react";
 import type { Service } from "@/types";
 
 const categoryBadgeMap: Record<Service["category"], string> = {
@@ -115,12 +115,15 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
             {/* CTA buttons */}
             <div className="flex flex-col sm:flex-row justify-center gap-3">
-              <ServiceBookButton
-                serviceName={service.name}
-                variant="filled"
-                label="Book This Service"
-                className="px-8 sm:px-10 py-4 text-[13px] sm:text-[14px]"
-              />
+              <a
+                href={business.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-8 sm:px-10 py-4 font-heading font-bold text-[13px] sm:text-[14px] uppercase tracking-[0.12em] text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-hover"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                Book This Service
+              </a>
               <a
                 href={`tel:${business.phone1}`}
                 className="flex items-center justify-center gap-2 glass-dark text-primary-foreground border border-white/20 hover:border-primary/50 px-8 sm:px-10 py-4 rounded-xl font-heading font-bold text-[13px] sm:text-[14px] uppercase tracking-[0.12em] transition-all"
@@ -136,99 +139,35 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       <section className="py-14 sm:py-20 lg:py-28 bg-background">
         <div className="container mx-auto px-5 sm:px-8">
 
-          {/* ── Top: Hero image + Sidebar ─────────────── */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_380px] gap-8 xl:gap-14 mb-14 sm:mb-20">
-
-            {/* Service hero image */}
-            <div className="section-fade-in">
-              <div className="relative aspect-[16/9] sm:aspect-[16/9] overflow-hidden rounded-2xl lg:rounded-3xl border border-border bg-surface shadow-sm">
-                <Image
-                  src={serviceImage.src}
-                  alt={serviceImage.alt}
-                  fill
-                  priority
-                  className="object-cover"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 65vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
+          {/* ── Service hero image ─────────────── */}
+          <div className="section-fade-in mb-14 sm:mb-20">
+            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl lg:rounded-3xl border border-border bg-surface shadow-sm">
+              <Image
+                src={serviceImage.src}
+                alt={serviceImage.alt}
+                fill
+                priority
+                className="object-cover"
+                sizes="100vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
+              <span
+                className="absolute bottom-4 left-4 sm:bottom-5 sm:left-5 inline-flex items-center gap-2 rounded-full px-3.5 py-2 font-label text-white text-[10px] sm:text-[11px] tracking-[0.20em] uppercase"
+                style={{
+                  background: "rgba(15,17,23,0.45)",
+                  backdropFilter: "blur(20px) saturate(1.8)",
+                  WebkitBackdropFilter: "blur(20px) saturate(1.8)",
+                  border: "1px solid rgba(255,255,255,0.20)",
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 16px rgba(0,0,0,0.30)",
+                  textShadow: "0 1px 3px rgba(0,0,0,0.50)",
+                }}
+              >
                 <span
-                  className="absolute bottom-4 left-4 sm:bottom-5 sm:left-5 inline-flex items-center gap-2 rounded-full px-3.5 py-2 font-label text-white text-[10px] sm:text-[11px] tracking-[0.20em] uppercase"
-                  style={{
-                    background: "rgba(15,17,23,0.45)",
-                    backdropFilter: "blur(20px) saturate(1.8)",
-                    WebkitBackdropFilter: "blur(20px) saturate(1.8)",
-                    border: "1px solid rgba(255,255,255,0.20)",
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 16px rgba(0,0,0,0.30)",
-                    textShadow: "0 1px 3px rgba(0,0,0,0.50)",
-                  }}
-                >
-                  <span
-                    className="w-[5px] h-[5px] rounded-full shrink-0 animate-pulse"
-                    style={{ background: "#E8192A", boxShadow: "0 0 8px rgba(232,25,42,0.90)" }}
-                  />
-                  {service.name}
-                </span>
-              </div>
-            </div>
-
-            {/* Sidebar */}
-            <div className="flex flex-col gap-5">
-              {/* CTA card */}
-              <div className="glass rounded-2xl p-6 sm:p-7 border-t-4 border-t-primary shadow-sm">
-                <h3 className="font-heading font-bold text-foreground text-[16px] sm:text-[18px] lg:text-[20px] uppercase tracking-wider mb-5">
-                  Book This Service
-                </h3>
-                <div className="space-y-3.5 mb-6">
-                  {[
-                    { icon: Clock, label: service.timeEstimate },
-                    { icon: CheckCircle, label: "100% Genuine RE Parts" },
-                    { icon: Phone, label: "Doorstep Pickup Available" },
-                  ].map(({ icon: Icon, label }) => (
-                    <div key={label} className="flex items-center gap-3">
-                      <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                        <Icon className="h-4 w-4 text-primary" />
-                      </div>
-                      <span className="font-body text-[13px] sm:text-[14px] lg:text-[15px] text-muted-foreground">{label}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="space-y-2.5">
-                  <ServiceBookButton
-                    serviceName={service.name}
-                    variant="filled"
-                    label="Book on WhatsApp"
-                    className="w-full py-3.5 lg:py-4 text-[12px] lg:text-[13px] hover:shadow-hover"
-                  />
-                  <a
-                    href={`tel:${business.phone1}`}
-                    className="block w-full text-center glass border border-primary/30 text-foreground hover:text-primary py-3.5 lg:py-4 rounded-xl font-heading font-bold text-[12px] lg:text-[13px] uppercase tracking-[0.12em] transition-all"
-                  >
-                    Call Now
-                  </a>
-                </div>
-                <div className="mt-4 pt-4 border-t border-border">
-                  <p className="text-[11px] sm:text-xs text-muted-foreground text-center">
-                    2 branches in Hubli · Open Mon–Sat 10AM–8PM
-                  </p>
-                </div>
-              </div>
-
-              {/* RE Models Covered */}
-              <div className="glass rounded-2xl p-6 sm:p-7 shadow-sm">
-                <h3 className="font-heading font-bold text-foreground text-[14px] sm:text-[16px] lg:text-[17px] uppercase tracking-wider mb-4">
-                  RE Models Covered
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {(service.brandsModels ?? []).map((m) => (
-                    <span
-                      key={m}
-                      className="font-body text-[12px] sm:text-[13px] lg:text-[14px] text-foreground bg-surface px-3.5 py-1.5 rounded-full border border-border hover:border-primary/30 hover:text-primary transition-colors"
-                    >
-                      {m}
-                    </span>
-                  ))}
-                </div>
-              </div>
+                  className="w-[5px] h-[5px] rounded-full shrink-0 animate-pulse"
+                  style={{ background: "#E8192A", boxShadow: "0 0 8px rgba(232,25,42,0.90)" }}
+                />
+                {service.name}
+              </span>
             </div>
           </div>
 
