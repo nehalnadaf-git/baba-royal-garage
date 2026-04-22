@@ -10,7 +10,7 @@ const branchCards: BranchData[] = [
     branchName: "Keshwapur Branch",
     badge: "Main Branch",
     badgeAccent: true,
-    branchImage: "/Garage/Main Branch.png",
+    branchImage: "/Garage/Main Branch.webp",
     address: "Irkal Building, Near Convent High School, Keshwapur, Hubli",
     phone: business.phone1,
     phoneLabel: business.phone1Display,

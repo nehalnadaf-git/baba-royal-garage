@@ -92,7 +92,7 @@ export default function ContactPage() {
         business.branches[0].pincode,
       phone: business.phone1,
       phoneLabel: business.phone1Display,
-      branchImage: "/Garage/Main Branch.png",
+      branchImage: "/Garage/Main Branch.webp",
       directions: business.branches[0].mapsUrl,
       hours: business.hours.weekdays,
     },

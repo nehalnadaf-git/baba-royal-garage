@@ -14,7 +14,7 @@ export default function HeroSection({ onBookingClick }: HeroSectionProps) {
       {/* ── Web Banner (sm+) */}
       <div className="absolute inset-0 z-0 hidden sm:block">
         <Image
-          src="/Banners/web-banner.png"
+          src="/Banners/web-banner.webp"
           alt="Baba Royal Garage — Royal Enfield Specialist Hubli"
           fill
           className="object-cover object-center"
@@ -27,7 +27,7 @@ export default function HeroSection({ onBookingClick }: HeroSectionProps) {
       {/* ── Mobile Banner */}
       <div className="absolute inset-0 z-0 block sm:hidden bg-[#07070D]">
         <Image
-          src="/Banners/mobile-banner.png"
+          src="/Banners/mobile-banner.webp"
           alt="Baba Royal Garage — Royal Enfield Specialist Hubli"
           fill
           className="object-contain object-top"
