@@ -147,14 +147,21 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
               <span
-                className="absolute bottom-4 left-4 sm:bottom-5 sm:left-5 inline-flex items-center gap-2 rounded-full px-3.5 py-2 font-label text-white text-[10px] sm:text-[11px] tracking-[0.20em] uppercase"
+                className="absolute bottom-3 left-3 sm:bottom-5 sm:left-5 inline-flex items-center gap-2 rounded-full font-label text-white uppercase"
                 style={{
-                  background: "rgba(15,17,23,0.45)",
+                  background: "rgba(15,17,23,0.55)",
                   backdropFilter: "blur(20px) saturate(1.8)",
                   WebkitBackdropFilter: "blur(20px) saturate(1.8)",
                   border: "1px solid rgba(255,255,255,0.20)",
                   boxShadow: "inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 16px rgba(0,0,0,0.30)",
                   textShadow: "0 1px 3px rgba(0,0,0,0.50)",
+                  fontSize: "clamp(8px, 1.8vw, 11px)",
+                  letterSpacing: "0.18em",
+                  padding: "6px 12px",
+                  maxWidth: "calc(100% - 24px)",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 }}
               >
                 <span
