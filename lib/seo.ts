@@ -7,7 +7,7 @@ export const baseSEO = {
   defaultTitle: "Baba Royal Garage | Royal Enfield Specialist Hubli",
   defaultDescription:
     "Hubli's most trusted Royal Enfield specialist. Expert servicing, engine repair, genuine parts, and doorstep pickup across Hubli.",
-  defaultOGImage: "/images/logo.png",
+  defaultOGImage: "/ogimage/ogimage.png",
   locale: "en_IN",
   geo: {
     region: "IN-KA",
@@ -142,7 +142,7 @@ export function buildHomeBusinessGraphSchema() {
         description: business.fullDescription,
         url: business.url,
         telephone: business.phone1,
-        image: `${business.url}/images/logo.png`,
+        image: `${business.url}/ogimage/ogimage.png`,
         priceRange: "\u20b9\u20b9",
         founder: {
           "@id": `${business.url}/#founder`,

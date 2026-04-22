@@ -76,13 +76,13 @@ export const metadata: Metadata = {
     siteName: "Baba Royal Garage",
     title: "Baba Royal Garage | Royal Enfield Specialist Hubli",
     description: "Royal Enfield specialist in Hubli for expert servicing, genuine parts, engine repair, and doorstep pickup by Baba Royal Garage's trusted expert team.",
-    images: [{ url: "/images/logo.png", width: 1200, height: 630, alt: "Baba Royal Garage Royal Enfield specialist workshop in Hubli" }],
+    images: [{ url: "/ogimage/ogimage.png", width: 1200, height: 630, alt: "Baba Royal Garage Royal Enfield specialist workshop in Hubli" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Baba Royal Garage | Royal Enfield Specialist Hubli",
     description: "Royal Enfield specialist in Hubli for expert servicing, genuine parts, engine repair, and doorstep pickup by Baba Royal Garage's trusted expert team.",
-    images: ["/images/logo.png"],
+    images: ["/ogimage/ogimage.png"],
   },
   alternates: { canonical: business.url },
 };
