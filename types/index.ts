@@ -13,6 +13,8 @@ export interface Branch {
   lng: number;
   mapsUrl: string;
   mapEmbed?: string;
+  whatsapp?: string;  // WhatsApp number (digits only, no +) for this branch
+  phone?: string;     // Display phone for this branch
 }
 
 export interface BusinessHours {

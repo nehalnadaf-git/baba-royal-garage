@@ -48,6 +48,8 @@ export const business: Business = {
       lng: 75.1464629,
       mapsUrl: "https://maps.app.goo.gl/TcXmPTbPJbdzfATf8",
       mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3847.5!2d75.1464629!3d15.3568479!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTXCsDIxJzI0LjciTiA3NcKwMDgnNDcuMyJF!5e0!3m2!1sen!2sin!4v1700000000000",
+      whatsapp: "919742291701",   // Main branch number
+      phone: "+919742291701",
     },
     {
       id: "nehru-stadium",
@@ -60,6 +62,8 @@ export const business: Business = {
       lng: 75.1426777,
       mapsUrl: "https://maps.app.goo.gl/JqEB2r2a4c6vhjfi9",
       mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3847.5!2d75.1426777!3d15.3513985!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTXCsDIxJzA1LjAiTiA3NcKwMDgnMzMuNiJF!5e0!3m2!1sen!2sin!4v1700000000001",
+      whatsapp: "917795863046",   // Second branch number
+      phone: "+917795863046",
     },
   ],
   owner: {

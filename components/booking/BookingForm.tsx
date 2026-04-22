@@ -29,9 +29,9 @@ const PROBLEM_CATEGORIES = [
 ];
 
 const BRANCHES = [
-  { id: "keshwapur", name: "Keshwapur Branch",  location: "Bhavani Nagar, Keshwapur — Main", Icon: MapPin },
-  { id: "nehru",     name: "Nehru Stadium",      location: "Nehru Stadium Road, Hubli",        Icon: MapPin },
-  { id: "pickup",    name: "Doorstep Pickup",    location: "Free pickup & drop across Hubli",  Icon: Truck  },
+  { id: "keshwapur", name: "Keshwapur Branch",  location: "Bhavani Nagar, Keshwapur — Main", Icon: MapPin, whatsapp: "919742291701" },
+  { id: "nehru",     name: "Nehru Stadium",      location: "Nehru Stadium Road, Hubli",        Icon: MapPin, whatsapp: "917795863046" },
+  { id: "pickup",    name: "Doorstep Pickup",    location: "Free pickup & drop across Hubli",  Icon: Truck,  whatsapp: "919742291701" },
 ];
 
 const TIME_SLOTS = [
@@ -128,8 +128,10 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
   const waLink = useMemo(() => {
     const displayModel = model === "Other Royal Enfield Model"
       ? (customModel.trim() || "Not specified") : model;
-    const branchLabel  = BRANCHES.find(b => b.id === branch)?.name ?? "";
-    const dateStr      = date
+    const selectedBranch = BRANCHES.find(b => b.id === branch);
+    const branchLabel    = selectedBranch?.name ?? "";
+    const branchNumber   = selectedBranch?.whatsapp ?? "919742291701"; // fallback to main
+    const dateStr        = date
       ? new Date(date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
       : "Flexible";
     const lines = [
@@ -152,7 +154,7 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
       ...(timeSlot ? [`Preferred Time  : ${timeSlot}`] : []),
       ...(notes.trim() ? ["", "*ADDITIONAL NOTES*", notes.trim()] : []),
     ];
-    return `https://wa.me/919742291701?text=${encodeURIComponent(lines.join("\n"))}`;
+    return `https://wa.me/${branchNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
   }, [model, customModel, allProblems, name, phone, branch, date, timeSlot, notes]);
 
   const stepLabels = ["Bike", "Problem", "Details", "Confirm"];
