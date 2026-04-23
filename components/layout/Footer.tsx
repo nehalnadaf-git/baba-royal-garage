@@ -58,8 +58,8 @@ export default function Footer() {
             {/* Contact details */}
             <div className="space-y-3">
               {[
-                { phone: business.phone1, label: business.phone1Display },
-                { phone: business.phone2, label: business.phone2Display },
+                { phone: business.phone1, label: "Call Now" },
+                { phone: business.phone2, label: "Call Branch 2" },
               ].map(({ phone, label }) => (
                 <a
                   key={phone}

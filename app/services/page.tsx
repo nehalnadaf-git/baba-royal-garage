@@ -51,16 +51,10 @@ export default function ServicesListPage() {
             <div className="h-[1px] w-7 bg-primary/60" />
             <span className="font-label text-primary text-[10px] lg:text-[13px] tracking-[0.3em] uppercase">All Services</span>
           </div>
-          <h2 className="font-display text-foreground mb-10"
-            style={{ fontSize: "clamp(32px,5vw,60px)", lineHeight: 0.9, letterSpacing: "0.015em" }}>
-            Our Services
-          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mb-20 stagger-children">
             {services.map((service) => {
               const serviceImage = getServiceImageBySlug(service.slug);
-              // Derived fields for consistent display
               const categoryBadge = categoryBadgeMap[service.category] || service.category;
-              const priceDisplay = "Standard Rates"; // Placeholder if not in data
 
               return (
                 <Link
@@ -141,12 +135,12 @@ export default function ServicesListPage() {
             style={{ fontSize: "clamp(28px,4vw,48px)", lineHeight: 0.9, letterSpacing: "0.015em" }}>
             By Royal Enfield Model
           </h2>
-          <p className="font-body text-muted-foreground text-sm mb-8 max-w-lg leading-relaxed">Find specialist service information for your specific Royal Enfield model.</p>
+          <p className="font-body text-muted-foreground text-[14px] sm:text-[15px] mb-8 max-w-lg leading-relaxed">Find specialist service information for your specific Royal Enfield model.</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-20">
             {reModels.map((model) => (
               <Link key={model.slug} href={`/${model.slug}`}
-                className="group bg-white rounded-xl p-4 border border-[#ebebeb] hover:border-primary/25 hover:shadow-[0_4px_20px_rgba(254,36,20,0.07)] transition-all duration-300 hover:-translate-y-0.5 text-center cursor-pointer">
-                <h3 className="font-heading font-bold text-foreground text-[13px] uppercase tracking-wide group-hover:text-primary transition-colors">{model.name}</h3>
+                className="group bg-white rounded-xl p-4 sm:p-5 border border-[#ebebeb] hover:border-primary/25 hover:shadow-[0_4px_20px_rgba(254,36,20,0.07)] transition-all duration-300 hover:-translate-y-0.5 text-center cursor-pointer min-h-[72px] flex flex-col items-center justify-center">
+                <h3 className="font-heading font-bold text-foreground text-[12px] sm:text-[13px] uppercase tracking-wide group-hover:text-primary transition-colors leading-tight">{model.name}</h3>
                 <p className="font-label text-muted-foreground text-[9px] mt-1 tracking-wider">{model.year}</p>
               </Link>
             ))}

@@ -294,8 +294,8 @@ export default function BookingSection({ variant = "dark" }: BookingSectionProps
               <p className={`font-label text-[8px] tracking-[0.28em] uppercase mb-3 ${variant === 'light' ? 'text-foreground/40' : 'text-white/28'}`}>Prefer to call?</p>
               <div className="space-y-1.5">
                 {[
-                  { href: `tel:${business.phone1}`, text: `${business.phone1Display} — Babajan` },
-                  { href: `tel:${business.phone2}`, text: `${business.phone2Display} — Raju` },
+                  { href: `tel:${business.phone1}`, text: "Call Now — Babajan" },
+                  { href: `tel:${business.phone2}`, text: "Call Now — Raju" },
                 ].map(({ href, text }) => (
                   <a
                     key={href}

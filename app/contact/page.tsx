@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type React from "react";
 import { business } from "@/lib/business";
 import BookingSection from "@/components/sections/BookingSection";
 import SchemaMarkup from "@/components/shared/SchemaMarkup";
@@ -149,12 +150,12 @@ export default function ContactPage() {
             {quickContacts.map(({ icon: Icon, label, value, sub, href, accent }) => {
               const cardClass =
                 "flex flex-col p-4 sm:p-5 lg:p-6 rounded-2xl border transition-all duration-300 hover:border-primary/30 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(232,25,42,0.12)]";
-              const cardStyle = {
+              const cardStyle: React.CSSProperties = {
                 background: "rgba(255,255,255,0.03)",
                 backdropFilter: "blur(16px)",
                 WebkitBackdropFilter: "blur(16px)",
                 borderColor: "rgba(255,255,255,0.08)",
-              } as React.CSSProperties;
+              };
 
               const inner = (
                 <>

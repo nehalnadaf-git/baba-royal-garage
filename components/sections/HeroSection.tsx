@@ -49,19 +49,19 @@ export default function HeroSection({ onBookingClick }: HeroSectionProps) {
           {/* Primary — Book */}
           <button
             onClick={onBookingClick}
-            className="group relative flex items-center justify-center gap-1.5 overflow-hidden rounded-xl bg-primary px-4 py-2.5 sm:px-11 sm:py-4.5 font-heading font-bold text-[10px] sm:text-[16px] uppercase tracking-[0.08em] text-white shadow-[0_0_20px_rgba(254,36,20,0.25)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(254,36,20,0.45)]"
+            className="group relative flex items-center justify-center gap-1.5 overflow-hidden rounded-xl bg-primary px-5 py-3 sm:px-11 sm:py-4.5 font-heading font-bold text-[11px] sm:text-[14px] lg:text-[16px] uppercase tracking-[0.08em] text-white shadow-[0_0_20px_rgba(254,36,20,0.25)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(254,36,20,0.45)]"
           >
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
-            <Wrench className="h-3 w-3 sm:h-5.5 sm:w-5.5 transition-transform group-hover:rotate-12 shrink-0" />
+            <Wrench className="h-3.5 w-3.5 sm:h-5 sm:w-5 transition-transform group-hover:rotate-12 shrink-0" />
             <span className="relative z-10">Book Now</span>
           </button>
 
           {/* Secondary — Call */}
           <a href="tel:+919742291701"
-            className="group relative flex items-center justify-center gap-1.5 overflow-hidden rounded-xl bg-black/40 backdrop-blur-md border border-white/20 px-4 py-2.5 sm:px-11 sm:py-4.5 font-heading font-bold text-[10px] sm:text-[16px] uppercase tracking-[0.08em] text-white transition-all duration-300 hover:-translate-y-1 hover:bg-black/60 hover:border-white/40"
+            className="group relative flex items-center justify-center gap-1.5 overflow-hidden rounded-xl bg-black/40 backdrop-blur-md border border-white/20 px-5 py-3 sm:px-11 sm:py-4.5 font-heading font-bold text-[11px] sm:text-[14px] lg:text-[16px] uppercase tracking-[0.08em] text-white transition-all duration-300 hover:-translate-y-1 hover:bg-black/60 hover:border-white/40"
           >
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
-            <Phone className="h-3 w-3 sm:h-5.5 sm:w-5.5 transition-transform group-hover:scale-110 shrink-0" />
+            <Phone className="h-3.5 w-3.5 sm:h-5 sm:w-5 transition-transform group-hover:scale-110 shrink-0" />
             <span className="relative z-10">Call Now</span>
           </a>
         </div>

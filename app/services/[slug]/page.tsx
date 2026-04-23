@@ -83,12 +83,12 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
         <div className="relative container mx-auto px-5 sm:px-8 flex flex-col items-center text-center">
           {/* Breadcrumb */}
-          <nav className="flex items-center justify-center gap-2 text-[11px] sm:text-xs text-primary-foreground/50 mb-6 font-body" aria-label="Breadcrumb">
+          <nav className="flex items-center justify-center gap-2 text-[11px] sm:text-xs text-white/40 mb-6 font-body" aria-label="Breadcrumb">
             <Link href="/" className="hover:text-primary transition-colors">Home</Link>
             <ChevronRight className="h-3 w-3" />
             <Link href="/services" className="hover:text-primary transition-colors">Services</Link>
             <ChevronRight className="h-3 w-3" />
-            <span className="text-primary-foreground/80">{service.name}</span>
+            <span className="text-white/70">{service.name}</span>
           </nav>
 
           <div className="max-w-4xl w-full">
@@ -102,13 +102,13 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
             {/* Headline */}
             <h1
-              className="font-display text-primary-foreground uppercase mb-5"
+              className="font-display text-white uppercase mb-4"
               style={{ fontSize: "clamp(38px, 7vw, 96px)", lineHeight: 0.9, letterSpacing: "0.015em" }}
             >
               {service.name}
             </h1>
-            <div className="red-divider mb-6 mx-auto" />
-            <p className="font-body text-primary-foreground/65 text-[16px] sm:text-[18px] lg:text-[21px] leading-relaxed lg:leading-[1.8] mb-9 max-w-2xl mx-auto">
+            <div className="w-12 h-[3px] bg-gradient-to-r from-primary to-primary-light rounded-full mb-6 mx-auto" />
+            <p className="font-body text-white/55 text-[15px] sm:text-[17px] lg:text-[19px] leading-relaxed lg:leading-[1.8] mb-9 max-w-2xl mx-auto">
               {service.shortDescription}
             </p>
 
@@ -117,11 +117,11 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
             <div className="flex flex-col sm:flex-row justify-center gap-3">
               <BookServiceButton
                 label="Book This Service"
-                className="inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-8 sm:px-10 py-4 font-heading font-bold text-[13px] sm:text-[14px] uppercase tracking-[0.12em] text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-hover"
+                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-8 sm:px-10 py-4 font-heading font-bold text-[13px] sm:text-[14px] uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-[0_8px_28px_rgba(232,25,42,0.35)]"
               />
               <a
                 href={`tel:${business.phone1}`}
-                className="flex items-center justify-center gap-2 glass-dark text-primary-foreground border border-white/20 hover:border-primary/50 px-8 sm:px-10 py-4 rounded-xl font-heading font-bold text-[13px] sm:text-[14px] uppercase tracking-[0.12em] transition-all"
+                className="flex items-center justify-center gap-2 border border-white/20 hover:border-white/40 bg-white/5 hover:bg-white/10 text-white px-8 sm:px-10 py-4 rounded-xl font-heading font-bold text-[13px] sm:text-[14px] uppercase tracking-[0.12em] transition-all duration-300 hover:-translate-y-0.5"
               >
                 Call Now
               </a>
@@ -214,7 +214,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                   {(service.whatWeInclude ?? []).map((item) => (
                     <div
                       key={item}
-                      className="flex items-center gap-3.5 glass rounded-xl p-4 lg:p-5 border border-border hover:border-primary/25 transition-colors"
+                      className="flex items-center gap-3.5 bg-white rounded-xl p-4 lg:p-5 border border-[#e8ebf0] hover:border-primary/25 hover:shadow-[0_4px_16px_rgba(232,25,42,0.06)] transition-all duration-200"
                     >
                       <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                         <CheckCircle className="h-4 w-4 text-primary" />
@@ -293,15 +293,18 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                 </h2>
                 <div className="space-y-3 sm:space-y-4">
                   {(service.faqs ?? []).map((faq, i) => (
-                    <details key={i} className="group glass rounded-2xl border border-border hover:border-primary/25 transition-colors overflow-hidden">
-                      <summary className="flex items-center justify-between gap-4 p-5 sm:p-6 lg:p-7 cursor-pointer list-none select-none">
-                        <h3 className="font-heading font-bold text-foreground text-[14px] sm:text-[15px] lg:text-[18px] uppercase tracking-wide leading-snug pr-2">
+                    <details
+                      key={i}
+                      className="group bg-white rounded-2xl border border-[#e8ebf0] hover:border-primary/25 hover:shadow-[0_6px_24px_rgba(232,25,42,0.07)] transition-all duration-300 overflow-hidden"
+                    >
+                      <summary className="flex items-center justify-between gap-4 p-5 sm:p-6 lg:p-7 cursor-pointer list-none select-none min-h-[60px]">
+                        <h3 className="font-heading font-bold text-foreground text-[14px] sm:text-[15px] lg:text-[17px] uppercase tracking-wide leading-snug pr-2">
                           {faq.question}
                         </h3>
                         <ChevronRight className="h-4 w-4 lg:h-5 lg:w-5 text-primary shrink-0 rotate-90 group-open:-rotate-90 transition-transform duration-300" />
                       </summary>
                       <div className="px-5 sm:px-6 lg:px-7 pb-5 sm:pb-6 lg:pb-7">
-                        <div className="h-px bg-border mb-4 lg:mb-5" />
+                        <div className="h-px bg-[#eceef2] mb-4 lg:mb-5" />
                         <p className="font-body text-muted-foreground text-[13px] sm:text-[14px] lg:text-[17px] leading-relaxed lg:leading-[1.85]">
                           {faq.answer}
                         </p>

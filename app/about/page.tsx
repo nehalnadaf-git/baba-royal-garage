@@ -77,7 +77,7 @@ export default function AboutPage() {
 
 
       {/* ── Our Story ────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-24 lg:py-32 bg-white">
+      <section className="py-16 sm:py-24 lg:py-32 bg-[hsl(210,5%,95%)]">
         <div className="container mx-auto px-5 sm:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
@@ -110,7 +110,7 @@ export default function AboutPage() {
 
             {/* Image */}
             <div className="reveal-right">
-              <div className="relative rounded-[2rem] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.1)] aspect-[4/3] lg:aspect-[3/2] bg-[#0A0A0A]">
+              <div className="relative rounded-[2rem] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.10)] aspect-[4/3] lg:aspect-[3/2] bg-[hsl(210,5%,92%)]">
                 <Image
                   src="/images/logo/logo-wide.webp"
                   alt="Baba Royal Garage — Royal Enfield Specialist Hubli Story"

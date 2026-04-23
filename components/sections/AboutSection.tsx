@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MessageCircle, ArrowUpRight, Award, Shield, Users, MapPin } from "lucide-react";
+import { ArrowUpRight, Award, Shield, Users, MapPin } from "lucide-react";
+import BookServiceButton from "@/components/shared/BookServiceButton";
 
 const credentials = [
   { icon: Award,  label: "Royal Enfield Specialist", sub: "6+ years dedicated expertise" },
@@ -107,13 +108,10 @@ export default function AboutSection() {
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <a href="https://wa.me/919742291701" target="_blank" rel="noopener noreferrer"
-                className="group relative w-full sm:w-auto flex items-center justify-center gap-2.5 bg-primary hover:bg-primary-dark text-white px-7 py-3.5 rounded-2xl font-heading font-bold text-[14px] uppercase tracking-[0.1em] transition-all duration-300 hover:shadow-[0_0_28px_rgba(254,36,20,0.30)] hover:-translate-y-0.5 overflow-hidden cursor-pointer"
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                <MessageCircle className="h-5 w-5" />
-                Book Your Service Today
-              </a>
+              <BookServiceButton
+                label="Book Your Service Today"
+                className="group relative w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-primary hover:bg-primary-dark text-white px-7 py-3.5 rounded-2xl font-heading font-bold text-[14px] uppercase tracking-[0.1em] transition-all duration-300 hover:shadow-[0_0_28px_rgba(254,36,20,0.30)] hover:-translate-y-0.5 overflow-hidden cursor-pointer"
+              />
               <Link href="/about"
                 className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-foreground border border-[#e5e5e5] hover:border-primary/30 hover:text-primary px-6 py-3.5 rounded-2xl font-heading font-bold text-[14px] uppercase tracking-[0.1em] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
               >

@@ -71,7 +71,7 @@ export default function ContactSection() {
                   </div>
                   <a href={`tel:${business.phone1}`}
                     className="font-body text-sm lg:text-[16px] text-white/85 hover:text-primary transition-colors duration-200 font-medium cursor-pointer">
-                    {business.phone1Display}
+                    Call Now
                   </a>
                 </div>
 
@@ -81,7 +81,7 @@ export default function ContactSection() {
                   </div>
                   <a href={business.whatsappUrl} target="_blank" rel="noopener noreferrer"
                     className="font-body text-sm lg:text-[16px] text-white/85 hover:text-primary transition-colors duration-200 font-medium cursor-pointer">
-                    WhatsApp · {business.phone1Display}
+                    WhatsApp Us
                   </a>
                 </div>
 
