@@ -55,7 +55,7 @@ export default function AboutSection() {
               <div className="relative rounded-3xl overflow-hidden shadow-[0_20px_70px_rgba(0,0,0,0.14)] aspect-[4/3] z-10">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent z-10 pointer-events-none mix-blend-multiply" />
                 <Image
-                  src="/images/logo/logo-wide.webp"
+                  src="/images/Baba Royal/Baba Royal wide.webp"
                   alt="Baba Royal Garage — Royal Enfield Specialist at Work"
                   fill
                   className="object-cover scale-[1.05]"
