@@ -248,7 +248,7 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
         {/* Web shutter image — object-cover fills the screen cleanly */}
         <div className="absolute inset-0 hidden md:block bg-[#0a0a0a]">
           <Image
-            src="/images/banners/shutter-desktop.jpg"
+            src="/images/banners/shutter-desktop.webp"
             alt="Baba Royal Garage shutter"
             fill
             priority
@@ -261,7 +261,7 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
         {/* Mobile shutter image — object-contain shows full image without crop */}
         <div className="absolute inset-0 block md:hidden bg-[#0a0a0a]">
           <Image
-            src="/images/banners/shutter-mobile.png"
+            src="/images/banners/shutter-mobile.webp"
             alt="Baba Royal Garage shutter"
             fill
             priority

@@ -112,7 +112,7 @@ export default function AboutPage() {
             <div className="reveal-right">
               <div className="relative rounded-[2rem] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.10)] aspect-[4/3] lg:aspect-[3/2] bg-[hsl(210,5%,92%)]">
                 <Image
-                  src="/images/Baba Royal/Baba Royal wide.webp"
+                  src="/images/Baba Royal/baba-royal-garage-wide.webp"
                   alt="Baba Royal Garage — Royal Enfield Specialist Hubli Story"
                   fill
                   className="object-cover scale-[1.05]"

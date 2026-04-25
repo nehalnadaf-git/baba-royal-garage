@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { galleryImages } from "@/lib/gallery";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect, useCallback } from "react";
@@ -275,14 +275,7 @@ export default function GalleryPreviewSection() {
                     <div className="mt-2 h-px w-0 bg-primary group-hover/card:w-8 transition-all duration-600 ease-out" />
                   </div>
 
-                  {/* Centre card badge */}
-                  {isCentre && (
-                    <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 px-2.5 py-1 bg-primary/90 rounded-sm">
-                      <span className="font-label text-white text-[8px] tracking-[0.2em] uppercase whitespace-nowrap">
-                        Featured
-                      </span>
-                    </div>
-                  )}
+
 
                   {/* Arrow — top right on hover */}
                   <div className="absolute top-3 right-3 z-30 w-7 h-7 rounded-full bg-black/50 border border-white/10 flex items-center justify-center opacity-0 group-hover/card:opacity-100 scale-75 group-hover/card:scale-100 transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
