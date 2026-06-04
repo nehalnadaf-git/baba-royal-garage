@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, Phone, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { business } from "@/lib/business";
 import { cn } from "@/lib/utils";
@@ -174,6 +174,24 @@ export default function Navbar({ onBookingClick }: NavbarProps) {
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                 Book Service
               </button>
+
+              {/* Call button — desktop */}
+              <a
+                href={`tel:${business.phone1}`}
+                aria-label={`Call us at ${business.phone1Display}`}
+                className="group ml-2 flex items-center gap-1.5 rounded-xl border border-white/20 px-4 py-2.5 font-heading font-bold text-[11px] uppercase tracking-[0.14em] text-white/75 transition-all duration-300 hover:border-primary/70 hover:text-white hover:-translate-y-0.5 hover:shadow-[0_0_18px_rgba(232,25,42,0.22)]"
+                style={{
+                  backdropFilter: "blur(8px)",
+                  WebkitBackdropFilter: "blur(8px)",
+                  background: "rgba(255,255,255,0.04)",
+                }}
+              >
+                <Phone
+                  className="h-[11px] w-[11px] transition-colors duration-200 group-hover:text-primary"
+                  strokeWidth={2.5}
+                />
+                Call
+              </a>
             </div>
           </nav>
 
@@ -317,6 +335,29 @@ export default function Navbar({ onBookingClick }: NavbarProps) {
                 >
                   Book Service
                 </button>
+
+                {/* Call button — mobile */}
+                <a
+                  href={`tel:${business.phone1}`}
+                  onClick={closeMenu}
+                  aria-label={`Call us at ${business.phone1Display}`}
+                  className="group w-full flex items-center justify-center gap-2.5 py-4 font-heading font-bold text-[13px] uppercase tracking-[0.15em] text-white/80 rounded-xl transition-all duration-200 active:scale-[0.98]"
+                  style={{
+                    border:      "1px solid rgba(232,25,42,0.35)",
+                    background:  "rgba(232,25,42,0.06)",
+                  }}
+                >
+                  <Phone
+                    className="h-[15px] w-[15px] text-primary"
+                    strokeWidth={2.5}
+                  />
+                  <span>
+                    Call{" "}
+                    <span className="text-white/45 font-label text-[10px] tracking-widest normal-case">
+                      {business.phone1Display}
+                    </span>
+                  </span>
+                </a>
               </div>
 
               {/* Bottom branding strip */}
