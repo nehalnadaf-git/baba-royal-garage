@@ -43,12 +43,29 @@ export function GalleryLightbox({
     return () => document.removeEventListener("keydown", handleKey);
   }, [handleKey]);
 
-  /* ── Scroll lock ─────────────────────────────────────────────────── */
+  /* ── Scroll lock — iOS-safe ──────────────────────────────────────── */
   useEffect(() => {
     if (!isOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    /* Simple overflow:hidden does NOT prevent scroll on iOS Safari.
+     * The only reliable cross-browser fix is position:fixed on body
+     * with top = -scrollY, then restore scrollY on unlock. */
+    const scrollY = window.scrollY;
+    const body    = document.body;
+    body.style.position = "fixed";
+    body.style.top      = `-${scrollY}px`;
+    body.style.left     = "0";
+    body.style.right    = "0";
+    body.style.width    = "100%";
+    body.style.overflow = "hidden";
+    return () => {
+      body.style.position = "";
+      body.style.top      = "";
+      body.style.left     = "";
+      body.style.right    = "";
+      body.style.width    = "";
+      body.style.overflow = "";
+      window.scrollTo(0, scrollY);
+    };
   }, [isOpen]);
 
   /* ── Touch / swipe ───────────────────────────────────────────────── */
@@ -126,6 +143,7 @@ export function GalleryLightbox({
                   background: "rgba(255,255,255,0.07)",
                   border: "1px solid rgba(255,255,255,0.11)",
                   backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
                 }}
               >
                 {currentIndex + 1} / {total}
@@ -182,11 +200,14 @@ export function GalleryLightbox({
               >
                 {/* Image wrapper */}
                 <div
-                  className="relative w-full overflow-hidden rounded-md border border-white/[0.07] shadow-[0_40px_100px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.03)]"
                   style={{
                     aspectRatio: item!.aspectRatio && item!.aspectRatio > 0 ? item!.aspectRatio : 4 / 3,
-                    maxHeight: "68dvh",
+                    /* dvh = dynamic viewport height (iOS 16+).
+                     * Fallback: use 68vh for iOS 15 and older browsers that
+                     * don't support dvh — applied via the cascade (dvh overrides). */
+                    maxHeight: "68vh",
                   }}
+                  className="relative w-full overflow-hidden rounded-md border border-white/[0.07] shadow-[0_40px_100px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.03)] [max-height:68dvh]"
                 >
                   <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[hsl(var(--gold)/0.55)] to-transparent z-10" />
                   <Image
@@ -240,22 +261,28 @@ export function GalleryLightbox({
                 transition={{ delay: 0.18 }}
               >
                 {items.map((_, i) => (
+                  /* Wrap the tiny visual dot in a large invisible hit area
+                   * (44×44px) so it meets Apple HIG / WCAG touch target rules. */
                   <button
                     key={i}
                     aria-label={`Go to image ${i + 1}`}
                     style={{ touchAction: "manipulation" }}
-                    className={`rounded-full transition-all duration-150 ${
-                      i === currentIndex
-                        ? "w-4 sm:w-5 h-1.5 bg-primary"
-                        : "w-1.5 h-1.5 bg-white/20 hover:bg-white/40"
-                    }`}
+                    className="flex items-center justify-center w-[44px] h-[44px] -m-[14px]"
                     onClick={() => {
                       if (i === currentIndex) return;
                       const diff = i - currentIndex;
                       if (diff > 0) { for (let j = 0; j < diff; j++) onNext(); }
                       else          { for (let j = 0; j < -diff; j++) onPrev(); }
                     }}
-                  />
+                  >
+                    <span
+                      className={`rounded-full transition-all duration-150 ${
+                        i === currentIndex
+                          ? "w-4 sm:w-5 h-1.5 bg-primary"
+                          : "w-1.5 h-1.5 bg-white/20 hover:bg-white/40"
+                      }`}
+                    />
+                  </button>
                 ))}
               </motion.div>
             )}

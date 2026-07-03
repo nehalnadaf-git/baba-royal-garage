@@ -103,18 +103,18 @@
   *, *::before, *::after { box-sizing: border-box; }
   * { @apply border-border; }
 
-  html {
-    scroll-behavior: smooth;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Reserve scrollbar gutter ONLY on pointer-fine (desktop) devices.
-     On mobile there are no persistent scrollbars so this is a no-op
-     that could cause unexpected layout on some Android browsers. */
   @media (pointer: fine) {
     html {
       scrollbar-gutter: stable;
     }
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    /* Also block horizontal overscroll on html for Android WebViews that
+       apply the behaviour to the root element rather than body. */
+    overscroll-behavior-x: none;
   }
 
   body {
@@ -693,7 +693,9 @@ body:not(.shutter-intro-active):not(.shutter-intro-reveal) #home-reveal-root {
 /* Homepage reveal root base */
 #home-reveal-root {
   transform-origin: center top;
-  will-change: opacity;
+  /* NOTE: will-change intentionally omitted — keeping it permanently on a
+     full-page element forces the GPU to hold a compositing layer for the
+     entire page, causing white-flash on low-memory Android devices. */
 }
 
 @media (prefers-reduced-motion: reduce) {

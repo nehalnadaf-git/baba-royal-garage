@@ -184,13 +184,24 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
         }
       };
 
+      /* iOS Safari also requires a 'click' event to unlock AudioContext
+       * after the user navigates back — scroll alone is not a user gesture
+       * that satisfies the autoplay policy on page re-entry. Silent: no sound. */
+      const onClickUnlock = () => {
+        if (Howler.ctx?.state === "suspended") {
+          void Howler.ctx.resume();
+        }
+      };
+
       window.addEventListener("scroll",     onScroll,           { passive: true });
       window.addEventListener("touchstart", onTouchStartUnlock, { passive: true });
+      window.addEventListener("click",      onClickUnlock,      { passive: true });
 
       cleanupFns.push(() => {
         clearInterval(monitor);
         window.removeEventListener("scroll",     onScroll);
         window.removeEventListener("touchstart", onTouchStartUnlock);
+        window.removeEventListener("click",      onClickUnlock);
         if (rafRef.current) cancelAnimationFrame(rafRef.current);
         howlsRef.current.sfx1?.stop();
         howlsRef.current.sfx2?.stop();
