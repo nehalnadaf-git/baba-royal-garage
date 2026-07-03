@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import type React from "react";
 import { business } from "@/lib/business";
 import BookingSection from "@/components/sections/BookingSection";
@@ -135,7 +135,7 @@ export default function ContactPage() {
 
           {/* H1 */}
           <h1
-            className="font-display text-white uppercase mb-5"
+            className="font-display text-white mb-5"
             style={{ fontSize: "clamp(48px, 8vw, 104px)", lineHeight: 0.88, letterSpacing: "0.015em" }}
           >
             Contact Us
@@ -221,8 +221,8 @@ export default function ContactPage() {
                 <div className="h-[1px] w-8 bg-primary/60" />
               </div>
               <h2
-                className="font-display uppercase text-white leading-none"
-                style={{ fontSize: "clamp(36px, 7vw, 92px)", lineHeight: 0.85, letterSpacing: "0.01em" }}
+                className="font-display text-white leading-none"
+                style={{ fontSize: "clamp(36px, 7vw, 92px)", lineHeight: 0.85, letterSpacing: "-0.03em" }}
               >
                 Find Us In{" "}
                 <span className="text-primary underline decoration-primary/20 underline-offset-[12px]">

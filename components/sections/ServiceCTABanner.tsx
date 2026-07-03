@@ -48,10 +48,10 @@ export default function ServiceCTABanner({
 
         {/* Heading */}
         <h2
-          className="font-display uppercase text-white mb-4 leading-tight"
+          className="font-display text-white mb-4 leading-tight"
           style={{
             fontSize: "clamp(28px, 5vw, 60px)",
-            letterSpacing: "0.02em",
+            letterSpacing: "-0.03em",
             lineHeight: 1.0,
           }}
         >

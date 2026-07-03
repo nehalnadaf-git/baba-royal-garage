@@ -19,25 +19,24 @@ interface UseEngineSoundOptions {
  *  - Equal-power crossfade (cos/sin) prevents loudness dip in the blend zone
  *  - Smooth 60fps rAF volume updates
  *  - Graceful fade-out after user stops scrolling (IDLE_LIMIT)
- *  - Mobile: touch events + passive listeners
  *  - Defers startup until shutter intro completes
  */
 export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
   const pathname = usePathname();
 
   // ── Configuration ──────────────────────────────────────────────────────────
-  const MAX_VOLUME   = 0.38;   // Subtle ambient level — present but not intrusive
-  const STOP_FADE_MS = 600;    // Smooth, slow fade-out on inactivity
-  const START_FADE_MS = 250;   // Quick fade-in on first interaction
-  const IDLE_LIMIT   = 800;    // ms before engine fades when user stops scrolling
-  const CROSS_CENTER = 0.42;   // Scroll % where crossfade is centred
-  const CROSS_WIDTH  = 0.20;   // Blend zone width (narrower = sharper transition)
+  const MAX_VOLUME    = 0.38;  // Subtle ambient level — present but not intrusive
+  const STOP_FADE_MS  = 400;   // Fade-out when scrolling stops
+  const START_FADE_MS = 200;   // Quick fade-in when scrolling starts
+  const IDLE_LIMIT    = 300;   // ms of no scroll before engine fades out
+  const CROSS_CENTER  = 0.42;  // Scroll % where crossfade is centred
+  const CROSS_WIDTH   = 0.20;  // Blend zone width (narrower = sharper transition)
 
   const SFX_1 = "/sfx/engine-sound-1.mp3";
   const SFX_2 = "/sfx/engine-sound-2.mp3";
 
   // ── Refs ───────────────────────────────────────────────────────────────────
-  const howlsRef = useRef<{ sfx1: Howl | null; sfx2: Howl | null }>({ sfx1: null, sfx2: null });
+  const howlsRef       = useRef<{ sfx1: Howl | null; sfx2: Howl | null }>({ sfx1: null, sfx2: null });
   const isPlayingRef   = useRef(false);
   const lastActivityRef = useRef(0);
   const rafRef         = useRef<number | null>(null);
@@ -96,7 +95,7 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
     rafRef.current = requestAnimationFrame(syncAudio);
   }, [MAX_VOLUME, CROSS_CENTER, CROSS_WIDTH]);
 
-  // ── Wake up on scroll/touch activity ─────────────────────────────────────
+  // ── Wake up — called ONLY from the native scroll event ────────────────────
   const wakeUp = useCallback(() => {
     lastActivityRef.current = Date.now();
 
@@ -107,7 +106,7 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
     initAudio();
 
     if (!isPlayingRef.current) {
-      isPlayingRef.current = true;
+      isPlayingRef.current  = true;
       fadeInDoneRef.current = false;
 
       // Fade SFX 1 in from 0 to MAX_VOLUME quickly
@@ -140,7 +139,7 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
     function attachListeners() {
       if (isShutterActive()) return;
 
-      // Idle monitor: fade engine out when user stops scrolling
+      // Idle monitor: fade engine out quickly when scrolling stops
       const monitor = setInterval(() => {
         const now = Date.now();
         if (isPlayingRef.current && now - lastActivityRef.current > IDLE_LIMIT) {
@@ -164,26 +163,34 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
         }
       }, 100);
 
+      /* ── scroll is the ONLY trigger that starts the engine sound ─────────
+       *
+       * touchstart is kept purely to satisfy the iOS/Android AudioContext
+       * autoplay policy — the context MUST be resumed inside a synchronous
+       * user-gesture handler. It does NOT call wakeUp(), so tapping any
+       * button, link, or UI element stays completely silent.
+       *
+       * wheel, touchmove, and keyboard events are intentionally removed as
+       * wake-up triggers so the sound starts only when the page is actually
+       * scrolling (native momentum scroll fires "scroll" events; a stationary
+       * wheel-over-element does not).
+       * ────────────────────────────────────────────────────────────────── */
       const onScroll = () => wakeUp();
-      const onWheel  = () => wakeUp();
-      const onTouch  = () => wakeUp();
 
-      const SCROLL_KEYS = new Set(["ArrowDown","ArrowUp","PageDown","PageUp"," ","Home","End"]);
-      const onKey = (e: KeyboardEvent) => {
-        if (SCROLL_KEYS.has(e.key) || SCROLL_KEYS.has(e.code)) wakeUp();
+      const onTouchStartUnlock = () => {
+        /* Unlock AudioContext for iOS — do NOT start the engine sound. */
+        if (Howler.ctx?.state === "suspended") {
+          void Howler.ctx.resume();
+        }
       };
 
-      window.addEventListener("scroll",    onScroll, { passive: true });
-      window.addEventListener("wheel",     onWheel,  { passive: true });
-      window.addEventListener("touchmove", onTouch,  { passive: true });
-      window.addEventListener("keydown",   onKey,    { passive: true });
+      window.addEventListener("scroll",     onScroll,           { passive: true });
+      window.addEventListener("touchstart", onTouchStartUnlock, { passive: true });
 
       cleanupFns.push(() => {
         clearInterval(monitor);
-        window.removeEventListener("scroll",    onScroll);
-        window.removeEventListener("wheel",     onWheel);
-        window.removeEventListener("touchmove", onTouch);
-        window.removeEventListener("keydown",   onKey);
+        window.removeEventListener("scroll",     onScroll);
+        window.removeEventListener("touchstart", onTouchStartUnlock);
         if (rafRef.current) cancelAnimationFrame(rafRef.current);
         howlsRef.current.sfx1?.stop();
         howlsRef.current.sfx2?.stop();

@@ -206,8 +206,8 @@ function MobileBranchCard({ branch }: { branch: BranchData }) {
               Baba Royal Garage
             </span>
             <h3
-              className="font-display text-[#111116] uppercase leading-none"
-              style={{ fontSize: "clamp(20px, 5.5vw, 26px)", letterSpacing: "0.02em" }}
+              className="font-display text-[#111116] leading-none"
+              style={{ fontSize: "clamp(20px, 5.5vw, 26px)", letterSpacing: "-0.02em" }}
             >
               {branch.branchName}
             </h3>
@@ -336,8 +336,8 @@ function DesktopBranchCard({ branch }: { branch: BranchData }) {
               Baba Royal Garage
             </span>
             <h3
-              className="font-display text-[#111116] uppercase leading-none"
-              style={{ fontSize: "clamp(22px, 2.8vw, 38px)", letterSpacing: "0.02em" }}
+              className="font-display text-[#111116] leading-none"
+              style={{ fontSize: "clamp(22px, 2.8vw, 38px)", letterSpacing: "-0.02em" }}
             >
               {branch.branchName}
             </h3>

@@ -297,8 +297,11 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
           pointerEvents: ctaOpacity > 0.05 ? "auto" : "none",
         }}
       >
-        {/* Skip button — top right */}
-        <div className="absolute right-4 top-4 md:right-6 md:top-6">
+        {/* Skip button — top right, respects Dynamic Island safe area */}
+        <div
+          className="absolute right-4 md:right-6"
+          style={{ top: "max(1rem, env(safe-area-inset-top, 1rem))" }}
+        >
           <button
             type="button"
             onClick={handleSkip}
@@ -315,8 +318,12 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
           style={{ background: "linear-gradient(to top, rgba(0,0,0,0.70) 0%, transparent 100%)" }}
         />
 
-        {/* Open button — smaller, lower on desktop */}
-        <div className="absolute inset-x-0 bottom-[18%] flex justify-center px-5 md:bottom-[6%]">
+        {/* Open button — safe area aware so home indicator on iPhone never
+            overlaps on landscape or portrait mode */}
+        <div
+          className="absolute inset-x-0 flex justify-center px-5 md:bottom-[6%]"
+          style={{ bottom: "max(18%, env(safe-area-inset-bottom, 1.5rem))" }}
+        >
           <button
             type="button"
             onClick={() => { void handleOpen(); }}

@@ -40,19 +40,48 @@ export default function Navbar({ onBookingClick }: NavbarProps) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* ── Scroll lock — CORRECT approach ──────────────────────────────────
-   * Using overflow:hidden on <html> instead of position:fixed+top avoids
-   * ANY scroll-position change, so there is zero jump when opening or
-   * closing the menu. No scroll restoration dance required.
+  /* ── Scroll lock — iOS-safe approach ─────────────────────────────────
+   * On iOS Safari, overflow:hidden on <html> alone does NOT prevent body
+   * scroll. The only reliable cross-browser fix is position:fixed on body
+   * with a negative top that matches the current scroll position.
+   * We restore scrollY manually on unlock so there's no visible jump.
    * ─────────────────────────────────────────────────────────────────── */
   useEffect(() => {
-    const html = document.documentElement;
-    if (mobileOpen) {
-      html.style.overflow = "hidden";
-    } else {
-      html.style.overflow = "";
+    if (!mobileOpen) {
+      // Restore scroll position exactly where user left off
+      const scrollY = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      if (scrollY) {
+        window.scrollTo(0, -parseInt(scrollY, 10));
+      }
+      return;
     }
-    return () => { html.style.overflow = ""; };
+    // Lock: freeze body at current position
+    const y = window.scrollY;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${y}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      const scrollY = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      if (scrollY) window.scrollTo(0, -parseInt(scrollY, 10));
+    };
   }, [mobileOpen]);
 
   /* ── Close on route change ────────────────────────────────────────── */
@@ -288,9 +317,16 @@ export default function Navbar({ onBookingClick }: NavbarProps) {
             borderBottom:         mobileOpen ? "1px solid rgba(255,255,255,0.08)" : "none",
           }}
         >
-          {/* Inner scroll area (menu content itself can scroll on very short screens) */}
-          <div className="overflow-y-auto" style={{ maxHeight: "calc(90dvh - 0px)" }}>
-            <nav className="flex flex-col px-5 sm:px-8 pb-8 pt-3">
+          {/* Inner scroll area — uses safe-area-inset-bottom so CTAs
+               never overlap iPhone home indicator on notched devices */}
+          <div
+            className="overflow-y-auto"
+            style={{ maxHeight: "calc(90dvh - 0px)", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+          >
+            <nav
+              className="flex flex-col px-5 sm:px-8 pt-3"
+              style={{ paddingBottom: "max(2rem, env(safe-area-inset-bottom, 2rem))" }}
+            >
 
               {/* Nav links */}
               {ALL_LINKS.map((l, i) => (

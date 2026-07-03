@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { reModels, getModelBySlug } from "@/lib/models";
 import { locations, getLocationBySlug } from "@/lib/locations";
@@ -108,7 +108,7 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
               </div>
 
               <h1
-                className="font-display text-white uppercase mb-4"
+                className="font-display text-white mb-4"
                 style={{ fontSize: "clamp(36px,7vw,88px)", lineHeight: 0.88, letterSpacing: "0.015em" }}
               >
                 {model.fullName}<br />
@@ -164,8 +164,8 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
                   <div className="h-[1px] w-7 bg-primary/60" />
                 </div>
                 <h2
-                  className="font-display text-foreground uppercase mb-6"
-                  style={{ fontSize: "clamp(22px,3.5vw,40px)", lineHeight: 1.0, letterSpacing: "0.02em" }}
+                  className="font-display text-foreground mb-6"
+                  style={{ fontSize: "clamp(22px,3.5vw,40px)", lineHeight: 1.0, letterSpacing: "-0.03em" }}
                 >
                   {model.fullName} Service at Baba Royal Garage
                 </h2>
@@ -184,8 +184,8 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
                   <div className="h-[1px] w-7 bg-primary/60" />
                 </div>
                 <h2
-                  className="font-display text-foreground uppercase mb-6"
-                  style={{ fontSize: "clamp(20px,3vw,36px)", lineHeight: 1.0, letterSpacing: "0.02em" }}
+                  className="font-display text-foreground mb-6"
+                  style={{ fontSize: "clamp(20px,3vw,36px)", lineHeight: 1.0, letterSpacing: "-0.03em" }}
                 >
                   Common {model.name} Issues We Fix
                 </h2>
@@ -210,8 +210,8 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
                     <div className="h-[1px] w-7 bg-primary/60" />
                   </div>
                   <h2
-                    className="font-display text-foreground uppercase mb-6"
-                    style={{ fontSize: "clamp(20px,3vw,36px)", lineHeight: 1.0, letterSpacing: "0.02em" }}
+                    className="font-display text-foreground mb-6"
+                    style={{ fontSize: "clamp(20px,3vw,36px)", lineHeight: 1.0, letterSpacing: "-0.03em" }}
                   >
                     Recommended Services for {model.name}
                   </h2>
@@ -242,8 +242,8 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
                     <div className="h-[1px] w-7 bg-primary/60" />
                   </div>
                   <h2
-                    className="font-display text-foreground uppercase mb-6"
-                    style={{ fontSize: "clamp(20px,3vw,36px)", lineHeight: 1.0, letterSpacing: "0.02em" }}
+                    className="font-display text-foreground mb-6"
+                    style={{ fontSize: "clamp(20px,3vw,36px)", lineHeight: 1.0, letterSpacing: "-0.03em" }}
                   >
                     Frequently Asked Questions
                   </h2>
@@ -340,7 +340,7 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
               </div>
 
               <h1
-                className="font-display text-white uppercase mb-4"
+                className="font-display text-white mb-4"
                 style={{ fontSize: "clamp(36px,7vw,88px)", lineHeight: 0.88, letterSpacing: "0.015em" }}
               >
                 Royal Enfield Service<br />
@@ -410,8 +410,8 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
                   <div className="h-[1px] w-7 bg-primary/60" />
                 </div>
                 <h2
-                  className="font-display text-foreground uppercase mb-6"
-                  style={{ fontSize: "clamp(22px,3.5vw,40px)", lineHeight: 1.0, letterSpacing: "0.02em" }}
+                  className="font-display text-foreground mb-6"
+                  style={{ fontSize: "clamp(22px,3.5vw,40px)", lineHeight: 1.0, letterSpacing: "-0.03em" }}
                 >
                   Royal Enfield Service for {location.name} Riders
                 </h2>
@@ -430,8 +430,8 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
                   <div className="h-[1px] w-7 bg-primary/60" />
                 </div>
                 <h2
-                  className="font-display text-foreground uppercase mb-6"
-                  style={{ fontSize: "clamp(20px,3vw,36px)", lineHeight: 1.0, letterSpacing: "0.02em" }}
+                  className="font-display text-foreground mb-6"
+                  style={{ fontSize: "clamp(20px,3vw,36px)", lineHeight: 1.0, letterSpacing: "-0.03em" }}
                 >
                   Services for {location.name} Customers
                 </h2>
@@ -465,8 +465,8 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
                   <div className="h-[1px] w-7 bg-primary/60" />
                 </div>
                 <h2
-                  className="font-display text-foreground uppercase mb-8"
-                  style={{ fontSize: "clamp(20px,3vw,36px)", lineHeight: 1.0, letterSpacing: "0.02em" }}
+                  className="font-display text-foreground mb-8"
+                  style={{ fontSize: "clamp(20px,3vw,36px)", lineHeight: 1.0, letterSpacing: "-0.03em" }}
                 >
                   The {location.name} Rider&apos;s Choice
                 </h2>
@@ -499,8 +499,8 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
                     <div className="h-[1px] w-7 bg-primary/60" />
                   </div>
                   <h2
-                    className="font-display text-foreground uppercase mb-6"
-                    style={{ fontSize: "clamp(20px,3vw,36px)", lineHeight: 1.0, letterSpacing: "0.02em" }}
+                    className="font-display text-foreground mb-6"
+                    style={{ fontSize: "clamp(20px,3vw,36px)", lineHeight: 1.0, letterSpacing: "-0.03em" }}
                   >
                     Frequently Asked Questions
                   </h2>

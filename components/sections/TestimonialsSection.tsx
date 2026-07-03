@@ -76,8 +76,8 @@ export default function TestimonialsSection() {
             <span className="font-label text-primary text-[10px] lg:text-[13px] tracking-[0.3em] uppercase">Verified Reviews</span>
             <div className="h-[1px] w-8 bg-primary/60" />
           </div>
-          <h2 className="font-display uppercase text-foreground mb-4"
-            style={{ fontSize: "clamp(40px,6.5vw,88px)", lineHeight: 0.9, letterSpacing: "0.02em" }}>
+          <h2 className="font-display text-foreground mb-4"
+            style={{ fontSize: "clamp(40px,6.5vw,88px)", lineHeight: 0.9, letterSpacing: "-0.03em" }}>
             What Riders Say
           </h2>
           <p className="font-body text-muted-foreground text-sm lg:text-[16.5px] mt-4 lg:mt-6 max-w-xl lg:max-w-2xl mx-auto">1000+ Royal Enfield repairs completed at Baba Royal Garage, Hubli</p>
@@ -135,7 +135,7 @@ export default function TestimonialsSection() {
                   ) : (
                     <div className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-primary/8 text-label text-primary">RE</div>
                   )}
-                  <p className="font-subheading font-bold text-foreground text-base uppercase tracking-wider">{review.name}</p>
+                  <p className="font-subheading font-bold text-foreground text-base">{review.name}</p>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {review.model && (
@@ -200,7 +200,7 @@ export default function TestimonialsSection() {
                 <p className="font-body text-muted-foreground text-sm lg:text-[15.5px] leading-[1.7] lg:leading-[1.85] mt-3 lg:mt-4 mb-4 lg:mb-5 italic line-clamp-3">
                   &ldquo;{r.review}&rdquo;
                 </p>
-                <p className="font-heading font-bold text-foreground text-sm uppercase tracking-wider">— {r.name}</p>
+                <p className="font-heading font-bold text-foreground text-sm">— {r.name}</p>
                 {r.model && (
                   <span className="font-label text-[9px] bg-primary/8 text-primary border border-primary/16 px-2 py-0.5 rounded-full mt-2 inline-block">
                     {r.model}

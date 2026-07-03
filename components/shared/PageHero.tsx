@@ -31,8 +31,8 @@ export default function PageHero({ overline, title, subtitle, children, variant 
           </div>
         )}
         <h1
-          className={`font-display uppercase mb-4 ${isDark ? "text-white" : "text-foreground"}`}
-          style={{ fontSize: "clamp(40px,7vw,88px)", lineHeight: 0.9, letterSpacing: "0.02em" }}
+          className={`font-display mb-4 ${isDark ? "text-white" : "text-foreground"}`}
+          style={{ fontSize: "clamp(40px,7vw,88px)", lineHeight: 0.9, letterSpacing: "-0.03em" }}
         >
           {title}
         </h1>

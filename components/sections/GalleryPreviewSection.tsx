@@ -99,14 +99,14 @@ export default function GalleryPreviewSection() {
         className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none select-none overflow-hidden z-0"
       >
         <span
-          className="font-display uppercase whitespace-nowrap leading-none text-transparent"
+          className="font-display whitespace-nowrap leading-none text-transparent"
           style={{
             fontSize: "clamp(100px, 20vw, 260px)",
             WebkitTextStroke: "1px rgba(255,255,255,0.04)",
             letterSpacing: "0.06em",
           }}
         >
-          GARAGE
+          Garage
         </span>
       </div>
 
@@ -141,11 +141,11 @@ export default function GalleryPreviewSection() {
           initial={{ opacity: 0, y: 24 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.75, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="font-display text-white uppercase leading-none mx-auto"
+          className="font-display text-white leading-none mx-auto"
           style={{
             fontSize: "clamp(40px, 8vw, 100px)",
-            lineHeight: 0.88,
-            letterSpacing: "0.03em",
+            lineHeight: 0.9,
+            letterSpacing: "-0.03em",
             maxWidth: "18ch",
           }}
         >
@@ -266,8 +266,8 @@ export default function GalleryPreviewSection() {
                     </div>
                     {/* Label */}
                     <h3
-                      className="font-display text-white uppercase leading-none"
-                      style={{ fontSize: "clamp(13px, 1.8vw, 20px)", letterSpacing: "0.06em" }}
+                      className="font-display text-white leading-none"
+                      style={{ fontSize: "clamp(13px, 1.8vw, 20px)", letterSpacing: "-0.01em" }}
                     >
                       {image.label}
                     </h3>

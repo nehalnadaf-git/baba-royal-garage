@@ -217,7 +217,7 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
         {step === 1 && (
           <div>
             <p
-              className="font-display text-[#111116] uppercase leading-tight mb-0.5"
+              className="font-display text-[#111116] leading-tight mb-0.5"
               style={{ fontSize: "clamp(17px, 2.5vw, 26px)" }}
             >
               What&apos;s your Royal Enfield?
@@ -277,7 +277,7 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
         {step === 2 && (
           <div>
             <p
-              className="font-display text-[#111116] uppercase leading-tight mb-0.5"
+              className="font-display text-[#111116] leading-tight mb-0.5"
               style={{ fontSize: "clamp(17px, 2.5vw, 26px)" }}
             >
               What&apos;s the issue?
@@ -348,7 +348,7 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
           <div className="space-y-4">
             <div>
               <p
-                className="font-display text-[#111116] uppercase leading-tight mb-0.5"
+                className="font-display text-[#111116] leading-tight mb-0.5"
                 style={{ fontSize: "clamp(17px, 2.5vw, 26px)" }}
               >
                 Almost done!
@@ -525,7 +525,7 @@ export default function BookingForm({ onBack }: { onBack: () => void }) {
         {step === 4 && (
           <div>
             <p
-              className="font-display text-[#111116] uppercase leading-tight mb-0.5"
+              className="font-display text-[#111116] leading-tight mb-0.5"
               style={{ fontSize: "clamp(17px, 2.5vw, 26px)" }}
             >
               Ready to Book!

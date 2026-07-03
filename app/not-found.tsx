@@ -21,8 +21,8 @@ export default function NotFound() {
 
         {/* 404 display */}
         <div
-          className="font-display text-primary uppercase leading-none mb-4"
-          style={{ fontSize: "clamp(100px, 20vw, 200px)", lineHeight: 0.85, letterSpacing: "0.06em" }}
+          className="font-display text-primary leading-none mb-4"
+          style={{ fontSize: "clamp(100px, 20vw, 200px)", lineHeight: 0.85, letterSpacing: "-0.04em" }}
         >
           404
         </div>
@@ -31,8 +31,8 @@ export default function NotFound() {
         <div className="w-10 h-[3px] bg-gradient-to-r from-primary to-primary-light rounded-full mb-6 mx-auto" />
 
         <h1
-          className="font-display text-white uppercase mb-3"
-          style={{ fontSize: "clamp(22px,4vw,48px)", lineHeight: 1.0, letterSpacing: "0.02em" }}
+          className="font-display text-white mb-3"
+          style={{ fontSize: "clamp(22px,4vw,48px)", lineHeight: 1.0, letterSpacing: "-0.03em" }}
         >
           Page Not Found
         </h1>

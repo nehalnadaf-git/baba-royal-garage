@@ -12,12 +12,12 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["var(--font-display)", "Bebas Neue", "sans-serif"],
-        heading: ["var(--font-heading)", "Barlow", "sans-serif"],
-        subheading: ["var(--font-subheading)", "Barlow Condensed", "sans-serif"],
-        body:    ["var(--font-body)", "Inter", "sans-serif"],
-        label:   ["var(--font-tech)", "Space Mono", "monospace"],
-        mono:    ["var(--font-tech)", "Space Mono", "monospace"],
+        display:    ["var(--font-inter)", "Inter", "sans-serif"],
+        heading:    ["var(--font-inter)", "Inter", "sans-serif"],
+        subheading: ["var(--font-inter)", "Inter", "sans-serif"],
+        body:       ["var(--font-inter)", "Inter", "sans-serif"],
+        label:      ["var(--font-inter)", "Inter", "sans-serif"],
+        mono:       ["var(--font-inter)", "Inter", "sans-serif"],
       },
       colors: {
         border:      "hsl(var(--border))",

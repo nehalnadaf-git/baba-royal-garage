@@ -18,8 +18,8 @@ export default function ContactSection() {
             <span className="font-label text-primary text-[10px] lg:text-[12px] tracking-[0.3em] uppercase">Our Locations</span>
             <div className="h-[1px] w-8 bg-primary/50" />
           </div>
-          <h2 className="font-display uppercase text-white mb-4"
-            style={{ fontSize: "clamp(40px,7vw,88px)", lineHeight: 0.9, letterSpacing: "0.02em" }}>
+          <h2 className="font-display text-white mb-4"
+            style={{ fontSize: "clamp(40px,7vw,88px)", lineHeight: 0.9, letterSpacing: "-0.03em" }}>
             Find Us
           </h2>
           <p className="font-body text-white/45 text-sm sm:text-base lg:text-[18px] max-w-sm lg:max-w-2xl mx-auto mt-5 lg:mt-6 leading-relaxed lg:leading-[1.9]">

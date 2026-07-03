@@ -207,8 +207,8 @@ export default function ServicesSection({ limit = 6, showViewAll = false, varian
             <div className="h-[1px] w-8 bg-primary/60" />
           </div>
           <h2
-            className={`font-display uppercase mb-4 ${isDark ? "text-white" : "text-foreground"}`}
-            style={{ fontSize: "clamp(40px,6.5vw,88px)", lineHeight: 0.9, letterSpacing: "0.02em" }}
+            className={`font-display mb-4 ${isDark ? "text-white" : "text-foreground"}`}
+            style={{ fontSize: "clamp(40px,6.5vw,88px)", lineHeight: 0.9, letterSpacing: "-0.03em" }}
           >
             Our Services
           </h2>
@@ -259,7 +259,7 @@ export default function ServicesSection({ limit = 6, showViewAll = false, varian
               </div>
 
               <div className="p-6 sm:p-8">
-                <h3 className={`font-display uppercase mb-3 leading-tight tracking-[0.03em] ${isDark ? "text-white" : "text-foreground"}`}
+                <h3 className={`font-display mb-3 leading-tight ${isDark ? "text-white" : "text-foreground"}`}
                   style={{ fontSize: "clamp(20px,2.2vw,26px)" }}>
                   {service.title}
                 </h3>

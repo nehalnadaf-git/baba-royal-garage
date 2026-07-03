@@ -73,8 +73,8 @@ export default function GalleryPageClient() {
 
           {/* Headline */}
           <h1
-            className="font-display text-white uppercase mb-5"
-            style={{ fontSize: "clamp(44px, 8vw, 104px)", lineHeight: 0.88, letterSpacing: "0.015em" }}
+            className="font-display text-white mb-5"
+            style={{ fontSize: "clamp(44px, 8vw, 104px)", lineHeight: 0.9, letterSpacing: "-0.03em" }}
           >
             Our Work Speaks
           </h1>
@@ -197,7 +197,7 @@ export default function GalleryPageClient() {
           {/* Empty state */}
           {filteredImages.length === 0 && (
             <div className="flex flex-col items-center justify-center py-24 text-center">
-              <p className="font-display text-foreground/20 text-[40px] sm:text-[60px] uppercase tracking-wider mb-3">No Photos</p>
+              <p className="font-display text-foreground/20 text-[40px] sm:text-[60px] mb-3">No Photos</p>
               <p className="font-body text-muted-foreground text-[14px]">No images in this category yet.</p>
             </div>
           )}

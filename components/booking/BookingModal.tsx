@@ -85,7 +85,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
         >
           <div>
             <h2
-              className="font-display text-[#111116] uppercase tracking-[0.08em] leading-tight"
+              className="font-display text-[#111116] leading-tight"
               style={{ fontSize: "15px" }}
             >
               Book a Service

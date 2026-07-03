@@ -81,7 +81,7 @@ export default function RelatedServicesCards({ items }: RelatedServicesCardsProp
 
               {/* Title */}
               <h3
-                className="font-display uppercase text-foreground leading-tight tracking-[0.03em] mb-3 group-hover:text-primary transition-colors duration-250"
+                className="font-display text-foreground leading-tight mb-3 group-hover:text-primary transition-colors duration-250"
                 style={{ fontSize: "clamp(15px, 1.4vw, 22px)" }}
               >
                 {s.name}

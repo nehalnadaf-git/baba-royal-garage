@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import SchemaMarkup from "@/components/shared/SchemaMarkup";
 import { buildBreadcrumbSchema, buildPageMetadata } from "@/lib/seo";
@@ -31,8 +31,8 @@ export default function TermsPage() {
             <span className="font-label text-primary text-[10px] lg:text-[13px] tracking-[0.3em] uppercase">Legal</span>
           </div>
           <h1
-            className="font-display text-white uppercase mb-4"
-            style={{ fontSize: "clamp(36px,6vw,80px)", lineHeight: 0.9, letterSpacing: "0.02em" }}
+            className="font-display text-white mb-4"
+            style={{ fontSize: "clamp(36px,6vw,80px)", lineHeight: 0.9, letterSpacing: "-0.03em" }}
           >
             Terms of Service
           </h1>

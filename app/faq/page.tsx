@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { faqs } from "@/lib/faqs";
 import { business } from "@/lib/business";
 import { buildBreadcrumbSchema, buildFaqSchema, buildPageMetadata } from "@/lib/seo";
@@ -94,7 +94,7 @@ export default function FAQPage() {
               <div className="absolute inset-0 pointer-events-none"
                 style={{ backgroundImage: "radial-gradient(ellipse 60% 50% at 50% 0%, rgba(232,25,42,0.04), transparent 70%)" }} />
               <div className="relative">
-                <h2 className="font-display text-foreground uppercase mb-3" style={{ fontSize: "clamp(22px,3vw,36px)", lineHeight: 1.0, letterSpacing: "0.02em" }}>Still Have a Question?</h2>
+                <h2 className="font-display text-foreground mb-3" style={{ fontSize: "clamp(22px,3vw,36px)", lineHeight: 1.0, letterSpacing: "-0.03em" }}>Still Have a Question?</h2>
                 <p className="font-body text-muted-foreground text-[14px] sm:text-[15px] lg:text-[16px] lg:leading-[1.8] mb-6 max-w-md mx-auto">Our team responds promptly to all WhatsApp and phone queries during working hours.</p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <a

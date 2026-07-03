@@ -62,8 +62,8 @@ export default function WhySpecialistSection() {
           </div>
 
           <h2
-            className="font-display text-white uppercase"
-            style={{ fontSize: "clamp(38px, 6.5vw, 88px)", lineHeight: 0.92, letterSpacing: "0.02em" }}
+            className="font-display text-white"
+            style={{ fontSize: "clamp(38px, 6.5vw, 88px)", lineHeight: 0.92, letterSpacing: "-0.03em" }}
           >
             Why a{" "}
             <span className="text-primary">Specialist</span>
@@ -111,7 +111,7 @@ export default function WhySpecialistSection() {
                       <span className="font-label text-primary text-[12px] lg:text-[14px] tracking-[0.25em] uppercase font-black">
                         Official Specialist
                       </span>
-                      <h3 className="font-display text-[#111116] text-xl lg:text-2xl xl:text-3xl uppercase tracking-wider leading-none mt-1">
+                      <h3 className="font-display text-[#111116] text-xl lg:text-2xl xl:text-3xl leading-none mt-1">
                         Baba Royal Garage
                       </h3>
                     </div>
@@ -128,7 +128,7 @@ export default function WhySpecialistSection() {
                       <span className="font-label text-white/50 text-[12px] lg:text-[14px] tracking-[0.2em] uppercase font-bold">
                         The Alternative
                       </span>
-                      <span className="font-display text-white/90 text-xl lg:text-2xl xl:text-3xl uppercase tracking-widest leading-none mt-1">
+                      <span className="font-display text-white/90 text-xl lg:text-2xl xl:text-3xl leading-none mt-1">
                         General Mechanic
                       </span>
                     </div>
@@ -150,7 +150,7 @@ export default function WhySpecialistSection() {
                       </div>
                       <div className="flex flex-col">
                         <span className="font-label text-[#111116]/50 text-[11px] lg:text-[12px] tracking-[0.3em] uppercase mb-1">Standard</span>
-                        <h4 className="font-display text-[#111116] text-[17px] lg:text-[19px] xl:text-[22px] uppercase tracking-widest leading-tight">
+                        <h4 className="font-display text-[#111116] text-[17px] lg:text-[19px] xl:text-[22px] leading-tight">
                           {factor}
                         </h4>
                       </div>
@@ -224,7 +224,7 @@ export default function WhySpecialistSection() {
                 <div className="flex w-10 h-10 shrink-0 rounded-xl bg-gradient-to-br from-white/60 to-[#D2D6DA] border border-white/70 items-center justify-center shadow-sm">
                   <Icon className="h-5 w-5 text-[#111116]/65" />
                 </div>
-                <h4 className="font-display text-[#111116] text-[16px] uppercase tracking-wider leading-tight font-bold">
+                <h4 className="font-display text-[#111116] text-[16px] leading-tight font-bold">
                   {factor}
                 </h4>
               </div>
@@ -319,8 +319,8 @@ export default function WhySpecialistSection() {
 
                   {/* Heading */}
                   <h2
-                    className="font-display text-white uppercase leading-[0.92] mb-4 sm:mb-6"
-                    style={{ fontSize: "clamp(30px, 5.5vw, 72px)", letterSpacing: "0.01em" }}
+                    className="font-display text-white leading-[0.92] mb-4 sm:mb-6"
+                    style={{ fontSize: "clamp(30px, 5.5vw, 72px)", letterSpacing: "-0.03em" }}
                   >
                     Ready for{" "}
                     <span

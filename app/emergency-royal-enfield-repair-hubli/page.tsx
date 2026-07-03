@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { business } from "@/lib/business";
 import { buildBreadcrumbSchema, buildPageMetadata } from "@/lib/seo";
 import ServiceCTABanner from "@/components/sections/ServiceCTABanner";
@@ -62,7 +62,7 @@ export default function EmergencyPage() {
 
             {/* H1 */}
             <h1
-              className="font-display text-white uppercase mb-4"
+              className="font-display text-white mb-4"
               style={{ fontSize: "clamp(36px, 7vw, 88px)", lineHeight: 0.88, letterSpacing: "0.015em" }}
             >
               Royal Enfield{" "}
@@ -114,7 +114,7 @@ export default function EmergencyPage() {
             <span className="font-label text-primary text-[10px] lg:text-[13px] tracking-[0.3em] uppercase">We Handle</span>
           </div>
           <h2
-            className="font-display text-foreground uppercase mb-10"
+            className="font-display text-foreground mb-10"
             style={{ fontSize: "clamp(26px, 4vw, 52px)", lineHeight: 0.9, letterSpacing: "0.015em" }}
           >
             Emergency Problems We Handle
@@ -138,7 +138,7 @@ export default function EmergencyPage() {
               <span className="font-label text-primary text-[10px] lg:text-[13px] tracking-[0.3em] uppercase">Process</span>
             </div>
             <h2
-              className="font-display text-foreground uppercase mb-8"
+              className="font-display text-foreground mb-8"
               style={{ fontSize: "clamp(24px, 3.5vw, 44px)", lineHeight: 0.9, letterSpacing: "0.015em" }}
             >
               What Happens When You Call

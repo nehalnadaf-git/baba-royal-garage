@@ -57,8 +57,8 @@ export default function FindUsSection() {
               <div className="h-[1px] w-8 bg-primary/60" />
             </div>
             <h2
-              className="font-display uppercase text-white leading-none"
-              style={{ fontSize: "clamp(36px,7vw,92px)", lineHeight: 0.85, letterSpacing: "0.01em" }}
+              className="font-display text-white leading-none"
+              style={{ fontSize: "clamp(36px,7vw,92px)", lineHeight: 0.9, letterSpacing: "-0.03em" }}
             >
               Find Us In{" "}
               <span className="text-primary underline decoration-primary/20 underline-offset-[12px]">

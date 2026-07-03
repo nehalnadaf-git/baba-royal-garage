@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import { business } from "@/lib/business";
 import ServiceCTABanner from "@/components/sections/ServiceCTABanner";
@@ -88,7 +88,7 @@ export default function AboutPage() {
                 <span className="font-label text-primary text-[10px] lg:text-[11px] tracking-[0.25em] uppercase font-bold">Our Journey</span>
               </div>
               <h2
-                className="font-display text-[#121212] uppercase mb-6"
+                className="font-display text-[#121212] mb-6"
                 style={{ fontSize: "clamp(42px, 6vw, 84px)", lineHeight: 0.85, letterSpacing: "-0.01em" }}
               >
                 Our Story
@@ -133,7 +133,7 @@ export default function AboutPage() {
             <span className="font-label text-primary text-[10px] lg:text-[13px] tracking-[0.3em] uppercase">Our Principles</span>
           </div>
           <h2
-            className="font-display text-foreground uppercase mb-12 lg:mb-16"
+            className="font-display text-foreground mb-12 lg:mb-16"
             style={{ fontSize: "clamp(32px, 5vw, 68px)", lineHeight: 0.9, letterSpacing: "0.015em" }}
           >
             Why Riders Trust Us

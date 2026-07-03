@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -102,7 +102,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
             {/* Headline */}
             <h1
-              className="font-display text-white uppercase mb-4"
+              className="font-display text-white mb-4"
               style={{ fontSize: "clamp(38px, 7vw, 96px)", lineHeight: 0.9, letterSpacing: "0.015em" }}
             >
               {service.name}
@@ -183,8 +183,8 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                 <span className="font-label text-primary text-[10px] tracking-[0.28em] uppercase">Service Overview</span>
               </div>
               <h2
-                className="font-display uppercase text-foreground mb-6"
-                style={{ fontSize: "clamp(24px, 3.5vw, 44px)", lineHeight: 1, letterSpacing: "0.02em" }}
+                className="font-display text-foreground mb-6"
+                style={{ fontSize: "clamp(24px, 3.5vw, 44px)", lineHeight: 1, letterSpacing: "-0.03em" }}
               >
                 About This Service
               </h2>
@@ -205,8 +205,8 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                   <span className="font-label text-primary text-[10px] tracking-[0.28em] uppercase">Included</span>
                 </div>
                 <h2
-                  className="font-display uppercase text-foreground mb-7"
-                  style={{ fontSize: "clamp(22px, 3vw, 40px)", lineHeight: 1, letterSpacing: "0.02em" }}
+                  className="font-display text-foreground mb-7"
+                  style={{ fontSize: "clamp(22px, 3vw, 40px)", lineHeight: 1, letterSpacing: "-0.03em" }}
                 >
                   What We Include
                 </h2>
@@ -234,8 +234,8 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                   <span className="font-label text-primary text-[10px] tracking-[0.28em] uppercase">Diagnostics</span>
                 </div>
                 <h2
-                  className="font-display uppercase text-foreground mb-7"
-                  style={{ fontSize: "clamp(22px, 3vw, 40px)", lineHeight: 1, letterSpacing: "0.02em" }}
+                  className="font-display text-foreground mb-7"
+                  style={{ fontSize: "clamp(22px, 3vw, 40px)", lineHeight: 1, letterSpacing: "-0.03em" }}
                 >
                   Common Problems We Fix
                 </h2>
@@ -260,8 +260,8 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                   <span className="font-label text-primary text-[10px] tracking-[0.28em] uppercase">Warning Signs</span>
                 </div>
                 <h2
-                  className="font-display uppercase text-foreground mb-7"
-                  style={{ fontSize: "clamp(22px, 3vw, 40px)", lineHeight: 1, letterSpacing: "0.02em" }}
+                  className="font-display text-foreground mb-7"
+                  style={{ fontSize: "clamp(22px, 3vw, 40px)", lineHeight: 1, letterSpacing: "-0.03em" }}
                 >
                   Signs You Need This Service
                 </h2>
@@ -286,8 +286,8 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                   <span className="font-label text-primary text-[10px] tracking-[0.28em] uppercase">Questions</span>
                 </div>
                 <h2
-                  className="font-display uppercase text-foreground mb-7"
-                  style={{ fontSize: "clamp(22px, 3vw, 40px)", lineHeight: 1, letterSpacing: "0.02em" }}
+                  className="font-display text-foreground mb-7"
+                  style={{ fontSize: "clamp(22px, 3vw, 40px)", lineHeight: 1, letterSpacing: "-0.03em" }}
                 >
                   Frequently Asked Questions
                 </h2>
@@ -324,8 +324,8 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                 <span className="font-label text-primary text-[10px] lg:text-[12px] tracking-[0.3em] uppercase">You May Also Need</span>
               </div>
               <h2
-                className="font-display uppercase text-foreground mb-10 sm:mb-12"
-                style={{ fontSize: "clamp(28px, 4.5vw, 60px)", lineHeight: 0.92, letterSpacing: "0.02em" }}
+                className="font-display text-foreground mb-10 sm:mb-12"
+                style={{ fontSize: "clamp(28px, 4.5vw, 60px)", lineHeight: 0.92, letterSpacing: "-0.03em" }}
               >
                 Related Services
               </h2>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import HomeHero from "@/components/sections/HomeHero";
 
 import ServicesSection from "@/components/sections/ServicesSection";
-import GalleryPreviewSection from "@/components/sections/GalleryPreviewSection";
+import PetrolTankGallerySection from "@/components/sections/PetrolTankGallerySection";
 import AboutSection from "@/components/sections/AboutSection";
 import WhySpecialistSection from "@/components/sections/WhySpecialistSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
@@ -32,7 +32,7 @@ export default function HomePage() {
       <HomeHero />
 
       <ServicesSection showViewAll={true} variant="light" />
-      <GalleryPreviewSection />
+      <PetrolTankGallerySection />
       <AboutSection />
       <WhySpecialistSection />
       <TestimonialsSection />

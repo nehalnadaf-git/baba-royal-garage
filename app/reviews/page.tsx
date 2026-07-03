@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { reviews } from "@/lib/reviews";
 import { business } from "@/lib/business";
 import { buildBreadcrumbSchema, buildPageMetadata } from "@/lib/seo";
@@ -81,8 +81,8 @@ export default function ReviewsPage() {
             </span>
           </div>
           <h2
-            className="font-display uppercase text-foreground mb-12"
-            style={{ fontSize: "clamp(28px,4vw,52px)", lineHeight: 0.95, letterSpacing: "0.02em" }}
+            className="font-display text-foreground mb-12"
+            style={{ fontSize: "clamp(28px,4vw,52px)", lineHeight: 0.95, letterSpacing: "-0.03em" }}
           >
             All Reviews
           </h2>
@@ -173,8 +173,8 @@ export default function ReviewsPage() {
               </div>
 
               <h2
-                className="font-display uppercase text-foreground mb-4"
-                style={{ fontSize: "clamp(26px,4vw,56px)", lineHeight: 0.95, letterSpacing: "0.02em" }}
+                className="font-display text-foreground mb-4"
+                style={{ fontSize: "clamp(26px,4vw,56px)", lineHeight: 0.95, letterSpacing: "-0.03em" }}
               >
                 See All Reviews <br className="hidden sm:block" /> on Google
               </h2>

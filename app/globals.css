@@ -82,6 +82,12 @@
     --glow-red:  rgba(232, 25, 42,  0.28);
     --glow-gold: rgba(201, 168, 76, 0.22);
 
+    /* === Petrol Tank Responsive Width System ===
+       --tank-width defines the base container width. It is responsive via a CSS media query.
+       On desktop it is capped by a container size, on mobile it scales wider.
+       We set the default to 75vw (desktop) and override it on mobile. */
+    --tank-width: min(420px, 75vw, calc(70vh / 1.49));
+
     /* === Fluid type scale === */
     --fs-hero:  clamp(3rem, 9vw, 8.25rem);
     --fs-h1:    clamp(2rem, 5vw, 4.5rem);
@@ -100,35 +106,59 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
-    /* Always reserve scrollbar gutter space — prevents the ~15px layout
-       shift when overflow:hidden is toggled by the shutter intro lock.
-       Without this, the content jumps wider → narrower as the shutter
-       finishes and the scrollbar reappears. */
-    scrollbar-gutter: stable;
+  }
+
+  /* Reserve scrollbar gutter ONLY on pointer-fine (desktop) devices.
+     On mobile there are no persistent scrollbars so this is a no-op
+     that could cause unexpected layout on some Android browsers. */
+  @media (pointer: fine) {
+    html {
+      scrollbar-gutter: stable;
+    }
   }
 
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-body), 'Inter', sans-serif;
+    font-family: var(--font-inter), 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
     font-size: var(--fs-body);
     line-height: 1.6;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    /* Prevent iOS rubber-band scroll from bouncing past page edges and
+       exposing the white/grey background behind dark sections. */
+    overscroll-behavior-x: none;
+  }
+
+  /* Eliminate the 300ms tap delay on iOS for all interactive elements.
+     touch-action: manipulation disables double-tap-to-zoom on buttons/links,
+     allowing the browser to fire click immediately on first tap. */
+  button, a, [role="button"], [role="link"],
+  input[type="submit"], input[type="reset"], input[type="button"],
+  label[for], select {
+    touch-action: manipulation;
   }
 
   h1, h2 {
-    font-family: var(--font-heading), 'Barlow', sans-serif;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-family: var(--font-inter), 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.03em;
   }
 
   h3, h4, h5, h6 {
-    font-family: var(--font-subheading), 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-family: var(--font-inter), 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  /* Override the petrol tank width to be wider (85vw) on mobile devices
+     while maintaining correct aspect ratio limits */
+  @media (max-width: 559px) {
+    :root {
+      --tank-width: min(420px, 85vw, calc(70vh / 1.49));
+    }
   }
 }
 
@@ -140,77 +170,75 @@
 
 /* ─── Typography ─────────────────────────────────────────────────── */
 @layer utilities {
-  /* Bebas Neue — hero / massive display */
+  /* Inter 800 — hero / massive display */
   .text-hero {
-    font-family: var(--font-display), 'Bebas Neue', sans-serif;
+    font-family: var(--font-inter), 'Inter', sans-serif;
     font-size: var(--fs-hero);
-    font-weight: 400;
-    line-height: 0.88;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  /* Barlow — primary headings */
-  .text-section-title {
-    font-family: var(--font-heading), 'Barlow', sans-serif;
-    font-size: var(--fs-h1);
     font-weight: 800;
-    line-height: 1.02;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
   }
 
-  .text-card-title {
-    font-family: var(--font-subheading), 'Barlow Condensed', sans-serif;
-    font-size: var(--fs-h3);
+  /* Inter 700 — primary section headings */
+  .text-section-title {
+    font-family: var(--font-inter), 'Inter', sans-serif;
+    font-size: var(--fs-h1);
     font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    line-height: 1.2;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
   }
 
-  /* Inter — body */
+  /* Inter 600 — card titles */
+  .text-card-title {
+    font-family: var(--font-inter), 'Inter', sans-serif;
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  /* Inter 400 — body */
   .text-body {
-    font-family: var(--font-body), 'Inter', sans-serif;
+    font-family: var(--font-inter), 'Inter', sans-serif;
     font-size: var(--fs-body);
     font-weight: 400;
     line-height: 1.7;
-    letter-spacing: 0.01em;
+    letter-spacing: -0.005em;
   }
 
-  /* Space Mono — technical labels and stats */
+  /* Inter 600 — technical labels and stats (keeps uppercase) */
   .text-label {
-    font-family: var(--font-tech), 'Space Mono', monospace;
+    font-family: var(--font-inter), 'Inter', sans-serif;
     font-size: clamp(0.62rem, 0.72vw, 0.72rem);
-    font-weight: 400;
-    letter-spacing: 0.12em;
+    font-weight: 600;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
   }
 
-  /* Barlow Condensed — labels and buttons */
+  /* Inter 600 — subheadings */
   .text-subheading {
-    font-family: var(--font-subheading), 'Barlow Condensed', sans-serif;
+    font-family: var(--font-inter), 'Inter', sans-serif;
     font-size: var(--fs-h3);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  /* Inter 700 — CTAs (keeps uppercase for button legibility) */
+  .text-cta {
+    font-family: var(--font-inter), 'Inter', sans-serif;
+    font-size: clamp(0.84rem, 1vw, 0.95rem);
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
-  .text-cta {
-    font-family: var(--font-subheading), 'Barlow Condensed', sans-serif;
-    font-size: clamp(0.84rem, 1vw, 0.95rem);
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  /* Font shortcuts */
-  .font-display { font-family: var(--font-display), 'Bebas Neue', sans-serif; }
-  .font-heading  { font-family: var(--font-heading), 'Barlow', sans-serif; }
-  .font-subheading  { font-family: var(--font-subheading), 'Barlow Condensed', sans-serif; }
-  .font-body     { font-family: var(--font-body), 'Inter', sans-serif; }
-  .font-label    { font-family: var(--font-tech), 'Space Mono', monospace; }
-  .font-mono     { font-family: var(--font-tech), 'Space Mono', monospace; }
+  /* Font shortcuts — all Inter, weight-differentiated, no forced case */
+  .font-display    { font-family: var(--font-inter), 'Inter', sans-serif; font-weight: 800; letter-spacing: -0.04em; }
+  .font-heading    { font-family: var(--font-inter), 'Inter', sans-serif; font-weight: 700; letter-spacing: -0.03em; }
+  .font-subheading { font-family: var(--font-inter), 'Inter', sans-serif; font-weight: 600; letter-spacing: -0.02em; }
+  .font-body       { font-family: var(--font-inter), 'Inter', sans-serif; font-weight: 400; }
+  .font-label      { font-family: var(--font-inter), 'Inter', sans-serif; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+  .font-mono       { font-family: var(--font-inter), 'Inter', sans-serif; font-weight: 500; }
 }
 
 /* ─── Glassmorphism ──────────────────────────────────────────────── */
@@ -342,6 +370,19 @@
   .line-clamp-3 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; }
 }
 
+/* ─── Scrollbar Hide ─────────────────────────────────────────────── */
+@layer utilities {
+  /* Hides scrollbars visually while keeping content scrollable.
+     Works on WebKit (iOS/macOS Safari, Chrome), Firefox, and IE/Edge. */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE / Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;             /* Chrome / Safari / iOS */
+  }
+}
+
 /* ─── Touch targets ──────────────────────────────────────────────── */
 @layer utilities {
   .touch-target { min-height: 44px; min-width: 44px; }
@@ -410,20 +451,19 @@
 /*
  * Fix: border-radius "square flash" on hover transforms.
  *
- * Root cause: when overflow-hidden + border-radius receives a CSS transform
- * only on :hover, the browser lazily promotes the element to a GPU compositing
- * layer at hover time, momentarily dropping the border-radius clipping.
+ * SCOPED to .card-lift and .glass-card-hover only — NOT all .overflow-hidden.
  *
- * Fix: pre-promote ALL overflow-hidden elements to the GPU layer via
- * translateZ(0) + backface-visibility:hidden so the layer already exists
- * before the hover transform is applied. This resolves the issue across
- * every card, button, and modal on the site in one rule.
+ * Applying translateZ(0) globally to every .overflow-hidden element creates
+ * a new stacking context on EVERY clipped element, which breaks z-index
+ * layering on iOS when those elements interact with fixed/sticky elements
+ * (modals, sheets, dropdowns). Scope it tightly instead.
  */
-.overflow-hidden {
+.card-lift,
+.glass-card-hover {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+  transform: translateZ(0) translateY(0);
   -webkit-perspective: 1000px;
   perspective: 1000px;
 }
@@ -692,4 +732,20 @@ body:not(.shutter-intro-active):not(.shutter-intro-reveal) #home-reveal-root {
 .reveal-scale:not(.visible),
 .section-fade-in:not(.visible) {
   animation: auto-reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.5s forwards;
+}
+
+/* ── Card Fan Carousel ─────────────────────────────────────────────── */
+.fan-card {
+  position: relative;
+  /* Portrait card — width drives height via aspect-ratio */
+  width:  clamp(68px, 7.5vw, 115px);
+  height: clamp(104px, 11.5vw, 178px);
+  flex-shrink: 0;
+  will-change: transform;
+}
+
+.fan-layout {
+  /* Height budget must accommodate the card + GSAP y-drop at the deepest slot (~7.3rem) */
+  min-height: clamp(180px, 28vw, 340px);
+  position: relative;
 }

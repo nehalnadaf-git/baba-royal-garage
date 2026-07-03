@@ -1,43 +1,15 @@
-import type { Metadata } from "next";
-import { Bebas_Neue, Barlow, Barlow_Condensed, Inter, Space_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import ClientLayout from "@/components/layout/ClientLayout";
 import { business } from "@/lib/business";
 
-const bebasNeue = Bebas_Neue({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-display",
-  display: "swap",
-});
-
-const barlow = Barlow({
-  subsets: ["latin"],
-  weight: ["700", "800", "900"],
-  variable: "--font-heading",
-  display: "swap",
-});
-
-const barlowCondensed = Barlow_Condensed({
-  subsets: ["latin"],
-  weight: ["600", "700"],
-  variable: "--font-subheading",
-  display: "swap",
-});
-
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-body",
-  display: "swap",
-});
-
-const spaceMono = Space_Mono({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-tech",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -87,9 +59,28 @@ export const metadata: Metadata = {
   alternates: { canonical: business.url },
 };
 
+/**
+ * Viewport — exported separately per Next.js App Router convention.
+ *
+ * viewport-fit=cover  → enables env(safe-area-inset-*) on iPhones with
+ *                        notch / Dynamic Island. Without this those CSS
+ *                        variables always return 0 and safe-area padding
+ *                        has no effect.
+ *
+ * interactive-widget  → prevents the layout from scrolling up when the
+ *                        iOS virtual keyboard appears, keeping the page
+ *                        anchored at the user's current scroll position.
+ */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  interactiveWidget: "resizes-content",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${bebasNeue.variable} ${barlow.variable} ${barlowCondensed.variable} ${inter.variable} ${spaceMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

@@ -97,7 +97,7 @@ export default function ServicesListPage() {
                   </div>
 
                   <div className="p-6 sm:p-8">
-                    <h3 className="font-display uppercase mb-3 leading-tight tracking-[0.03em] text-foreground text-lg lg:text-[23px] group-hover:text-primary transition-colors">
+                    <h3 className="font-display mb-3 leading-tight text-foreground text-lg lg:text-[23px] group-hover:text-primary transition-colors">
                       {service.name}
                     </h3>
                     <p className="font-body text-[14px] lg:text-[17px] leading-relaxed lg:leading-[1.85] mb-8 text-muted-foreground line-clamp-2">

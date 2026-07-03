@@ -219,8 +219,8 @@ export default function BookingSection({ variant = "dark" }: BookingSectionProps
             <div className="h-[1px] w-6 bg-primary/70" />
           </div>
           <h2
-            className={`font-display uppercase leading-none mb-5 ${variant === 'light' ? 'text-foreground' : 'text-white'}`}
-            style={{ fontSize: "clamp(42px, 6vw, 84px)", letterSpacing: "0.025em" }}
+            className={`font-display leading-none mb-5 ${variant === 'light' ? 'text-foreground' : 'text-white'}`}
+            style={{ fontSize: "clamp(42px, 6vw, 84px)", letterSpacing: "-0.03em" }}
           >
             Book Your <span className="text-primary">Service</span>
           </h2>
@@ -369,7 +369,7 @@ export default function BookingSection({ variant = "dark" }: BookingSectionProps
               {/* ╚══════════════════════════════╝ */}
               {step === 1 && (
                 <div>
-                  <p className="font-display text-[#111116] text-[clamp(22px,3vw,30px)] uppercase leading-tight mb-1">
+                  <p className="font-display text-[#111116] text-[clamp(22px,3vw,30px)] leading-tight mb-1">
                     Select Your Service
                   </p>
                   <p className="font-body text-black/70 text-[12.5px] mb-6 font-medium">
@@ -479,7 +479,7 @@ export default function BookingSection({ variant = "dark" }: BookingSectionProps
               {step === 2 && (
                 <div className="space-y-5">
                   <div>
-                    <p className="font-display text-[#111116] uppercase leading-tight mb-1" style={{ fontSize: "clamp(22px, 3vw, 32px)" }}>
+                    <p className="font-display text-[#111116] leading-tight mb-1" style={{ fontSize: "clamp(22px, 3vw, 32px)" }}>
                       Your Details
                     </p>
                     <p className="font-body text-black/60 text-[13px] sm:text-[14px] font-medium">
@@ -661,7 +661,7 @@ export default function BookingSection({ variant = "dark" }: BookingSectionProps
               {/* ╚═══════════════════════════════╝ */}
               {step === 3 && (
                 <div>
-                  <p className="font-display text-[#111116] text-[clamp(22px,3vw,30px)] uppercase leading-tight mb-1">
+                  <p className="font-display text-[#111116] text-[clamp(22px,3vw,30px)] leading-tight mb-1">
                     Review & Send
                   </p>
                   <p className="font-body text-black/50 text-[12.5px] mb-5 font-medium">

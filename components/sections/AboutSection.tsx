@@ -30,8 +30,8 @@ export default function AboutSection() {
             <span className="font-label text-primary text-[10px] lg:text-[13px] tracking-[0.3em] uppercase">Our Story</span>
             <div className="h-[1px] w-8 bg-primary/60" />
           </div>
-          <h2 className="font-display uppercase text-foreground mb-4"
-            style={{ fontSize: "clamp(40px,6.5vw,88px)", lineHeight: 0.9, letterSpacing: "0.02em" }}>
+          <h2 className="font-display text-foreground mb-4"
+            style={{ fontSize: "clamp(40px,6.5vw,88px)", lineHeight: 0.9, letterSpacing: "-0.03em" }}>
             Who We Are
           </h2>
           <div className="w-12 h-[3px] bg-gradient-to-r from-primary to-primary-light rounded-full mx-auto mb-6" />
@@ -100,7 +100,7 @@ export default function AboutSection() {
                   <div className="w-9 h-9 rounded-xl bg-primary/8 border border-primary/12 flex items-center justify-center mb-3 group-hover:bg-primary/15 transition-colors">
                     <Icon className="h-4 w-4 text-primary" />
                   </div>
-                  <p className="font-heading font-bold text-foreground text-[13px] uppercase tracking-wide leading-tight">{label}</p>
+                  <p className="font-heading font-bold text-foreground text-[13px] leading-tight">{label}</p>
                   <p className="font-label text-muted-foreground text-[10px] sm:text-[11px] mt-0.5 tracking-wider">{sub}</p>
                 </div>
               ))}
