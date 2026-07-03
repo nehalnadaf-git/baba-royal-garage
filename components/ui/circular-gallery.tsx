@@ -412,13 +412,28 @@ class App {
   /* ── Setup ─────────────────────────────────────────────────────────── */
 
   createRenderer() {
-    this.renderer = new Renderer({
-      alpha: true, antialias: true,
-      dpr: Math.min(window.devicePixelRatio || 1, 2),
-    });
-    this.gl = this.renderer.gl;
-    this.gl.clearColor(0, 0, 0, 0);
-    this.container.appendChild(this.gl.canvas);
+    /* Disable antialiasing on touch/mobile devices.
+     * antialias:true allocates a multi-sample buffer that uses ~4× more GPU
+     * memory per context. Safari on iPhone 8/SE/older iPads enforces a hard
+     * limit of ~8 concurrent WebGL contexts — exceeding it silently returns
+     * null and the canvas goes blank. Mobile screens are also high-DPI enough
+     * that the visual difference vs no-antialias is imperceptible. */
+    const isMobile = typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse)").matches;
+    try {
+      this.renderer = new Renderer({
+        alpha:     true,
+        antialias: !isMobile,
+        dpr:       Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2),
+      });
+      this.gl = this.renderer.gl;
+      this.gl.clearColor(0, 0, 0, 0);
+      this.container.appendChild(this.gl.canvas);
+    } catch (err) {
+      /* WebGL context creation failed — re-throw so the useEffect
+       * try/catch can catch it and keep the page functional. */
+      throw err;
+    }
   }
 
   createCamera() {
@@ -680,9 +695,15 @@ const CircularGallery = ({
         const family        = computedStyle.fontFamily;
         const font          = `${weight} ${size} ${family}`;
 
-        app = new App(el, {
-          items, bend, textColor: color, borderRadius, font, scrollSpeed, scrollEase, onImageClick,
-        });
+        try {
+          app = new App(el, {
+            items, bend, textColor: color, borderRadius, font, scrollSpeed, scrollEase, onImageClick,
+          });
+        } catch (err) {
+          /* WebGL initialisation failed (context limit, low GPU memory, etc.).
+           * The gallery is hidden but the rest of the page stays functional. */
+          console.warn("[CircularGallery] WebGL init failed — gallery disabled:", err);
+        }
       });
 
       return () => cancelAnimationFrame(raf2);

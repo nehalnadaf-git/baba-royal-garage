@@ -250,6 +250,7 @@ export default function ServicesSection({ limit = 6, showViewAll = false, varian
                   style={{
                     background: "rgba(10,12,16,0.5)",
                     backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
                     border: "1px solid rgba(255,255,255,0.15)",
                   }}
                 >

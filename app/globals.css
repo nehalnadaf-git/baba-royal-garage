@@ -103,9 +103,14 @@
   *, *::before, *::after { box-sizing: border-box; }
   * { @apply border-border; }
 
-  @media (pointer: fine) {
-    html {
-      scrollbar-gutter: stable;
+  /* Reserve scrollbar gutter ONLY on pointer-fine (desktop) devices.
+     Wrapped in @supports so Safari (which doesn't support scrollbar-gutter
+     at all) ignores the declaration cleanly without a devtools warning. */
+  @supports (scrollbar-gutter: stable) {
+    @media (pointer: fine) {
+      html {
+        scrollbar-gutter: stable;
+      }
     }
   }
 
@@ -380,6 +385,34 @@
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;             /* Chrome / Safari / iOS */
+  }
+}
+
+/* ─── Safari-safe full-screen height ─────────────────────────────── */
+/*
+ * Three-step height cascade for 100% cross-Safari compatibility:
+ *   1. 100vh                  — universal baseline (all browsers)
+ *   2. -webkit-fill-available — iOS Safari 11–15: accounts for the
+ *                               address bar collapsing/expanding;
+ *                               more accurate than 100vh on older iOS.
+ *   3. 100dvh                 — iOS 16+: "dynamic" viewport height
+ *                               that updates as the address bar moves.
+ *
+ * If a browser doesn't understand a value it ignores that line and
+ * keeps the last valid one — so the cascade degrades gracefully.
+ */
+@layer utilities {
+  .h-screen-safe {
+    height: 100vh;
+    /* stylelint-disable-next-line */
+    height: -webkit-fill-available;
+    height: 100dvh;
+  }
+  .min-h-screen-safe {
+    min-height: 100vh;
+    /* stylelint-disable-next-line */
+    min-height: -webkit-fill-available;
+    min-height: 100dvh;
   }
 }
 

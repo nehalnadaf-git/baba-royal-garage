@@ -182,8 +182,7 @@ export default function PetrolTankGallerySection() {
 
       {/* ── Sticky viewport ─────────────────────────────────────────── */}
       <div
-        className="sticky top-0 w-full overflow-hidden bg-[hsl(var(--ink-900))]"
-        style={{ height: "100dvh" }}
+        className="sticky top-0 w-full overflow-hidden bg-[hsl(var(--ink-900))] h-screen-safe"
       >
 
         {/* Atmospheric red glow */}

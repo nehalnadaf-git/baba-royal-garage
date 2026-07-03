@@ -11,15 +11,8 @@ interface HeroSectionProps {
 export default function HeroSection({ onBookingClick }: HeroSectionProps) {
   return (
     <section
-      className="relative w-full overflow-hidden"
-      style={{
-        /* dvh = "dynamic" viewport height — shrinks/grows as iOS Safari
-           toolbar appears/disappears. Best value across all modern iOS.
-           svh = "small" viewport = with toolbar always visible (safe fallback).
-           100vh = legacy fallback for older browsers. */
-        height: "100dvh",
-        minHeight: "560px",
-      }}
+      className="relative w-full overflow-hidden h-screen-safe"
+      style={{ minHeight: "560px" }}
     >
 
       {/* ── Web Banner (sm+) */}

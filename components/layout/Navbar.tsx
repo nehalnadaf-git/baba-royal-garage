@@ -308,7 +308,7 @@ export default function Navbar({ onBookingClick }: NavbarProps) {
              * a panel whose content height is dynamic. The large open value
              * (90dvh) ensures the panel never clips its content.
              */
-            maxHeight:            mobileOpen ? "90dvh" : "0px",
+            maxHeight:            mobileOpen ? "90vh" : "0px",
             overflow:             "hidden",
             transition:           "max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1)",
             background:           "hsla(222, 16%, 5%, 0.98)",
@@ -321,7 +321,7 @@ export default function Navbar({ onBookingClick }: NavbarProps) {
                never overlap iPhone home indicator on notched devices */}
           <div
             className="overflow-y-auto"
-            style={{ maxHeight: "calc(90dvh - 0px)", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+            style={{ maxHeight: "90vh", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
           >
             <nav
               className="flex flex-col px-5 sm:px-8 pt-3"
