@@ -349,6 +349,14 @@ class App {
   resumeTimer:  ReturnType<typeof setTimeout> | null = null;
   static readonly RESUME_DELAY = 2000; /* ms */
 
+  /**
+   * isPaused — when true the rAF render loop is suspended.
+   * Set to true by visibilitychange (tab hidden) and IntersectionObserver
+   * (gallery scrolled off-screen). This prevents the 60fps WebGL loop
+   * from burning CPU/GPU while the user reads other sections.
+   */
+  isPaused: boolean = false;
+
   renderer!:      Renderer;
   gl!:            OGLRenderingContext;
   camera!:        Camera;
@@ -361,10 +369,12 @@ class App {
   raf!:           number;
 
   /* bound handlers (kept for clean removal) */
-  boundOnResize!:    () => void;
-  boundOnTouchDown!: (e: MouseEvent | TouchEvent) => void;
-  boundOnTouchMove!: (e: MouseEvent | TouchEvent) => void;
-  boundOnTouchUp!:   (e: MouseEvent | TouchEvent) => void;
+  boundOnResize!:           () => void;
+  boundOnTouchDown!:        (e: MouseEvent | TouchEvent) => void;
+  boundOnTouchMove!:        (e: MouseEvent | TouchEvent) => void;
+  boundOnTouchUp!:          (e: MouseEvent | TouchEvent) => void;
+  boundOnVisibilityChange!: () => void;
+  intersectionObserver!:    IntersectionObserver;
 
   constructor(
     container: HTMLElement,
@@ -444,7 +454,17 @@ class App {
 
   createScene()    { this.scene = new Transform(); }
   createGeometry() {
-    this.planeGeometry = new Plane(this.gl, { heightSegments: 50, widthSegments: 100 });
+    /* Reduce geometry on touch/mobile devices.
+     * Full desktop: 50×100 = 5000 triangles per card → great curve quality.
+     * Mobile:        20×40  =  800 triangles per card → same visual result
+     * at smaller physical sizes; saves ~80 % GPU vertex work per card.
+     * The bend curve is barely perceptible at these resolutions anyway. */
+    const isMobile = typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse)").matches;
+    this.planeGeometry = new Plane(this.gl, {
+      heightSegments: isMobile ? 20 : 50,
+      widthSegments:  isMobile ? 40 : 100,
+    });
   }
 
   createMedias(
@@ -610,6 +630,23 @@ class App {
     }
   }
 
+  /* ── Pause / Resume ────────────────────────────────────────────── */
+
+  pause() {
+    if (this.isPaused) return;
+    this.isPaused = true;
+    if (this.raf) {
+      window.cancelAnimationFrame(this.raf);
+      this.raf = 0;
+    }
+  }
+
+  resume() {
+    if (!this.isPaused) return;
+    this.isPaused = false;
+    this.raf = window.requestAnimationFrame(this.update.bind(this));
+  }
+
   update() {
     /* 1. Auto-slide when user is idle */
     if (!this.isUserActive) {
@@ -622,7 +659,11 @@ class App {
     if (this.medias) this.medias.forEach(m => m.update(this.scroll, direction));
     this.renderer.render({ scene: this.scene, camera: this.camera });
     this.scroll.last = this.scroll.current;
-    this.raf = window.requestAnimationFrame(this.update.bind(this));
+    /* Only schedule next frame if not paused — this allows the loop to
+     * be suspended by visibilitychange / IntersectionObserver. */
+    if (!this.isPaused) {
+      this.raf = window.requestAnimationFrame(this.update.bind(this));
+    }
   }
 
   /* ── Lifecycle ─────────────────────────────────────────────────────── */
@@ -640,6 +681,25 @@ class App {
     this.container.addEventListener("touchstart", this.boundOnTouchDown as EventListener, { passive: true });
     window.addEventListener("touchmove", this.boundOnTouchMove as EventListener, { passive: true });
     window.addEventListener("touchend",  this.boundOnTouchUp as EventListener);
+
+    /* ── Pause rAF loop when tab is hidden (saves battery on iOS) ── */
+    this.boundOnVisibilityChange = () => {
+      if (document.hidden) this.pause();
+      else this.resume();
+    };
+    document.addEventListener("visibilitychange", this.boundOnVisibilityChange);
+
+    /* ── Pause rAF loop when gallery scrolls off-screen ───────────
+     * rootMargin:"200px" means we resume 200px BEFORE the gallery
+     * enters the viewport so textures / positions are ready.      */
+    this.intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) this.resume();
+        else this.pause();
+      },
+      { rootMargin: "200px" }
+    );
+    this.intersectionObserver.observe(this.container);
   }
 
   destroy() {
@@ -652,6 +712,8 @@ class App {
     this.container.removeEventListener("touchstart", this.boundOnTouchDown as EventListener);
     window.removeEventListener("touchmove", this.boundOnTouchMove as EventListener);
     window.removeEventListener("touchend",  this.boundOnTouchUp as EventListener);
+    document.removeEventListener("visibilitychange", this.boundOnVisibilityChange);
+    this.intersectionObserver?.disconnect();
     if (this.renderer?.gl?.canvas?.parentNode) {
       this.renderer.gl.canvas.parentNode.removeChild(this.renderer.gl.canvas);
     }

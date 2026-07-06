@@ -20,12 +20,22 @@ interface UseEngineSoundOptions {
  *  - Smooth 60fps rAF volume updates
  *  - Graceful fade-out after user stops scrolling (IDLE_LIMIT)
  *  - Defers startup until shutter intro completes
+ *
+ * iOS Fix:
+ *  iOS Safari uses HTML5 Audio (Howler html5:true) which requires the FIRST
+ *  .play() call to happen inside a synchronous user-gesture handler
+ *  (touchstart or click). A scroll event is NOT a user gesture on iOS.
+ *  We solve this by:
+ *    1. Creating Howl instances eagerly on first gesture (not lazily on scroll)
+ *    2. Calling .play() at volume 0 + immediately .pause() on first gesture —
+ *       this "primes" the <audio> element and satisfies iOS autoplay policy.
+ *    3. Subsequent .play() calls from scroll events then work normally.
  */
 export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
   const pathname = usePathname();
 
   // ── Configuration ──────────────────────────────────────────────────────────
-  const MAX_VOLUME    = 0.38;  // Subtle ambient level — present but not intrusive
+  const MAX_VOLUME    = 0.32;  // Slightly lower for mobile speakers
   const STOP_FADE_MS  = 400;   // Fade-out when scrolling stops
   const START_FADE_MS = 200;   // Quick fade-in when scrolling starts
   const IDLE_LIMIT    = 300;   // ms of no scroll before engine fades out
@@ -36,11 +46,17 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
   const SFX_2 = "/sfx/engine-sound-2.mp3";
 
   // ── Refs ───────────────────────────────────────────────────────────────────
-  const howlsRef       = useRef<{ sfx1: Howl | null; sfx2: Howl | null }>({ sfx1: null, sfx2: null });
-  const isPlayingRef   = useRef(false);
+  const howlsRef        = useRef<{ sfx1: Howl | null; sfx2: Howl | null }>({ sfx1: null, sfx2: null });
+  const isPlayingRef    = useRef(false);
   const lastActivityRef = useRef(0);
-  const rafRef         = useRef<number | null>(null);
-  const fadeInDoneRef  = useRef(false);
+  const rafRef          = useRef<number | null>(null);
+  /**
+   * isUnlockedRef — tracks whether the HTML5 audio elements have been
+   * "primed" (played at volume 0 inside a gesture handler) on iOS.
+   * Without this prime, .play() calls from scroll events are silently
+   * blocked by iOS Safari's autoplay policy.
+   */
+  const isUnlockedRef   = useRef(false);
 
   // ── Audio init ─────────────────────────────────────────────────────────────
   const initAudio = useCallback(() => {
@@ -62,6 +78,36 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
       preload: true,
     });
   }, [SFX_1, SFX_2]);
+
+  /**
+   * primeAudioForIOS
+   *
+   * MUST be called synchronously inside a user-gesture handler (touchstart
+   * or click). Plays both SFX at volume 0 then immediately pauses them.
+   * This satisfies iOS Safari's autoplay policy for HTML5 Audio:
+   * once .play() has been called inside a gesture, future .play() calls
+   * from non-gesture contexts (scroll events) succeed without restriction.
+   */
+  const primeAudioForIOS = useCallback(() => {
+    if (isUnlockedRef.current) return;
+    initAudio();
+
+    const { sfx1, sfx2 } = howlsRef.current;
+
+    [sfx1, sfx2].forEach((sfx) => {
+      if (!sfx) return;
+      sfx.volume(0);
+      const id = sfx.play();
+      // Pause on the very next animation frame — this satisfies iOS
+      // without producing an audible click or pop.
+      requestAnimationFrame(() => {
+        if (typeof id === "number") sfx.pause(id);
+        else sfx.pause();
+      });
+    });
+
+    isUnlockedRef.current = true;
+  }, [initAudio]);
 
   // ── Per-frame sync: equal-power crossfade based on scroll depth ─────────────
   const syncAudio = useCallback(() => {
@@ -99,6 +145,11 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
   const wakeUp = useCallback(() => {
     lastActivityRef.current = Date.now();
 
+    // On iOS, if audio has not been primed via a gesture, skip — playing
+    // from scroll events without prior gesture unlocking will be silently
+    // blocked. The user must touch the screen first (which runs primeAudioForIOS).
+    if (!isUnlockedRef.current) return;
+
     if (Howler.ctx?.state === "suspended") {
       void Howler.ctx.resume();
     }
@@ -106,8 +157,7 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
     initAudio();
 
     if (!isPlayingRef.current) {
-      isPlayingRef.current  = true;
-      fadeInDoneRef.current = false;
+      isPlayingRef.current = true;
 
       // Fade SFX 1 in from 0 to MAX_VOLUME quickly
       const { sfx1 } = howlsRef.current;
@@ -165,20 +215,19 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
 
       /* ── scroll is the ONLY trigger that starts the engine sound ─────────
        *
-       * touchstart is kept purely to satisfy the iOS/Android AudioContext
-       * autoplay policy — the context MUST be resumed inside a synchronous
-       * user-gesture handler. It does NOT call wakeUp(), so tapping any
-       * button, link, or UI element stays completely silent.
+       * touchstart / click: Prime audio for iOS (gesture context).
+       *   - Calls primeAudioForIOS() which does a silent play+pause to
+       *     satisfy iOS autoplay policy for HTML5 Audio elements.
+       *   - Also resumes AudioContext if suspended (for Web Audio path).
        *
-       * wheel, touchmove, and keyboard events are intentionally removed as
-       * wake-up triggers so the sound starts only when the page is actually
-       * scrolling (native momentum scroll fires "scroll" events; a stationary
-       * wheel-over-element does not).
+       * scroll: Calls wakeUp() which starts playback. On iOS this now
+       *   works because audio was already primed in the gesture handler.
        * ────────────────────────────────────────────────────────────────── */
       const onScroll = () => wakeUp();
 
       const onTouchStartUnlock = () => {
-        /* Unlock AudioContext for iOS — do NOT start the engine sound. */
+        /* Prime HTML5 audio for iOS in this synchronous gesture context. */
+        primeAudioForIOS();
         if (Howler.ctx?.state === "suspended") {
           void Howler.ctx.resume();
         }
@@ -186,8 +235,9 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
 
       /* iOS Safari also requires a 'click' event to unlock AudioContext
        * after the user navigates back — scroll alone is not a user gesture
-       * that satisfies the autoplay policy on page re-entry. Silent: no sound. */
+       * that satisfies the autoplay policy on page re-entry. */
       const onClickUnlock = () => {
+        primeAudioForIOS();
         if (Howler.ctx?.state === "suspended") {
           void Howler.ctx.resume();
         }
@@ -209,6 +259,7 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
         howlsRef.current.sfx2?.unload();
         howlsRef.current.sfx1 = null;
         howlsRef.current.sfx2 = null;
+        isUnlockedRef.current = false;
       });
     }
 
@@ -230,5 +281,5 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
       observer.disconnect();
       cleanupFns.forEach((fn) => fn());
     };
-  }, [enabled, pathname, wakeUp, STOP_FADE_MS, IDLE_LIMIT]);
+  }, [enabled, pathname, wakeUp, primeAudioForIOS, STOP_FADE_MS, IDLE_LIMIT]);
 }

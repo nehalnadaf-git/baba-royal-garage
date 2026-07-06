@@ -85,6 +85,26 @@ export default function ScrollDownIndicator() {
           100% { transform: translateY(6px);  opacity: 0;    }
         }
 
+        /* ── Touch / iOS optimised variants ───────────────────────────
+         * box-shadow animation is NOT GPU-composited on iOS — it triggers
+         * a repaint every frame. Replace with cheaper opacity+scale only.
+         * ------------------------------------------------------------ */
+        @media (pointer: coarse) {
+          @keyframes scroll-dot-glow {
+            0%, 100% { opacity: 0.85; transform: scale(1);    }
+            50%       { opacity: 1;   transform: scale(1.15); }
+          }
+          @keyframes scroll-breathe-svg {
+            0%, 100% { transform: scale(1);    opacity: 0.85; }
+            50%       { transform: scale(1.07); opacity: 1;   }
+          }
+          /* Simplify ripple — fewer GPU layers */
+          @keyframes scroll-ripple {
+            0%   { transform: scale(1);    opacity: 0.5; }
+            100% { transform: scale(1.70); opacity: 0;   }
+          }
+        }
+
         /* ── Reduced-motion: disable everything above ── */
         @media (prefers-reduced-motion: reduce) {
           @keyframes scroll-breathe-label  { 0%,100% { transform: none; opacity: 0.8; } }

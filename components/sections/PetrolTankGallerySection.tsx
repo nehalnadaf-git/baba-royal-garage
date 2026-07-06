@@ -76,7 +76,17 @@ export default function PetrolTankGallerySection() {
   const isTouchRef    = useRef(false);
   const maxTravelRef  = useRef(115); // updated after hydration
 
-  /* ── Lightbox state ─────────────────────────────────────────────────── */
+  /**
+   * galleryMounted — starts false; set to true (forever) by IntersectionObserver
+   * when the section comes within 400px of the viewport.
+   *
+   * This defers creation of the OGL WebGL context until the user is
+   * actually about to scroll into the gallery, dramatically reducing
+   * initial page load cost on iOS (each WebGL context costs ~50-80 MB GPU RAM).
+   */
+  const [galleryMounted, setGalleryMounted] = useState(false);
+
+  /* ── Lightbox state ─────────────────────────────────────── */
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1);
 
   const showPrev = useCallback(() => {
@@ -93,31 +103,48 @@ export default function PetrolTankGallerySection() {
     maxTravelRef.current = touch ? 48 : 115;
   }, []);
 
+  /* ── Lazy-mount the OGL gallery when section is near the viewport ───────
+   * rootMargin:"400px" means the observer fires 400px BEFORE the section
+   * reaches the viewport, giving OGL time to initialise before the user
+   * actually sees it. Once mounted, galleryMounted stays true forever —
+   * we never unmount the WebGL canvas (that would destroy the context). */
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setGalleryMounted(true);
+          observer.disconnect(); // one-shot: never need to fire again
+        }
+      },
+      { rootMargin: "400px" }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   /* ── Scroll progress ──────────────────────────────────────────────── */
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
   });
 
-  /* ── Spring smoothing ─────────────────────────────────────────────────
-   *
-   * Goal: remove per-frame jitter while keeping the animation feeling
-   * tightly coupled to scroll (no "floating" lag).
+  /* ── Spring smoothing ────────────────────────────────────────────────
    *
    * Desktop (pointer: fine)
    *   stiffness 180 / damping 38  →  overdamped, settles in ~140 ms.
    *   Snappy tracking; easeP() provides all the motion personality.
    *
    * Touch (pointer: coarse) — iOS / Android
-   *   stiffness  95 / damping 22  →  just at critical damping.
-   *   Tames momentum-scroll velocity spikes without mushy feel.
-   *   Lower stiffness than desktop so iOS rubber-band scroll doesn't jerk.
+   *   stiffness  60 / damping 18  →  well below critical damping.
+   *   Much gentler than desktop to avoid fighting iOS momentum-scroll
+   *   velocity spikes. Lower values let framer-motion stay in sync
+   *   with the native scroll without creating visible lag or overshoot.
    *
-   * restDelta 0.0005 → spring declares "settled" sooner, preventing a long
+   * restDelta 0.0005 → spring declares “settled” sooner, preventing a long
    * micro-drift tail that can hold the gallery clip fractionally open. */
   const rawProgress = useSpring(scrollYProgress, {
-    stiffness: isTouchDevice ?  95 : 180,
-    damping:   isTouchDevice ?  22 :  38,
+    stiffness: isTouchDevice ?  60 : 180,
+    damping:   isTouchDevice ?  18 :  38,
     restDelta: 0.0005,
   });
 
@@ -171,10 +198,13 @@ export default function PetrolTankGallerySection() {
   const ctaOpacity = useTransform(rawProgress, [0.74, 1], [0, 1]);
   const ctaY       = useTransform(rawProgress, [0.74, 1], [22, 0]);
 
-  /* ── Section scroll-track height ─────────────────────────────────────
-   * Mobile gets a taller track so the animation occupies enough physical
-   * scroll distance on a short viewport to feel comfortable. */
-  const sectionHeight = isTouchDevice ? "330vh" : "280vh";
+  /* ── Section scroll-track height ───────────────────────────────────
+   * Using the same height for both touch and desktop:
+   * 280vh gives enough scroll distance for a comfortable animation on any
+   * device. iOS momentum scroll covers more ground per swipe naturally,
+   * so a shorter track still feels spacious. 330vh was unnecessarily long
+   * and made iOS users scroll much further than desktop users. */
+  const sectionHeight = "280vh";
 
   return (
     <>
@@ -263,7 +293,7 @@ export default function PetrolTankGallerySection() {
          *   · inner-edge shadow divs simulate depth / AO as parts
          * ════════════════════════════════════════════════════════════ */}
 
-        {/* ── Layer 1 : Gallery ──────────────────────────────────── */}
+        {/* ── Layer 1 : Gallery ───────────────────────────────────────────── */}
         <motion.div
           className="absolute left-0 right-0"
           style={{
@@ -275,18 +305,23 @@ export default function PetrolTankGallerySection() {
             touchAction: "pan-y",
           }}
         >
-          <CircularGallery
-            items={GALLERY_ITEMS}
-            bend={2}
-            borderRadius={0.06}
-            scrollSpeed={2}
-            scrollEase={0.06}
-            onImageClick={(clickedItem) => {
-              const idx = GALLERY_ITEMS.findIndex((gi) => gi.image === clickedItem.image);
-              setLightboxIndex(idx >= 0 ? idx : 0);
-            }}
-            className="w-full h-full"
-          />
+          {/* Only mount the OGL canvas once the section is near the viewport.
+              This defers the expensive WebGL context creation until needed,
+              significantly reducing initial page load cost on iOS. */}
+          {galleryMounted && (
+            <CircularGallery
+              items={GALLERY_ITEMS}
+              bend={2}
+              borderRadius={0.06}
+              scrollSpeed={2}
+              scrollEase={0.06}
+              onImageClick={(clickedItem) => {
+                const idx = GALLERY_ITEMS.findIndex((gi) => gi.image === clickedItem.image);
+                setLightboxIndex(idx >= 0 ? idx : 0);
+              }}
+              className="w-full h-full"
+            />
+          )}
         </motion.div>
 
         {/* ── Layer 2 : Tank halves ───────────────────────────────── */}
