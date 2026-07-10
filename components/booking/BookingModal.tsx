@@ -30,9 +30,30 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     }
   }, [isOpen]);
 
+  /* ── iOS-safe scroll lock ───────────────────────────────────────────────
+   * overflow:hidden on body does NOT prevent scroll on iOS Safari.
+   * The only reliable cross-browser fix is position:fixed on body
+   * with top = -scrollY, then restore scrollY on unlock.
+   * Same pattern already used by GalleryLightbox. */
   useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (!isOpen) return;
+    const scrollY = window.scrollY;
+    const body = document.body;
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+    return () => {
+      body.style.position = "";
+      body.style.top = "";
+      body.style.left = "";
+      body.style.right = "";
+      body.style.width = "";
+      body.style.overflow = "";
+      window.scrollTo(0, scrollY);
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -58,10 +79,10 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
       {/* Modal card */}
       <div
-        className="relative z-10 w-full sm:max-w-[540px] sm:mx-4 rounded-t-[28px] sm:rounded-2xl overflow-hidden transition-all duration-400"
+        className="relative z-10 w-full sm:max-w-[540px] sm:mx-4 rounded-t-[28px] sm:rounded-2xl overflow-hidden transition-all duration-400 [max-height:88dvh]"
         style={{
           ...modalCard,
-          /* Mobile: 88vh max so it doesn't overwhelm the screen */
+          /* Mobile: 88vh max — [max-height:88dvh] class overrides on iOS 16+ */
           maxHeight: "88vh",
           transform: mounted ? "translateY(0)" : "translateY(48px)",
           opacity: mounted ? 1 : 0,
@@ -111,8 +132,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
         {/* ── Scrollable body ── */}
         <div
-          className="overflow-y-auto scrollbar-hide"
-          style={{ maxHeight: "calc(88vh - 60px)" }}
+          className="overflow-y-auto scrollbar-hide [max-height:calc(88dvh-60px)]"
+          style={{ maxHeight: "min(calc(88dvh - 60px), calc(88vh - 60px))" }}
         >
           {/* ── Choice screen ── */}
           {choice === "none" && (

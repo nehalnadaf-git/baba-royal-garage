@@ -50,6 +50,7 @@ export default function HeroSection({ onBookingClick }: HeroSectionProps) {
       {/* ── Scroll Indicator — Premium Glassmorphic Design */}
       <ScrollDownIndicator />
 
+
       {/* ──────────────────────────────────────────────────────────── 
           Geometric Razor Slant — Premium Automotive Style
           Multi-layer diagonal cuts with crimson signature line.

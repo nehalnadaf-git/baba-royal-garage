@@ -21,7 +21,7 @@ export default function TestimonialsSection() {
   const [reviewItems, setReviewItems] = useState<Review[]>(reviews.slice(0, 5));
   const [current, setCurrent] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     const loadReviews = async () => {
@@ -50,7 +50,7 @@ export default function TestimonialsSection() {
   useEffect(() => {
     if (!reviewItems.length) return;
     intervalRef.current = setInterval(() => goTo(current + 1), 5000);
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+    return () => { if (intervalRef.current !== null) clearInterval(intervalRef.current); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [current, reviewItems.length]);
 

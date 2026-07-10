@@ -117,9 +117,14 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
-    /* Also block horizontal overscroll on html for Android WebViews that
-       apply the behaviour to the root element rather than body. */
+    /* Block horizontal overscroll on both html and body — Android WebViews
+       may apply it to the root element rather than to body. */
     overscroll-behavior-x: none;
+    /* Prevent iOS rubber-band vertical bounce from exposing the
+       raw browser background behind dark hero/shutter sections.
+       NOTE: this also disables Android's pull-to-refresh gesture. If
+       pull-to-refresh matters to you, remove the -y line. */
+    overscroll-behavior-y: none;
   }
 
   body {
@@ -809,4 +814,36 @@ body:not(.shutter-intro-active):not(.shutter-intro-reveal) #home-reveal-root {
   /* Height budget must accommodate the card + GSAP y-drop at the deepest slot (~7.3rem) */
   min-height: clamp(180px, 28vw, 340px);
   position: relative;
+}
+
+/* ── Petrol Tank Gallery — Infinite Marquee ─────────────────────────── */
+@keyframes marquee-left {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes marquee-right {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.marquee-track-left {
+  animation: marquee-left 24s linear infinite;
+  will-change: transform;
+}
+.marquee-track-right {
+  animation: marquee-right 30s linear infinite;
+  will-change: transform;
+}
+/* Pause on hover — allows lightbox click without accidental scroll */
+.marquee-row:hover .marquee-track-left,
+.marquee-row:hover .marquee-track-right {
+  animation-play-state: paused;
+}
+/* Respect reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track-left,
+  .marquee-track-right {
+    animation: none;
+    transform: translateX(0);
+  }
 }

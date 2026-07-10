@@ -1,269 +1,324 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Howl, Howler } from "howler";
+
+// â”€â”€ Module-level constants â€” never recreate callbacks on re-render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const SFX_1_SRC    = "/sfx/engine-sound-1.mp3";
+const SFX_2_SRC    = "/sfx/engine-sound-2.mp3";
+const MAX_VOLUME   = 0.32;  // Overall ceiling volume (keep low for mobile speakers)
+const IDLE_LIMIT   = 280;   // ms of silence before engine fades out
+const CROSS_CENTER = 0.42;  // Scroll % where sfx1â†’sfx2 crossfade is centred
+const CROSS_WIDTH  = 0.20;  // Blend zone width (smaller = sharper cut)
+const LERP_SPEED   = 0.12;  // Volume lerp factor per frame (0â€“1, higher = snappier)
+
+// â”€â”€ iOS / iPadOS detection â€” computed once at module load â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function detectIOS(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    // iPadOS 13+ reports "MacIntel" with touch support
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  );
+}
+
+// â”€â”€ Lerp helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t;
+}
+
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 interface UseEngineSoundOptions {
   enabled: boolean;
 }
 
 /**
- * useEngineSound — Professional Scroll-Driven Engine SFX
+ * useEngineSound â€” Professional Scroll-Driven Engine SFX
  *
  * Two Royal Enfield engine sounds crossfade based on scroll depth:
  *  SFX 1: Idle/low RPM rumble (top of page)
  *  SFX 2: Higher RPM character (mid/bottom of page)
  *
- * Features:
- *  - Equal-power crossfade (cos/sin) prevents loudness dip in the blend zone
- *  - Smooth 60fps rAF volume updates
- *  - Graceful fade-out after user stops scrolling (IDLE_LIMIT)
- *  - Defers startup until shutter intro completes
+ * Architecture:
+ *  - Web Audio API (html5:false) on desktop â€” zero latency, no gesture unlock needed.
+ *  - html5:true only on iOS/iPadOS where Web Audio autoplay is blocked.
+ *  - Eager init: audio is pre-decoded immediately after shutter closes,
+ *    NOT lazily on first scroll â€” eliminates "first scroll delay".
+ *  - Single volume writer: a lerp in the rAF loop drives ALL volume changes.
+ *    No competing .fade() + .volume() calls that cause pops or jumps.
+ *  - Idle detection via clearTimeout/setTimeout â€” O(1) per scroll, no polling.
+ *  - Cached iOS flag (computed once on mount) â€” no UA parsing in hot path.
+ *  - visibilitychange handler â€” resumes AudioContext when returning to the tab.
+ *  - Howl error callbacks â€” silent graceful failure on slow connections.
  *
- * iOS Fix:
- *  iOS Safari uses HTML5 Audio (Howler html5:true) which requires the FIRST
- *  .play() call to happen inside a synchronous user-gesture handler
- *  (touchstart or click). A scroll event is NOT a user gesture on iOS.
- *  We solve this by:
- *    1. Creating Howl instances eagerly on first gesture (not lazily on scroll)
- *    2. Calling .play() at volume 0 + immediately .pause() on first gesture —
- *       this "primes" the <audio> element and satisfies iOS autoplay policy.
- *    3. Subsequent .play() calls from scroll events then work normally.
+ * iOS autoplay strategy:
+ *  On iOS, html5:true is required. The <audio> element must be .play()'d inside
+ *  a synchronous user-gesture handler before scroll events can trigger playback.
+ *  We do a silent play+pause on the first touchstart/click (primeForIOS),
+ *  then wakeUp() from scroll events succeeds normally.
  */
 export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
   const pathname = usePathname();
 
-  // ── Configuration ──────────────────────────────────────────────────────────
-  const MAX_VOLUME    = 0.32;  // Slightly lower for mobile speakers
-  const STOP_FADE_MS  = 400;   // Fade-out when scrolling stops
-  const START_FADE_MS = 200;   // Quick fade-in when scrolling starts
-  const IDLE_LIMIT    = 300;   // ms of no scroll before engine fades out
-  const CROSS_CENTER  = 0.42;  // Scroll % where crossfade is centred
-  const CROSS_WIDTH   = 0.20;  // Blend zone width (narrower = sharper transition)
+  // â”€â”€ All mutable state in refs (never triggers re-render) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const sfx1Ref        = useRef<Howl | null>(null);
+  const sfx2Ref        = useRef<Howl | null>(null);
 
-  const SFX_1 = "/sfx/engine-sound-1.mp3";
-  const SFX_2 = "/sfx/engine-sound-2.mp3";
+  // Target volumes the rAF loop lerps toward (0 = silent, MAX_VOLUME = full)
+  const targetV1Ref    = useRef(0);
+  const targetV2Ref    = useRef(0);
 
-  // ── Refs ───────────────────────────────────────────────────────────────────
-  const howlsRef        = useRef<{ sfx1: Howl | null; sfx2: Howl | null }>({ sfx1: null, sfx2: null });
-  const isPlayingRef    = useRef(false);
-  const lastActivityRef = useRef(0);
-  const rafRef          = useRef<number | null>(null);
-  /**
-   * isUnlockedRef — tracks whether the HTML5 audio elements have been
-   * "primed" (played at volume 0 inside a gesture handler) on iOS.
-   * Without this prime, .play() calls from scroll events are silently
-   * blocked by iOS Safari's autoplay policy.
-   */
-  const isUnlockedRef   = useRef(false);
+  // Current rendered volumes (lerp continuity â€” avoids pops on direction change)
+  const currentV1Ref   = useRef(0);
+  const currentV2Ref   = useRef(0);
 
-  // ── Audio init ─────────────────────────────────────────────────────────────
-  const initAudio = useCallback(() => {
-    if (howlsRef.current.sfx1) return;
+  const isPlayingRef   = useRef(false);
+  const rafRef         = useRef<number | null>(null);
+  const idleTimerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    howlsRef.current.sfx1 = new Howl({
-      src: [SFX_1],
+  // Cached once on mount â€” never re-computed in the scroll hot path
+  const isIOSRef       = useRef(false);
+  // Whether iOS <audio> elements have been unlocked via a user gesture
+  const isUnlockedRef  = useRef(false);
+  // Whether we have encountered a load error (suppresses repeated retries)
+  const loadErrorRef   = useRef(false);
+
+  // â”€â”€ Shared Howl factory â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  function makeHowl(src: string, useHTML5: boolean): Howl {
+    return new Howl({
+      src: [src],
       loop: true,
       volume: 0,
-      html5: true,
+      html5: useHTML5,
       preload: true,
+      // pool:1 caps concurrent <audio> elements to prevent pool exhaustion
+      // in React Strict Mode (double invocation) and mobile memory limits.
+      pool: 1,
+      onloaderror: (_id, err) => {
+        if (process.env.NODE_ENV === "development") {
+          console.warn("[useEngineSound] Load error:", src, err);
+        }
+        loadErrorRef.current = true;
+      },
+      onplayerror: (_id, err) => {
+        if (process.env.NODE_ENV === "development") {
+          console.warn("[useEngineSound] Play error:", src, err);
+        }
+        // Recover cleanly â€” stop both tracks rather than letting Howler retry silently
+        sfx1Ref.current?.stop();
+        sfx2Ref.current?.stop();
+        isPlayingRef.current = false;
+      },
     });
+  }
 
-    howlsRef.current.sfx2 = new Howl({
-      src: [SFX_2],
-      loop: true,
-      volume: 0,
-      html5: true,
-      preload: true,
-    });
-  }, [SFX_1, SFX_2]);
+  // â”€â”€ Eager audio init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // Called as soon as the shutter closes â€” pre-decodes MP3 buffers so the
+  // very first scroll event plays with zero latency.
+  function initAudio() {
+    if (sfx1Ref.current || loadErrorRef.current) return;
+    // Use Web Audio on desktop (lowest latency), HTML5 Audio only on iOS/iPadOS
+    const useHTML5 = isIOSRef.current;
+    sfx1Ref.current = makeHowl(SFX_1_SRC, useHTML5);
+    sfx2Ref.current = makeHowl(SFX_2_SRC, useHTML5);
+  }
 
-  /**
-   * primeAudioForIOS
-   *
-   * MUST be called synchronously inside a user-gesture handler (touchstart
-   * or click). Plays both SFX at volume 0 then immediately pauses them.
-   * This satisfies iOS Safari's autoplay policy for HTML5 Audio:
-   * once .play() has been called inside a gesture, future .play() calls
-   * from non-gesture contexts (scroll events) succeed without restriction.
-   */
-  const primeAudioForIOS = useCallback(() => {
-    if (isUnlockedRef.current) return;
+  // â”€â”€ Prime HTML5 audio for iOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // MUST be called synchronously inside a user-gesture handler (touchstart/click).
+  function primeForIOS() {
+    if (!isIOSRef.current || isUnlockedRef.current || loadErrorRef.current) return;
     initAudio();
-
-    const { sfx1, sfx2 } = howlsRef.current;
-
-    [sfx1, sfx2].forEach((sfx) => {
+    [sfx1Ref.current, sfx2Ref.current].forEach((sfx) => {
       if (!sfx) return;
       sfx.volume(0);
       const id = sfx.play();
-      // Pause on the very next animation frame — this satisfies iOS
-      // without producing an audible click or pop.
+      // Pause on next rAF â€” satisfies iOS policy without an audible pop
       requestAnimationFrame(() => {
         if (typeof id === "number") sfx.pause(id);
         else sfx.pause();
       });
     });
-
     isUnlockedRef.current = true;
-  }, [initAudio]);
+  }
 
-  // ── Per-frame sync: equal-power crossfade based on scroll depth ─────────────
-  const syncAudio = useCallback(() => {
-    const { sfx1, sfx2 } = howlsRef.current;
-    if (!sfx1 || !sfx2) return;
+  // â”€â”€ Resume AudioContext â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  function resumeCtx() {
+    const ctx = Howler.ctx;
+    if (ctx && ctx.state === "suspended") void ctx.resume();
+  }
 
-    const y = window.scrollY;
-    const h = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+  // â”€â”€ rAF loop: single volume writer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // All volume changes flow through here. The lerp provides:
+  //  - Smooth ramp-up on first scroll (no pop)
+  //  - Smooth crossfade between sfx1/sfx2 as the user scrolls
+  //  - Smooth ramp-down on idle (no click/pop at silence)
+  function syncAudio() {
+    const sfx1 = sfx1Ref.current;
+    const sfx2 = sfx2Ref.current;
+    if (!sfx1 || !sfx2) { rafRef.current = null; return; }
+
+    // â”€â”€ Compute scroll-position-based crossfade targets â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    const y        = window.scrollY;
+    const h        = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
     const progress = Math.min(Math.max(y / h, 0), 1);
 
     const rangeStart = CROSS_CENTER - CROSS_WIDTH / 2;
-    let weight2 = (progress - rangeStart) / CROSS_WIDTH;
-    weight2 = Math.min(Math.max(weight2, 0), 1);
+    let weight2      = (progress - rangeStart) / CROSS_WIDTH;
+    weight2          = Math.min(Math.max(weight2, 0), 1);
 
-    // Equal-power crossfade: maintains constant perceived loudness
-    const angle   = weight2 * (Math.PI / 2);
-    const volume1 = Math.cos(angle) * MAX_VOLUME;
-    const volume2 = Math.sin(angle) * MAX_VOLUME;
+    // Equal-power crossfade keeps perceived loudness constant
+    const angle  = weight2 * (Math.PI / 2);
+    const wantV1 = Math.cos(angle) * MAX_VOLUME;
+    const wantV2 = Math.sin(angle) * MAX_VOLUME;
 
-    if (isPlayingRef.current) {
-      if (volume1 > 0.002 && !sfx1.playing()) sfx1.play();
-      if (volume2 > 0.002 && !sfx2.playing()) sfx2.play();
+    // When fading out (isPlaying=false or targetV=0), lerp toward 0
+    const t1 = (isPlayingRef.current && targetV1Ref.current > 0) ? wantV1 : 0;
+    const t2 = (isPlayingRef.current && targetV2Ref.current > 0) ? wantV2 : 0;
 
-      sfx1.volume(volume1);
-      sfx2.volume(volume2);
+    // â”€â”€ Lerp current â†’ target â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    const v1 = lerp(currentV1Ref.current, t1, LERP_SPEED);
+    const v2 = lerp(currentV2Ref.current, t2, LERP_SPEED);
+    currentV1Ref.current = v1;
+    currentV2Ref.current = v2;
 
-      if (volume1 <= 0.002 && sfx1.playing()) sfx1.pause();
-      if (volume2 <= 0.002 && sfx2.playing()) sfx2.pause();
+    // â”€â”€ Write volumes + manage play/pause â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    if (v1 > 0.003) {
+      if (!sfx1.playing()) sfx1.play();
+      sfx1.volume(v1);
+    } else if (sfx1.playing()) {
+      sfx1.volume(0);
+      sfx1.pause();
     }
 
-    rafRef.current = requestAnimationFrame(syncAudio);
-  }, [MAX_VOLUME, CROSS_CENTER, CROSS_WIDTH]);
-
-  // ── Wake up — called ONLY from the native scroll event ────────────────────
-  const wakeUp = useCallback(() => {
-    lastActivityRef.current = Date.now();
-
-    // On iOS, if audio has not been primed via a gesture, skip — playing
-    // from scroll events without prior gesture unlocking will be silently
-    // blocked. The user must touch the screen first (which runs primeAudioForIOS).
-    if (!isUnlockedRef.current) return;
-
-    if (Howler.ctx?.state === "suspended") {
-      void Howler.ctx.resume();
+    if (v2 > 0.003) {
+      if (!sfx2.playing()) sfx2.play();
+      sfx2.volume(v2);
+    } else if (sfx2.playing()) {
+      sfx2.volume(0);
+      sfx2.pause();
     }
 
-    initAudio();
+    // â”€â”€ Continue or stop the loop â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Keep ticking while any sound is audible so the fade-out completes cleanly.
+    if (v1 > 0.001 || v2 > 0.001) {
+      rafRef.current = requestAnimationFrame(syncAudio);
+    } else {
+      rafRef.current     = null;
+      targetV1Ref.current = 0;
+      targetV2Ref.current = 0;
+    }
+  }
+
+  function startRaf() {
+    if (rafRef.current === null) {
+      rafRef.current = requestAnimationFrame(syncAudio);
+    }
+  }
+
+  // â”€â”€ Idle detection: setTimeout reset pattern (O(1) per scroll) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  function resetIdleTimer() {
+    if (idleTimerRef.current !== null) clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = setTimeout(() => {
+      // Signal rAF loop to fade to silence
+      targetV1Ref.current  = 0;
+      targetV2Ref.current  = 0;
+      isPlayingRef.current = false;
+      startRaf(); // ensure loop runs to complete the fade-out
+    }, IDLE_LIMIT);
+  }
+
+  // â”€â”€ wakeUp: called by every scroll event â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  function wakeUp() {
+    if (loadErrorRef.current) return;
+    // iOS gate â€” require prior gesture unlock
+    if (isIOSRef.current && !isUnlockedRef.current) return;
+
+    resumeCtx();
+    initAudio(); // no-op after first call
+
+    resetIdleTimer();
 
     if (!isPlayingRef.current) {
       isPlayingRef.current = true;
-
-      // Fade SFX 1 in from 0 to MAX_VOLUME quickly
-      const { sfx1 } = howlsRef.current;
-      if (sfx1) {
-        if (!sfx1.playing()) sfx1.play();
-        sfx1.fade(0, MAX_VOLUME, START_FADE_MS);
-      }
-
-      if (rafRef.current === null) {
-        rafRef.current = requestAnimationFrame(syncAudio);
-      }
+      targetV1Ref.current  = MAX_VOLUME;
+      targetV2Ref.current  = MAX_VOLUME;
+      startRaf();
     }
-  }, [initAudio, syncAudio, MAX_VOLUME, START_FADE_MS]);
+  }
 
-  // ── Main effect: defer until shutter is done, then attach listeners ────────
+  // â”€â”€ Hard stop: silence everything immediately â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  function hardStop() {
+    if (idleTimerRef.current !== null) { clearTimeout(idleTimerRef.current); idleTimerRef.current = null; }
+    if (rafRef.current !== null)       { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+    isPlayingRef.current = false;
+    targetV1Ref.current  = 0;
+    targetV2Ref.current  = 0;
+    currentV1Ref.current = 0;
+    currentV2Ref.current = 0;
+    sfx1Ref.current?.stop();
+    sfx2Ref.current?.stop();
+  }
+
+  // â”€â”€ Full unload: hard stop + release memory â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  function unloadAudio() {
+    hardStop();
+    sfx1Ref.current?.unload();
+    sfx2Ref.current?.unload();
+    sfx1Ref.current      = null;
+    sfx2Ref.current      = null;
+    isUnlockedRef.current = false;
+  }
+
+  // â”€â”€ Main effect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
+    // Cache iOS detection once per mount â€” never runs in the scroll hot path
+    isIOSRef.current = detectIOS();
+
     if (!enabled || pathname !== "/") {
-      isPlayingRef.current = false;
-      howlsRef.current.sfx1?.stop();
-      howlsRef.current.sfx2?.stop();
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
+      hardStop();
       return;
     }
 
-    const isShutterActive = () => document.body.classList.contains("shutter-intro-active");
-    const cleanupFns: (() => void)[] = [];
+    const isShutterActive = () =>
+      document.body.classList.contains("shutter-intro-active");
+
+    let listenerCleanup: (() => void) | undefined;
+    let attached = false;
 
     function attachListeners() {
-      if (isShutterActive()) return;
+      if (attached || isShutterActive()) return;
+      attached = true;
 
-      // Idle monitor: fade engine out quickly when scrolling stops
-      const monitor = setInterval(() => {
-        const now = Date.now();
-        if (isPlayingRef.current && now - lastActivityRef.current > IDLE_LIMIT) {
-          isPlayingRef.current = false;
+      // Eager init â€” pre-decode buffers NOW (not on first scroll)
+      initAudio();
 
-          const { sfx1, sfx2 } = howlsRef.current;
-          const curV1 = (sfx1?.volume() as number) || 0;
-          const curV2 = (sfx2?.volume() as number) || 0;
-
-          sfx1?.fade(curV1, 0, STOP_FADE_MS);
-          sfx2?.fade(curV2, 0, STOP_FADE_MS);
-
-          setTimeout(() => {
-            if (!isPlayingRef.current) {
-              sfx1?.pause();
-              sfx2?.pause();
-              if (rafRef.current) cancelAnimationFrame(rafRef.current);
-              rafRef.current = null;
-            }
-          }, STOP_FADE_MS + 30);
-        }
-      }, 100);
-
-      /* ── scroll is the ONLY trigger that starts the engine sound ─────────
-       *
-       * touchstart / click: Prime audio for iOS (gesture context).
-       *   - Calls primeAudioForIOS() which does a silent play+pause to
-       *     satisfy iOS autoplay policy for HTML5 Audio elements.
-       *   - Also resumes AudioContext if suspended (for Web Audio path).
-       *
-       * scroll: Calls wakeUp() which starts playback. On iOS this now
-       *   works because audio was already primed in the gesture handler.
-       * ────────────────────────────────────────────────────────────────── */
       const onScroll = () => wakeUp();
 
-      const onTouchStartUnlock = () => {
-        /* Prime HTML5 audio for iOS in this synchronous gesture context. */
-        primeAudioForIOS();
-        if (Howler.ctx?.state === "suspended") {
-          void Howler.ctx.resume();
-        }
+      // iOS gesture unlock (both touchstart and click for full coverage)
+      const onGesture = () => { primeForIOS(); resumeCtx(); };
+
+      // Resume AudioContext when user returns to the tab
+      const onVisibility = () => {
+        if (document.visibilityState === "visible") resumeCtx();
       };
 
-      /* iOS Safari also requires a 'click' event to unlock AudioContext
-       * after the user navigates back — scroll alone is not a user gesture
-       * that satisfies the autoplay policy on page re-entry. */
-      const onClickUnlock = () => {
-        primeAudioForIOS();
-        if (Howler.ctx?.state === "suspended") {
-          void Howler.ctx.resume();
-        }
-      };
+      window.addEventListener("scroll",     onScroll,     { passive: true });
+      window.addEventListener("touchstart", onGesture,    { passive: true });
+      window.addEventListener("click",      onGesture,    { passive: true });
+      document.addEventListener("visibilitychange", onVisibility);
 
-      window.addEventListener("scroll",     onScroll,           { passive: true });
-      window.addEventListener("touchstart", onTouchStartUnlock, { passive: true });
-      window.addEventListener("click",      onClickUnlock,      { passive: true });
-
-      cleanupFns.push(() => {
-        clearInterval(monitor);
+      listenerCleanup = () => {
         window.removeEventListener("scroll",     onScroll);
-        window.removeEventListener("touchstart", onTouchStartUnlock);
-        window.removeEventListener("click",      onClickUnlock);
-        if (rafRef.current) cancelAnimationFrame(rafRef.current);
-        howlsRef.current.sfx1?.stop();
-        howlsRef.current.sfx2?.stop();
-        howlsRef.current.sfx1?.unload();
-        howlsRef.current.sfx2?.unload();
-        howlsRef.current.sfx1 = null;
-        howlsRef.current.sfx2 = null;
-        isUnlockedRef.current = false;
-      });
+        window.removeEventListener("touchstart", onGesture);
+        window.removeEventListener("click",      onGesture);
+        document.removeEventListener("visibilitychange", onVisibility);
+        unloadAudio();
+      };
     }
 
-    // Watch for shutter intro class removal via MutationObserver
+    // Defer listener attachment until the shutter intro has closed
     const observer = new MutationObserver(() => {
       if (!isShutterActive()) {
         observer.disconnect();
@@ -272,14 +327,23 @@ export function useEngineSound({ enabled }: UseEngineSoundOptions): void {
     });
 
     if (isShutterActive()) {
-      observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+      observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
     } else {
       attachListeners();
     }
 
     return () => {
       observer.disconnect();
-      cleanupFns.forEach((fn) => fn());
+      if (listenerCleanup) {
+        listenerCleanup();
+      } else {
+        // Shutter was still active when React cleaned up â€” hard stop is enough
+        hardStop();
+      }
     };
-  }, [enabled, pathname, wakeUp, primeAudioForIOS, STOP_FADE_MS, IDLE_LIMIT]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enabled, pathname]);
 }

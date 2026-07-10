@@ -57,6 +57,8 @@ export function useShutterSound(options: UseShutterSoundOptions = {}): UseShutte
         loop: false,
         volume: 0,
         html5: true,   // ← Matches useEngineSound — proven to work on all devices
+        pool: 1,       // ← Cap at 1 concurrent <audio> element; prevents pool
+                       //   exhaustion in React Strict Mode (double-invocation).
       });
     }
     return soundRef.current;
@@ -66,6 +68,11 @@ export function useShutterSound(options: UseShutterSoundOptions = {}): UseShutte
   useEffect(() => {
     if (disabled) return;
     ensureSound();
+    // Strict Mode cleanup: unload and null-out so second mount gets a fresh instance
+    return () => {
+      soundRef.current?.unload();
+      soundRef.current = null;
+    };
   }, [disabled, ensureSound]);
 
   // ── stop ──────────────────────────────────────────────────────────────────

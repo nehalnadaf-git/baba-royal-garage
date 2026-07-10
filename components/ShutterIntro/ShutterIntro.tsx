@@ -227,6 +227,11 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
   const shutterStyle: React.CSSProperties = prefersReducedMotion
     ? { opacity: isOpening ? 0 : 1, transition: "opacity 0.3s ease" }
     : {
+        // translateY(-100vh) is correct here — the shutter slides UP off the
+        // top edge of the screen. Even on iOS 15 where 100vh ≠ visual viewport,
+        // the shutter exits from the top before the address-bar discrepancy
+        // matters. Using -100dvh caused the transform to silently fail in
+        // browsers that don't support dvh, freezing the shutter on-screen.
         transform: isOpening ? "translateY(-100vh)" : "translateY(0)",
         transition: isOpening ? `transform ${DURATION_S}s ${EASE}` : "none",
         // GPU-composited — no layout thrash
@@ -242,7 +247,7 @@ export default function ShutterIntro({ onComplete }: ShutterIntroProps) {
     >
       {/* ══ The shutter door — real photo that lifts straight up ══════════ */}
       <div
-        className="fixed inset-0 z-[10000] h-screen w-screen"
+        className="fixed inset-0 z-[10000] h-screen-safe w-full"
         style={shutterStyle}
       >
         {/* Web shutter image — object-cover fills the screen cleanly */}
